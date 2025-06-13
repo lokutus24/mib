@@ -1290,3 +1290,12 @@ width: 100% !important; /* Kis százalékos szélesség, hogy négy blokk elfér
     gap: 10px;
     flex-wrap: wrap !important;
 }
+
+.room-list{
+    list-style: none;
+    padding-left: 0;
+}
+
+.room-list li{
+    margin-bottom: 5px;
+}
