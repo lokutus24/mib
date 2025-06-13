@@ -1,0 +1,22 @@
+{
+    "name": "root/mib",
+    "description": "Mib Plugin",
+    "type": "projekt",
+    "license": "GPL",
+    "authors": [
+        {
+            "name": "Raska Gabor",
+            "email": "raskagabor22@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": { "Inc\\": "./inc"}
+    },
+    "config": {
+         "platform": {
+             "php": "7.4"
+         }
+    }
+
+}

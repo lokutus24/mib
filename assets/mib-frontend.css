@@ -1,0 +1,1292 @@
+/* Pagination Container */
+nav[aria-label="mib pagination"] .pagination {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+    justify-content: center;
+    --bs-pagination-disabled-bg: none;
+}
+
+/* noUiSlider customization to match jQuery UI slider */
+#custom-square-slider .noUi-base,
+#custom-price-slider .noUi-base,
+#custom-room-slider .noUi-base,
+#custom-floor-slider .noUi-base {
+    
+    height: 100%;
+    top: 0;
+    border-radius: 6px;
+}
+
+.noUi-horizontal .noUi-handle {
+    right: -13px !important;
+}
+
+/* Pagination Items */
+nav[aria-label="mib pagination"] .pagination .page-item {
+    margin: 0 2px;
+}
+
+nav[aria-label="mib pagination"] .pagination .page-item.disabled a,
+nav[aria-label="mib pagination"] .pagination .page-item.disabled a:hover {
+    color: #ccc;
+    pointer-events: none;
+    --bs-pagination-disabled-bg: none;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+/* Pagination Links */
+nav[aria-label="mib pagination"] .pagination .page-link {
+    padding: 6px;
+    display: inline-block;
+    font-size: 16px;
+    font-weight: normal;
+    line-height: 2em;
+    color: #666;
+    border: 1px solid rgba(0, 0, 0, 1);
+    border-radius: 4px;
+    min-width: 2em;
+    box-sizing: content-box;
+    text-align: center;
+    margin: 0.5em 0.4em;
+    text-decoration: none !important;
+    box-shadow: none;
+    vertical-align: middle;
+    box-shadow: 0 0 15px rgba(0,0,0,.05);
+    cursor: pointer;
+    width: auto;
+}
+
+nav[aria-label="mib pagination"] .pagination .page-item.active .page-link{
+    background: transparent !important;
+    color: rgb(0, 0, 0);
+    box-shadow: none;
+    cursor: pointer
+}
+nav[aria-label="mib pagination"] .pagination .page-link:hover {
+    color: rgb(0, 0, 0);
+    box-shadow: none;
+    cursor: pointer
+    background: transparent !important;
+}
+
+/* Accessibility */
+nav[aria-label="mib pagination"] .pagination .page-link:focus {
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    cursor: pointer;
+}
+
+#custom-list-table-container{
+
+    background-color: #e2e1df;
+    max-width: 100%;
+}
+
+.custom-list-table{
+
+    border: 1px solid #eee;
+    margin: 0 0 15px;
+    text-align: left;
+    width: 100%;
+    border-collapse: collapse;
+    font-family: "Barlow Condensed", sans-serif;
+
+}
+
+.custom-list-table tbody tr:nth-child(odd) {
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    background-color: rgba(0,0,0,.02);
+}
+
+.custom-list-table tbody tr:nth-child(even) {
+    background-color: rgba(0, 0, 0, .06);
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+}
+
+.custom-list-table #mibheadertr{
+  border-bottom: 2px solid rgba(0, 0, 0, .6);
+  background: rgba(0, 0, 0, 0);
+}
+
+.custom-list-table #mibheaderth{
+  padding: 20px;
+  /*background-color: #876865;*/
+  color: rgb(255, 255, 255);
+  text-align: center;
+  color: #e2e1df;
+  font-size: 20px;
+  height: 20px;
+  line-height: 20px;
+  max-width: 800px;
+}
+
+
+.custom-list-table #mibtd{
+  font-size: 16px;
+  font-weight: 500;
+  /*color: rgb(66, 66, 68, 1.0);*/
+  text-align: left;
+  text-indent: 0px;
+  width: auto;
+  height: auto;
+  line-height: 20px; 
+  word-break: normal;
+  padding: 15px 24px;
+  
+}
+
+.custom-list-table #mibtr{
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(0, 0, 0, .06);
+
+}
+.custom-list-table #mibhre{
+    /*color: #424244;*/
+    font-weight: bold;
+    background-color: rgba(255, 255, 255, 0);
+    border-style: none;
+    border-width: 0px;
+    font-size: 20px;
+    text-decoration: none !important;
+    margin-left: 18px;
+
+}
+
+#custom-list-table-container .custom-filter-container{
+    padding: 12px 10px 3px 10px;
+}
+
+#custom-card-container .custom-filter-container{
+    margin-bottom: 20px;
+}
+
+.custom-list-table #mibhrefinactive{
+    color: #b6b9c1;
+    font-weight: bold;
+    font-size: 20px;
+    text-decoration: none;
+    text-align: left;
+}
+
+.row {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+
+@media (max-width: 768px) {
+    .row {
+        flex-wrap: wrap;
+    }
+    .col-md-2 {
+        width: 100%;
+        margin-bottom: 5px;
+    }
+}
+
+
+/*select {
+    padding: .375rem 1.75rem .375rem .75rem;
+    line-height: 1.5;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    height: calc(2.25rem + 2px);
+    color: white !important;
+    cursor: pointer;
+    margin-top: 4px;
+}*/
+
+#singletabletd{
+    padding: 20px;
+    width: 150px;
+    border-top: 0;
+    border-bottom: 1px dotted rgba(0, 0, 0, .1);
+    margin: 0;
+    line-height: 1.5;
+    color: #666;
+    -webkit-font-smoothing: antialiased;
+}
+
+.singletabletd.label {
+    font-weight: 700;
+}
+
+#custom-list-single-table{
+    max-width: 90%;
+}
+
+#mibapartmentitle{
+    font-size: 75px;
+    color: #876865 !important;
+    line-height: 1em;
+    font-weight: 700;
+}
+
+.entry-content .apartment-container{
+    max-width: 100%;
+    display: flex;
+    align-items: flex-start; /* Aligns items to the top */
+    font-family: "Barlow Condensed", sans-serif !important;
+}
+
+.apartment-container h1{
+    font-family: "Barlow Condensed", sans-serif !important;
+}
+
+.apartment-image {
+    flex: 2;
+    margin-right: 20px; /* Adjust the space between the image and the table */
+}
+
+.apartment-info {
+    flex: 2;
+}
+
+/* Responsive adjustment: stack them on smaller screens */
+@media (max-width: 768px) {
+    .apartment-container {
+        flex-direction: column;
+    }
+    
+    .apartment-image {
+        margin-right: 0;
+        margin-bottom: 20px; /* Space between image and table on small screens */
+    }
+
+    .apartment-info {
+        width: 100%;
+    }
+}
+
+.apartment-image #mibimage{
+    width: 100%;
+    margin-left: 20px;
+    margin-top: 200px;
+    max-height: 650px;
+}
+
+#price, #mibinfo{
+    font-size: 21px;
+    color: #876865 !important;
+    line-height: 2em;
+    font-weight: 500;
+    font-family: "Barlow Condensed", sans-serif !important;
+}
+
+.custom-list-table tbody .singletr:nth-child(odd) {
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    background-color: rgb(249 249 249);
+}
+
+.custom-list-table tbody .singletr:nth-child(even) {
+    background-color: rgba(0, 0, 0, .025);
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+}
+
+#mibfloorplan{
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 22px;
+    color: #876865 !important;
+    text-decoration: none;
+    pointer:cursor;
+    margin-bottom: 5px;
+}
+
+body .mibfloorplan{
+    line-height: 5em;
+    margin-bottom: -55px;
+    margin-left: 0px !important;
+}
+.catalog-dropdown .dropdown-item:hover,
+.catalog-dropdown .dropdown-item:focus {
+    background-color: transparent !important;
+    outline: none; /* ha nem akarod, hogy keret jelenjen meg fókusz esetén */
+}
+.catalog-dropdown li{
+    list-style-type: none;
+}
+.dropdown-menu.show, .catalog-dropdown-menu.show{
+    width: 247px;
+}
+
+.dropdown-menu, .catalog-dropdown-menu {
+    left: auto; /* Alapértelmezésben jobbra igazítja, ezt felülírjuk */
+    right: 0; /* A trigger elem bal oldalához igazítja */
+}
+.dropdown-item{
+    color:white !important;
+}
+
+.floor-checkbox{
+    vertical-align: baseline;
+    margin: 0 .5em 0 0;
+    display: inline !important;
+}
+
+.dropdown-item:hover, .dropdown-item:focus {
+    color: white !important;
+    /*background-color: #3a322d !important;*/ /* Biztosítja, hogy ne legyen változás hoverkor */
+    cursor: pointer; /* Opcionális: Megadja az egérmutató stílusát */
+}
+
+.floor-checkbox {
+    vertical-align: baseline;
+    margin: 0 .5em 0 0;
+    display: inline !important;
+}
+
+/* Az alábbiak opcionálisan hozzáadhatók, ha szeretnéd, hogy a checkboxok és a címkék is konzisztensek maradjanak a hover effekt nélkül */
+.dropdown-item label:hover, .dropdown-item label:focus {
+    background-color: transparent !important;
+    cursor: pointer;
+}
+
+.btn-dark, .btn-dark:hover{
+
+    /*background-color: #3a322d !important;*/
+    max-height: 38px;
+}
+
+#mib-spinner{
+    display: none;
+}
+
+.range-slider-container #slider-range{
+    margin-top: 10px !important;
+        margin-bottom: -5px !important;
+  }
+
+
+.range-slider-container{
+    padding-left: 10px;
+    padding-right: 10px;
+    text-align:center;
+    border-radius: 7px;
+    /*background-color: #3a322d !important;*/
+    max-height: 55px;
+}
+
+.range-slider-container div{
+  margin-bottom: 5px !important;
+}
+
+.range-slider-container span{
+  color:white !important;
+}
+
+.range-slider-container p{
+  color:white !important;
+}
+
+@media only screen and (max-width: 600px) {
+
+    /* LIST VIEW MOBILE CSS */
+    .simple-page-link{
+        display:none !important;
+    }
+
+    #custom-list-table-container{
+        overflow:scroll !important;
+    }
+
+    body .justify-content-end {
+        justify-content: normal !important;
+    }
+
+    #mib-filter-deletefilters{
+       white-space: nowrap !important;
+    }
+
+
+    /* APARTMANT VIEW MOBILE CSS */
+    #mibapartmentitle{
+        font-size:45px !important;
+    }
+
+    #mibinfo{
+        margin-bottom: -10px !important;
+    }
+
+    #custom-list-single-table{
+        max-width: 100% !important;
+    }
+
+    .apartment-image #mibimage{
+        margin-left: 0px !important;
+        margin-top: 0px !important;
+    }
+
+    .apartment-container{
+        margin-bottom: -30px !important;
+    }
+}
+
+#slider-range, #price-slider-range {
+  width: 230px;
+  margin: 15px;
+  /*background: #212529;*/
+}
+
+
+#slider-value, #price-slider-range {
+  text-align: center; /* A szöveg középre igazítása */
+  margin-top: 10px; /* Adjon hozzá felső margót a `p` elemhez, hogy biztosítsa a visuális tér a slider felett */
+  color: #333; /* Szövegszín beállítása */
+  font-family: Arial, sans-serif; /* Betűtípus beállítása */
+}
+
+.ui-slider {
+  background-color: #8B4513; /* A teljes slider sínjének barna színe */
+}
+
+.ui-slider-handle {
+  background-color: #A0522D; /* A fogantyú világosabb barna színe */
+  border-color: #454545; /* A fogantyú keretének sötétbarna színe */
+}
+
+.ui-slider-range {
+  background: #8B4513; /* A kijelölt tartomány barna színe */
+}
+
+.recommended-apartments {
+    display: flex;
+    padding: 0 20px;
+    max-width: 100% !important;
+    margin-top: 50px;
+}
+
+@media only screen and (max-width: 600px) {
+  .recommended-apartment {
+width: 100% !important; /* Kis százalékos szélesség, hogy négy blokk elférjen */
+    margin-bottom:20px !important;
+  }
+
+  .recommended-apartments {
+    display: block;
+}
+}
+
+.recommended-apartment {
+    width: 19%; /* Kis százalékos szélesség, hogy négy blokk elférjen */
+    margin-right:1%;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    overflow: hidden;
+    background: #fff;
+    text-align: center;
+    margin-bottom: 20px; /* Szükség esetén alsó margó */
+}
+
+.recommended-apartment img {
+    width: 100%;
+    height: auto;
+    border-bottom: 1px solid #eee; /* Kép alatti elválasztó vonal */
+}
+
+.recommended-apartment a {
+    color: inherit; /* Ez az érték megtartja a szülő elem színét */
+    text-decoration: none;
+}
+
+.recommended-apartment h3 {
+    margin: 10px 0;
+    font-size: 16px;
+    color: #333;
+    margin: 10px 0px 0px 10px;
+    text-align:left;
+    font-weight:700 !important;
+}
+
+.recommended-apartment p {
+    font-size: 14px;
+    margin: 0px 0px 0px 10px;
+    color: #666;
+    text-align:left !important;
+    margin-bottom: 10px;
+}
+#recommended-h4{
+    margin-top: 80px;
+    color: #876865 !important;
+    margin-bottom: 40px;
+    text-align:center !important;
+    font-weight:700 !important;
+}
+
+@media (max-width: 768px) {
+  /* Mobilnézethez, amikor a képernyő szélessége 768px vagy kisebb */
+  table th:nth-child(3), 
+  table td:nth-child(3),
+  table th:nth-child(4), 
+  table td:nth-child(4),
+  table th:nth-child(5), 
+  table td:nth-child(5),
+  table th:nth-child(6), 
+  table td:nth-child(6) {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+
+  .d-flex {
+    flex-wrap: wrap; /* Lehetővé teszi az elemek tördelését új sorba */
+  }
+
+  .mb-2 {
+    /*flex: 0 0 48%;
+    margin-right: 2%;*/
+  }
+
+  .mb-2:nth-child(2n) {
+    margin-right: 0; /* Minden második elem igazodik a jobb oldalhoz */
+  }
+
+  .dropdown-toggle {
+    width: 100%;  /* Gombok szélessége 100% */
+  }
+
+  .range-slider-container {
+    width: 100%;  /* Csúszka szélessége is 100% */
+  }
+
+  button#mib-filter-deletefilters {
+    width: 100%;  /* Szűrők törlése gomb teljes szélesség */
+    margin-top: 1rem;
+  }
+
+  .dropdown-menu, .catalog-dropdown-menu {
+    position: static; /* A legördülő menü statikus elhelyezése */
+    width: 100%;      /* A menü szélessége 100% legyen, így nem lóg ki */
+    left: 0;          /* Balra igazítva */
+    right: 0;         /* Jobbra igazítva */
+    margin: 0 auto;   /* Középre igazítja a menüt */
+  }
+
+  .dropdown-item {
+    width: 100%;      /* A menüelemek szélessége is teljes legyen */
+  }
+
+  .dropdown-menu.show, .catalog-dropdown-menu.show {
+    
+    width: 240px;
+
+   }
+}
+
+
+/** are input range instead of slider */
+.area-range-container {
+    border-radius: 4px;
+    width: 100%;
+}
+
+.square-filter-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px; /* Térköz a két input között */
+    width: 100%;
+}
+
+.min-area-container,
+.max-area-container {
+    flex: 1; /* A két mező egyenlő szélességet kap */
+}
+
+.area-input {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.input-with-unit {
+  display: flex;
+  align-items: center;
+}
+
+.input-with-unit .area-input {
+  flex: 1;
+}
+
+.input-with-unit .unit {
+  margin-left: 8px;
+  font-size: 14px; /* Egység betűmérete */
+}
+
+.input-with-unit {
+  display: flex;
+  align-items: center;
+}
+
+.input-with-unit .area-input {
+  flex: 1;
+}
+
+.input-with-unit .unit {
+  margin-left: 8px;
+  font-size: 14px; /* Egység betűmérete */
+}
+
+/* Mobil nézethez (max 768px-es szélesség) */
+@media screen and (max-width: 768px) {
+
+
+  #view-toggle {
+    display: none !important;
+  }
+  /* Táblázat konténer mobilra */
+  .custom-list-table {
+    width: 100%; /* Táblázat teljes szélességet használja */
+    table-layout: fixed; /* Fix oszlopszélesség, hogy ne legyenek túl szélesek */
+    overflow-x: auto; /* Vízszintes görgetés lehetősége */
+    border-collapse: collapse;
+  }
+
+  .custom-list-table #mibtd {
+    padding: 8px 12px; /* Csökkentett padding mobil nézetben */
+  }
+
+  /* Tábla cellák méretezése */
+  th, td {
+    padding: 10px 5px; /* Kisebb padding a cellákban mobilon */
+    font-size: 12px; /* Kisebb betűméret mobilra */
+    word-wrap: break-word; /* Szövegtörés a hosszabb tartalmaknál */
+    white-space: nowrap; /* Szövegek egy sorban tartása */
+    overflow: hidden; /* Szöveg levágása, ha túl hosszú */
+    text-overflow: ellipsis; /* Három pont megjelenítése hosszú szövegeknél */
+  }
+
+  /* Fejléc stílus mobilon */
+  th {
+    font-size: 10px; /* Kisebb betűméret a fejlécekhez */
+    text-align: left; /* Balra igazítás a fejléceknél */
+    white-space: nowrap; /* Ne törjön meg a hosszú szöveg a fejlécben */
+    overflow: hidden; 
+    text-overflow: ellipsis;
+  }
+
+  /* Sorok igazítása mobilon */
+  tr {
+    display: table-row;
+    width: 100%; /* Sorok szélessége teljes legyen */
+  }
+
+  /* Státusz cella megjelenése */
+  td:last-child {
+    text-align: center; /* Státusz középre igazítása */
+  }
+
+  /* Táblázat konténer görgethetősége */
+  #custom-list-table-container {
+    overflow-x: auto; /* Vízszintes görgetés, ha a tartalom nem fér el */
+    width: 100%; /* Konténer teljes szélessége */
+  }
+
+  /* Spinner és egyéb stílusok a mobil nézethez */
+  .mib-spinner {
+    margin: 10px auto; /* Spinner középre igazítása */
+  }
+
+  /* Filterek igazítása mobilon */
+  .custom-filter-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    justify-content: center; /* Középre igazítja a filtereket mobilon */
+    margin-bottom: 10px;
+  }
+
+   .catalog-dropdown {
+        width: 100%;
+   }
+
+   .catalog-dropdown .dropdown-menu{
+        width: 100% !important;
+    }
+
+    #custom-price-slider{
+        width: 300px !important;
+    }
+
+    #custom-floor-slider{
+        width: 300px !important;
+    }
+
+    #custom-room-slider{
+        width: 300px !important;
+    }
+
+    #custom-square-slider{
+        width: 300px !important;
+    }
+
+    .custom-filter-container {
+        display: inline !important;
+    }
+
+}
+/* ===================================================================
+   noUiSlider CSS overrides a fő és egyedi slider-ekhez, hogy megtartsa a barna dizájnt
+   =================================================================== */
+
+
+#slider-range .noUi-handle,
+#price-slider-range .noUi-handle,
+#custom-square-slider .noUi-handle,
+#custom-price-slider .noUi-handle,
+#custom-room-slider .noUi-handle,
+#custom-floor-slider .noUi-handle {
+    border: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    top: -4px;
+    margin-left: -7px;
+    position: absolute;
+    cursor: grab;
+    box-shadow: none;
+    background-color: #A0522D;
+}
+
+.apartment-name-label {
+    position: absolute;
+    top: 10px; /* A kép tetejétől 10px távolságra */
+    left: 10px; /* A kép bal oldalától 10px távolságra */
+    background-color: rgba(0, 0, 0, 0.5); /* Átlátszó fekete háttér */
+    color: #fff; /* Fehér szöveg */
+    padding: 5px 10px; /* Térköz a szöveg körül */
+    font-size: 14px; /* Szöveg mérete */
+    border-radius: 3px; /* Lekerekített sarkok */
+}
+
+#apartment-datas, #apartment-card-body, #custom-card-container{
+    gap: 0px;
+    justify-content: center;
+}
+#apartment-card-body {
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    /*background-color: #0d2d3e;*/
+    color: white;
+}
+
+#apartment-card-body .text-success {
+    color: #3ecf8e !important;
+}
+
+#apartment-card-body .text-info {
+    color: #2bb9c9 !important;
+}
+
+#apartment-card-body .btn-light {
+    /*background-color: #ececec;*/
+    color: #0d2d3e;
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 30px;
+}
+
+#apartment-card-body small {
+    font-size: 0.71rem;
+    color: white !important;
+    font-weight: 600;
+}
+
+.card-text {
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.card .btn {
+    width: 100%; /* Gombok egymás mellett */
+    border-radius: 30px;
+    background-color: #f6f6f6;
+}
+
+.btn-outline-dark {
+    border-color: #000;
+    color: #000;
+}
+
+.btn-primary {
+    background-color: #004f61;
+    border-color: #004f61;
+}
+
+#cardhref{
+    text-decoration: none;
+}
+
+/* Kép méretének beállítása a kártyákban */
+#custom-card-container .card-img-top {
+    width: 100%;           /* A kép szélessége teljesen kitölti a kártyát */
+    height: 200px;         /* Állítsd be a kívánt magasságot, pl. 200px */
+    object-fit: cover;     /* Megakadályozza a kép torzulását, levágja a széleket, hogy kitöltse a teret */
+    object-position: center; /* A kép középre igazítása, ha levágásra kerül */
+}
+
+
+.loading-spinner {
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #333;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    margin-right: 5px;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+@media only screen and (min-width: 700px) {
+    .custom-filter-container .area-range-container{
+        width:350px !important;
+    }
+}
+
+/** catalog new adatlap **/
+.apartment-box {
+    border-radius: 10px;
+    font-family: sans-serif;
+}
+
+.apartment-top {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    border-radius: 15px 15px 15px 15px;
+}
+
+.location-name{
+    color:black;
+}
+.apartment-plan {
+    flex: 1;
+    min-width: 300px;
+    padding: 15px;
+}
+
+.apartment-plan img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.apartment-details {
+    flex: 1;
+    min-width: 300px;
+    color: #ffffff;
+    border-radius: 0px 0px 15px 0px;
+}
+
+.apartment-logo-header {
+    background: #fff;
+    padding: 15px 20px;
+    border-radius: 5px 5px 0 0;
+    display: flex-row;
+    align-items: center;
+    gap: 15px;
+}
+
+.apartment-divider {
+    border-color: #ffffff !important;
+    border-top: 1px solid white;
+    margin: 15px 0;
+    opacity: 1 !important;
+}
+
+.apartment-avaible-status{
+    color: #3ba63b;
+}
+
+.quick-info-value{
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.apartment-meta {
+    margin-bottom: 20px;
+}
+
+.apartment-code {
+    color: #aaa;
+}
+
+.apartment-downloads {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+    border-radius: 10px;
+    font-family: sans-serif;
+    flex-wrap: wrap;
+}
+
+.downloads-column,
+.info-column {
+    flex: 1;
+    min-width: 300px;
+}
+
+.apartment-downloads h4 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #333;
+    font-weight: 800;
+}
+
+.apartment-plan-documents{
+    margin-bottom: 10px;
+}
+.apartment-plan-documents a{
+    text-decoration: none !important;
+    color: #3ba63b;
+}
+
+.mibfloorplan {
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.notes {
+    margin-top: 10px;
+    color: #333;
+}
+
+.apartment-quickinfo {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    gap: 10px;
+}
+
+@media (max-width: 768px) {
+    .responsive-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+}
+
+.button-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.favorite-icon {
+    cursor: pointer;
+    font-size: 25px;
+    transition: color 0.2s ease;
+}
+
+.favorite-icon.filled {
+    color: #b80000;
+}
+
+.apartment-extra {
+    margin-top: 20px;
+}
+
+.apartment-price {
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+.mibfloorplan {
+    margin-top: 30px;
+}
+
+/** catalog new **/
+.custom-price-range-value{
+    text-align: center;
+}
+.load-more-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+#load-more-button {
+    padding: 12px 24px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 50px;
+    border: none;
+    background-color: #0d2d3e;
+    color: #fff;
+    transition: background-color 0.3s ease;
+    min-width: 280px;
+}
+
+#load-more-button:hover {
+    background-color: #0a1f2a;
+    color: #fff;
+}
+
+#load-more-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Nézetváltó gomb aktív stílusa */
+#view-toggle .btn.active {
+    background-color: #0d2d3e;
+    color: white;
+    border-color: #0d2d3e;
+}
+
+#apartment-card-body hr {
+    border-top: 2px solid white;/* finom fehéres elválasztó */
+    margin-top: 10px;
+    margin-bottom: 0px;
+}
+
+/* Lista nézethez igazítás */
+.card.list-view {
+    flex-direction: row;
+    align-items: center;
+    max-height: 150px;
+    overflow: hidden;
+}
+
+/* ===================================================================
+   noUiSlider fogantyú pseudo-elemek eltüntetése
+   =================================================================== */
+.noUi-handle::before,
+.noUi-handle::after {
+    display: none !important;
+    content: none !important;
+}
+
+.card.list-view .card-image-wrapper {
+    width: 20%;
+    height: 100%;
+}
+
+.card.list-view .text-end{
+    text-align: left !important;
+}
+
+.card.list-view .card-image-wrapper img{
+    width: 78%;;
+    height: 100%;
+    padding: 16px;
+}
+
+.list-view-button-wrapper{
+    margin-top: 10px;
+    gap: 20px !important;
+}
+
+.list-view-price-container{
+    margin-bottom: 11px;
+    text-align: center;
+}
+
+.card.list-view .list-view-price-container {
+    position: absolute;
+    bottom: 0.6rem;
+    /*left: 1.5rem;*/
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #3ecf8e;
+}
+
+.park-logo img{
+    max-width: 150px !important;
+}
+
+.location-name {
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.apartment-info-box {
+    background-color: #1e1e1e; /* vagy .secondary-color */
+    color: #fff;
+    padding: 20px;
+    border-radius: 0 0 5px 5px;
+}
+
+.card.list-view .card-body {
+    width: 60%;
+    padding: 1.5rem;
+    border-bottom-left-radius: 0px !important;
+    border-bottom-right-radius: 0px !important;
+    max-height: 175px;
+    padding: 41px;
+}
+
+.card.list-view #apartment-card-body hr {
+    display: none;
+}
+
+
+.card-divider {
+    display: none;
+}
+
+.card.list-view .card-divider {
+    display: block;
+    width: 1px; /* keskeny oszlop */
+    background-color: #ccc;
+}
+
+.card.list-view .flex-column {
+    flex-direction: inherit !important;
+}
+
+.card-image-wrapper {
+    position: relative;
+    width: 67%;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto; /* <- Ez kell ahhoz, hogy középre kerüljön */
+    overflow: hidden;
+    /*background-color: #f8f9fa;*/
+    margin-top: 25px;
+    margin-bottom: 25px;
+}
+
+.card-image-wrapper img.card-img-top {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+#custom-card-container .card{
+    background-color: #ececec !important;
+    border-radius: 30px !important;
+}
+.d-flex{
+    gap:50px;
+}
+
+.reset-filters-wrapper {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+}
+
+.reset-filters-wrapper{
+    display: none;
+}
+#reset-filters-button {
+    padding: 8px 16px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    border-radius: 30px;
+    transition: all 0.2s ease-in-out;
+}
+
+#reset-filters-button.active {
+    display: inline-block;
+}
+
+#reset-filters-button:hover {
+    background-color: #1c363d !important;
+    color: #fff;
+    border-color: #0d2d3e;
+}
+
+.search-mib-filter-container{
+    text-align: center;
+}
+
+#search-apartman-btn{
+    border-radius: 20px;
+    color: white;
+    text-transform: uppercase;
+    font-weight: 500;
+}
+/* A slider sávja */
+#custom-square-slider,
+#custom-price-slider,
+#custom-room-slider,
+#custom-floor-slider {
+    /*background: #d6e9e4;*/
+    border: none;
+    height: 6px;
+    border-radius: 6px;
+    position: relative;
+    margin-top: 20px;
+    width: 230px;
+    margin: 8px;
+}
+
+.custom-slider-label {
+    font-weight: 800;
+    margin-bottom: 10px;
+}
+
+#custom-square-slider .ui-slider-range,
+#custom-price-slider .ui-slider-range,
+#custom-room-slider .ui-slider-range,
+#custom-floor-slider .ui-slider-range {
+    /*background: #3ecf8e;*/
+    height: 100%;
+    top: 0;
+    border-radius: 6px;
+}
+
+#custom-square-slider .ui-slider-handle,
+#custom-price-slider .ui-slider-handle,
+#custom-room-slider .ui-slider-handle,
+#custom-floor-slider .ui-slider-handle {
+    /*background: #0d2d3e;*/
+    border: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    top: -4px;
+    margin-left: -7px;
+    position: absolute;
+    cursor: grab;
+    box-shadow: none;
+}
+
+#custom-square-slider .ui-slider-handle.ui-state-default,
+#custom-square-slider .ui-slider-handle.ui-corner-all,
+#custom-price-slider .ui-slider-handle.ui-state-default,
+#custom-price-slider .ui-slider-handle.ui-corner-all,
+#custom-room-slider .ui-slider-handle.ui-state-default,
+#custom-room-slider .ui-slider-handle.ui-corner-all,
+#custom-floor-slider .ui-slider-handle.ui-state-default,
+#custom-floor-slider .ui-slider-handle.ui-corner-all {
+    /*background: #0d2d3e;*/
+    border: none;
+}
+
+.custom-square-range-value,
+.custom-room-range-value,
+.custom-floor-range-value {
+    text-align: center;
+    margin-top: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    color: #0d2d3e;
+}
+
+#advanced-filters{
+    gap: 10px;
+    flex-wrap: wrap !important;
+}
