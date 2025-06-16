@@ -170,7 +170,7 @@ class MibCreateShortCode extends MibBaseController
             }
 
             if ($single) {
-                $all_data = $mibAuth->getOneApartment($id);
+                $all_data = $mibAuth->getOneApartmentsById($id);
 
                 if (!empty($all_data)) {
                     $recommendDatas = $this->getRecommendedDatas($all_data);
