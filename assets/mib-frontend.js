@@ -3529,11 +3529,11 @@ jQuery(document).ready(function($) {
                 // Ha kedvenc, akkor kitöltött szív
                 $(this)
                     .removeClass('fa-regular fa-heart')
-                    .addClass('fa fa-heart third-text-color');
+                    .addClass('fa-solid fa-heart third-text-color');
             } else {
                 // Ha nem kedvenc, akkor üres szív
                 $(this)
-                    .removeClass('fa fa-heart third-text-color')
+                    .removeClass('fa-solid fa-heart third-text-color')
                     .addClass('fa-regular fa-heart');
             }
         });
@@ -3548,11 +3548,11 @@ jQuery(document).ready(function($) {
             favorites.push(apartmentId);
             $(this)
                 .removeClass('fa-regular fa-heart')
-                .addClass('fa fa-heart third-text-color'); // kedvenchez adva
+                .addClass('fa-solid fa-heart third-text-color'); // kedvenchez adva
         } else {
             favorites = favorites.filter(id => id !== apartmentId);
             $(this)
-                .removeClass('fa fa-heart third-text-color')
+                .removeClass('fa-solid fa-heart third-text-color')
                 .addClass('fa-regular fa-heart'); // eltávolítva a kedvencek közül
         }
 
