@@ -199,13 +199,13 @@ class MibBaseController
 		        'szintrajz' => $szintrajz, // Frissített szintrajz
 		        'notes' => ($item->residentialPark->notes) ? $item->residentialPark->notes : '',
 		        'logo' => ($item->residentialPark->logo) ? $item->residentialPark->logo : '',
-                        'address' => ($item->residentialPark->address) ? $item->residentialPark->address : '',
-                        'rooms' => isset($item->rooms) && is_array($item->rooms) ? array_map(function($room){
+                'address' => ($item->residentialPark->address) ? $item->residentialPark->address : '',
+                'rooms' => isset($item->rooms) && is_array($item->rooms) ? array_map(function($room){
                             return [
                                 'category_name' => $room->category_name ?? '',
                                 'floorArea' => $room->floorArea ?? ''
                             ];
-                        }, $item->rooms) : [],
+                }, $item->rooms) : [],
                     );
                 }
 
@@ -352,7 +352,6 @@ class MibBaseController
 	        $html .= '<div class="info-column">';
 	        $html .= '<h4>Egyéb információk</h4>';
                 $html .= '<div class="notes">' . $data['notes'] . '</div>';
-
                 if (!empty($data['rooms'])) {
                     $html .= '<h4>Helyiségek</h4>';
                     $html .= '<ul class="room-list">';
