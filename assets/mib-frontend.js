@@ -1431,6 +1431,7 @@ jQuery(document).ready(function($) {
                 residental_park_id:selectedParkId
             },
             success: function(response) {
+
                 $('#load-more-button').prop('disabled', false);
 
                 if (response && response.data.count > 0) {
@@ -1505,6 +1506,8 @@ jQuery(document).ready(function($) {
                 });
 
                 $('.select-residential-park').val(selectedParkId);
+
+                checkFavorites();
             }, 
             error: function(error){
                 console.log(error);
@@ -1648,6 +1651,8 @@ jQuery(document).ready(function($) {
                 });
 
                 $('.select-residential-park').val(selectedParkId);
+
+                checkFavorites();
             }
         });
 
@@ -1789,6 +1794,8 @@ jQuery(document).ready(function($) {
 
                 $('.select-residential-park').val(selectedParkId);
 
+                checkFavorites();
+
             }
         });
     });
@@ -1926,6 +1933,8 @@ jQuery(document).ready(function($) {
                 });
 
                 $('.select-residential-park').val(selectedParkId);
+
+                checkFavorites();
             }
         });
 
@@ -3358,6 +3367,8 @@ jQuery(document).ready(function($) {
 
                 $('.select-residential-park').val(selectedParkId);
 
+                checkFavorites();
+
             },
             error: function(error) {
                 console.log('Hiba történt az emelet csúszka mentésekor.');
@@ -3508,13 +3519,22 @@ jQuery(document).ready(function($) {
         Cookies.set('favorites', JSON.stringify(favorites), { expires: 365 });
     }
 
-    function checkFavorites(){
+    function checkFavorites() {
         // Betöltéskor a szívek megjelenésének frissítése
-        $('.favorite-icon').each(function() {
+        $('.favorite-icon').each(function () {
             const apartmentId = $(this).data('id');
             const favorites = getFavorites();
+
             if (favorites.includes(apartmentId)) {
-                $(this).removeClass('fa-regular fa-heart').addClass('fa fa-heart third-text-color');
+                // Ha kedvenc, akkor kitöltött szív
+                $(this)
+                    .removeClass('fa-regular fa-heart')
+                    .addClass('fa fa-heart third-text-color');
+            } else {
+                // Ha nem kedvenc, akkor üres szív
+                $(this)
+                    .removeClass('fa fa-heart third-text-color')
+                    .addClass('fa-regular fa-heart');
             }
         });
     }
@@ -3526,10 +3546,14 @@ jQuery(document).ready(function($) {
 
         if (!favorites.includes(apartmentId)) {
             favorites.push(apartmentId);
-            $(this).removeClass('fa-regular fa-heart').addClass('fa fa-heart third-text-color'); // kitöltött szív
+            $(this)
+                .removeClass('fa-regular fa-heart')
+                .addClass('fa fa-heart third-text-color'); // kedvenchez adva
         } else {
             favorites = favorites.filter(id => id !== apartmentId);
-            $(this).removeClass('fa fa-heart').addClass('fa-regular fa-heart'); // üres szív
+            $(this)
+                .removeClass('fa fa-heart third-text-color')
+                .addClass('fa-regular fa-heart'); // eltávolítva a kedvencek közül
         }
 
         saveFavorites(favorites);
