@@ -606,7 +606,7 @@ class MibBaseController
 		$favorites = '';
 		if (in_array('favorites_filter', $filterType['extras'])) {
 		    $favorites = '<button id="favorite-view" class="btn btn-outline-secondary" title="Kedvencek">
-		        <i class="fa-regular fa fa-heart"></i>
+		        <i class="fa fa-regular fa fa-heart"></i>
 		    </button>';
 		}
 	    
@@ -738,7 +738,7 @@ class MibBaseController
 						$html .= '<div class="list-view-button-wrapper d-flex align-items-center button-row">';
 	    
 						    // Szív ikon bal oldalon
-						    $html .= '<i class="fa-regular fa-heart favorite-icon" aria-hidden="true" data-id="' . esc_attr($data['id']) . '"></i>';
+						    $html .= '<i class="fa fa-regular fa-heart favorite-icon" aria-hidden="true" data-id="' . esc_attr($data['id']) . '"></i>';
 						    
 						    // Gomb
 						    $html .= '<a id="cardhref" href="' . $data['url'] . '" class="flex-grow-1">';
@@ -957,7 +957,7 @@ class MibBaseController
 					if ($data['statusrow'] == 'Elérhető') {
 
 					    // Szív ikon bal oldalon
-					    $html .= '<i class="fa-regular fa-heart favorite-icon" aria-hidden="true" data-id="' . esc_attr($data['id']) . '"></i>';
+					    $html .= '<i class="fa fa-regular fa-heart favorite-icon" aria-hidden="true" data-id="' . esc_attr($data['id']) . '"></i>';
 					    
 					    // Gomb
 					    $html .= '<a id="cardhref" href="' . $data['url'] . '" class="flex-grow-1">';
@@ -1080,7 +1080,7 @@ class MibBaseController
 					    if ($data['statusrow'] == 'Elérhető') {
 								    
 							    // Szív ikon bal oldalon
-							    $html .= '<i class="fa-regular fa-heart favorite-icon" aria-hidden="true" data-id="' . esc_attr($data['id']) . '"></i>';
+							    $html .= '<i class="fa fa-regular fa-heart favorite-icon" aria-hidden="true" data-id="' . esc_attr($data['id']) . '"></i>';
 							    
 							    // Gomb
 							    $html .= '<a id="cardhref" href="' . $data['url'] . '" class="flex-grow-1">';
