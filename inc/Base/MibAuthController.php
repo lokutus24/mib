@@ -194,8 +194,7 @@ class MibAuthController extends MibBaseController
 
 	public function getOneApartmentsById($id){
 
-		$parkId = $this->mibOptions['mib-residential-park-id'];
-		$response = wp_remote_get( "https://ugyfel.mibportal.hu:3000/apartments/{$id}", array(
+		$response = wp_remote_get( "https://ugyfel.mibportal.hu:3000/apartments?name={$id}", array(
 		    'timeout'     => 0, // Set to 0 for no timeout or to a reasonable time in seconds.
 		    'redirection' => 10,
 		    'httpversion' => '1.1',
@@ -203,7 +202,7 @@ class MibAuthController extends MibBaseController
 		        'Authorization' => "Bearer {$this->mibOptions['token']}"
 		    ),
 		    'body'        => array(
-		        'id' => $id
+		        'name' => $id,
 		    ),
 		    'method'      => 'GET',
 		    'data_format' => 'body'
@@ -215,7 +214,7 @@ class MibAuthController extends MibBaseController
 		    $data = json_decode($body);
 
 		    if ($data) {
-	            $all_data = $data; // Hozzáadjuk az aktuális oldal adatait az összes adathoz
+	            $all_data = $data->data[0]; // Hozzáadjuk az aktuális oldal adatait az összes adathoz
 	            $total_records = 1; // Frissítjük az összes rekord számát
 	        }
 		    return ["data" => [$all_data], "total" => $total_records];

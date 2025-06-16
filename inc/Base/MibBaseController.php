@@ -353,10 +353,9 @@ class MibBaseController
 	        $html .= '<h4>Egyéb információk</h4>';
                 $html .= '<div class="notes">' . $data['notes'] . '</div>';
                 if (!empty($data['rooms'])) {
-                    $html .= '<h4>Helyiségek</h4>';
                     $html .= '<ul class="room-list">';
                     foreach ($data['rooms'] as $room) {
-                        $html .= '<li>' . esc_html($room['category_name']) . ': ' . esc_html($room['floorArea']) . ' m²</li>';
+                        $html .= '<li><b>' . esc_html($room['category_name']) . '</b>: ' . esc_html($room['floorArea']) . ' m²</li>';
                     }
                     $html .= '</ul>';
                 }
