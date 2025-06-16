@@ -166,7 +166,7 @@ class MibEnqueue extends MibBaseController
 
    	 	wp_enqueue_style('dynamic-style', plugin_dir_url(dirname(__FILE__, 3)).'mib/assets/style.php');
         wp_enqueue_style(
-	        'font-awesome',
+	        'font-awesome-mib',
 	        'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css',
 	        [],
 	        '6.5.1'
