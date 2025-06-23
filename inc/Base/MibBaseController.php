@@ -57,6 +57,22 @@ class MibBaseController
 		'D' => 'D'
 	];
 
+
+	private $types = [
+        'lakás',
+        'üzlethelyiség',
+        'iroda',
+        'apartman',
+        // 'tároló',
+        //  'emeleti tároló',
+        // 'tároló beállóval',
+        //  'beálló',
+        //  'E töltős',
+        // 'mozgáskorlátozott',
+        //  'beálló tárolóval',
+        //  'csökkentett',
+    ];
+
 	public $numberOfApartmens = 9;
 
 	public $filterOptionDatas = [];
