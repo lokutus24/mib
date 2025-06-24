@@ -1735,9 +1735,12 @@ class MibBaseController
 
 	public function getLoadMoreButton($currentPage = 1, $totalItems = 750, $itemsPerPage = 50) {
 	    $html = '';
+
+	    // Védekezés: ha nem szám, vagy 0, állítsuk 1-re
+	    $itemsPerPage = (is_numeric($itemsPerPage) && $itemsPerPage > 0) ? (int)$itemsPerPage : 1;
+
 	    $totalPages = ceil($totalItems / $itemsPerPage);
 
-	    // Csak akkor jelenik meg a "Még több" gomb, ha van még betöltendő tartalom
 	    if ($currentPage < $totalPages) {
 	        $nextPage = $currentPage + 1;
 	        $html .= '<div class="load-more-container">';
