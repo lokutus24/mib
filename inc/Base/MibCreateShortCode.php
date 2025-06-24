@@ -49,6 +49,8 @@ class MibCreateShortCode extends MibBaseController
 
                 $this->selectedShortcodeOption = $config;
 
+                $this->shortcodeType = isset($config['type']) ? $config['type'] : '';
+
                 list($datas, $total) = $this->getDatas(false, 0, $config['number_of_apartment']);
 
                 $html = $this->getCardHtmlShortCode($datas, $total, 1, $config, $shortcode_name, $this->numberOfApartmens);
@@ -200,6 +202,10 @@ class MibCreateShortCode extends MibBaseController
 
                 if (!empty($this->selectedApartmanNames)) {
                     $arg['name'] = $this->selectedApartmanNames;
+                }
+
+                if (!empty($this->shortcodeType)) {
+                    $arg['type'] = $this->shortcodeType;
                 }
                 $arg['residentialParkId'] = $this->residentialParkId;
                 $all_data = $mibAuth->getApartmentsForFrontEnd($perpage, 1, $arg);

@@ -58,7 +58,7 @@ class MibBaseController
 	];
 
 
-	private $types = [
+        private $types = [
         'lakás',
         'üzlethelyiség',
         'iroda',
@@ -73,6 +73,10 @@ class MibBaseController
         //  'csökkentett',
     ];
 
+        public function getTypes() {
+            return $this->types;
+        }
+
 	public $numberOfApartmens = 9;
 
 	public $filterOptionDatas = [];
@@ -83,13 +87,15 @@ class MibBaseController
 
 	public $residentialParkId = 12;
 
-	public $shortcodesOptions = [];
+        public $shortcodesOptions = [];
 
-	public $selectedShortcodeOption = [];
+        public $selectedShortcodeOption = [];
 
-	public $selectedApartmanNames = [];
+        public $selectedApartmanNames = [];
 
-	public $shortCodeApartmanName = '';
+        public $shortCodeApartmanName = '';
+
+        public $shortcodeType = '';
 
     public function __construct() {
 
