@@ -339,9 +339,11 @@ class MibManagerCallbacks extends MibBaseController
 		    : [];
 	        $filters = isset($_POST['filters']) ? array_map('sanitize_text_field', $_POST['filters']) : [];
 
-	        $favorites_filter = isset($_POST['favorites_filter']) ? array_map('sanitize_text_field', $_POST['favorites_filter']) : [];
+                $favorites_filter = isset($_POST['favorites_filter']) ? array_map('sanitize_text_field', $_POST['favorites_filter']) : [];
 
-	        $number_of_apartment = isset($_POST['number_of_apartment']) ? $_POST['number_of_apartment'] : [];
+                $number_of_apartment = isset($_POST['number_of_apartment']) ? $_POST['number_of_apartment'] : [];
+
+                $type = isset($_POST['type']) ? sanitize_text_field($_POST['type']) : '';
 
 	        // Intervallum értékek begyűjtése
 	        $ranges = [];
@@ -357,15 +359,16 @@ class MibManagerCallbacks extends MibBaseController
 	        $extras = isset($_POST['extras']) ? array_map('sanitize_text_field', $_POST['extras']) : [];
 
 	        if ($shortcode_name) {
-	            $shortcodes[$shortcode_name] = [
-	                'residential_park_ids' => $residential_park_ids,
-	                'apartment_skus' => $apartment_skus,
-	                'number_of_apartment' => $number_of_apartment,
-	                'filters' => $filters,
-	                'ranges' => $ranges,
-	                'extras' => $extras,
-	                'created_at' => current_time('mysql'),
-	            ];
+                    $shortcodes[$shortcode_name] = [
+                        'residential_park_ids' => $residential_park_ids,
+                        'apartment_skus' => $apartment_skus,
+                        'number_of_apartment' => $number_of_apartment,
+                        'type' => $type,
+                        'filters' => $filters,
+                        'ranges' => $ranges,
+                        'extras' => $extras,
+                        'created_at' => current_time('mysql'),
+                    ];
 	            update_option('mib_custom_shortcodes', serialize($shortcodes));
 	            echo '<div class="notice notice-success is-dismissible"><p>Shortcode mentve: <code>[' . esc_html($shortcode_name) . ']</code></p></div>';
 	        }
@@ -394,10 +397,19 @@ class MibManagerCallbacks extends MibBaseController
 			    <input type="text" id="apartment_sku_input" placeholder="pl. ABC123" style="width: 160px;" />
 			    <button type="button" id="add_apartment_sku" class="button">Hozzáadás</button>
 			</p>
-			<div id="apartment_skus_tags"></div>
-			<input type="hidden" name="apartment_skus" id="apartment_skus_hidden" />
-	        <p>
-	            <label for="filters">Választható szűrők:</label><br>
+                        <div id="apartment_skus_tags"></div>
+                        <input type="hidden" name="apartment_skus" id="apartment_skus_hidden" />
+                        <p>
+                            <label for="shortcode_type">Típus:</label><br>
+                            <select name="type" id="shortcode_type">
+                                <option value="">-- Minden --</option>
+                                <?php foreach ($this->getTypes() as $type) { ?>
+                                    <option value="<?= esc_attr($type); ?>"><?= esc_html($type); ?></option>
+                                <?php } ?>
+                            </select>
+                        </p>
+                <p>
+                    <label for="filters">Választható szűrők:</label><br>
 	            <?php
 	            $available_filters = [
 	                'floor' => 'Emelet',
@@ -449,8 +461,9 @@ class MibManagerCallbacks extends MibBaseController
 	        echo '<thead><tr>';
 	        echo '<th>Shortcode</th>';
 	        echo '<th>Residential Park ID</th>';
-	        echo '<th>Lakás cikkszámok</th>';
-	        echo '<th>Szűrők</th>';
+                echo '<th>Lakás cikkszámok</th>';
+                echo '<th>Típus</th>';
+                echo '<th>Szűrők</th>';
 	        echo '<th>Extra opciók</th>';
 	        echo '<th>Lakások száma egy oldalon</th>';
 	        echo '<th>Műveletek</th>';
@@ -460,8 +473,9 @@ class MibManagerCallbacks extends MibBaseController
 	            echo '<tr>';
 	            echo '<td><code>[' . esc_html($name) . ']</code></td>';
 	            echo '<td>' . (!empty($config['residential_park_ids']) ? implode(', ', array_map('esc_html', $config['residential_park_ids'])) : '-') . '</td>';
-	            echo '<td>' . (!empty($config['apartment_skus']) ? implode(', ', array_map('esc_html', $config['apartment_skus'])) : '-') . '</td>';
-	            echo '<td>' . (!empty($config['filters']) ? implode(', ', array_map('esc_html', $config['filters'])) : '-') . '</td>';
+                    echo '<td>' . (!empty($config['apartment_skus']) ? implode(', ', array_map('esc_html', $config['apartment_skus'])) : '-') . '</td>';
+                    echo '<td>' . (!empty($config['type']) ? esc_html($config['type']) : '-') . '</td>';
+                    echo '<td>' . (!empty($config['filters']) ? implode(', ', array_map('esc_html', $config['filters'])) : '-') . '</td>';
 	            echo '<td>' . (!empty($config['extras']) ? implode(', ', array_map('esc_html', $config['extras'])) : '-') . '</td>';
 	            echo '<td>' . (!empty($config['number_of_apartment']) ? $config['number_of_apartment'] : '-') . '</td>';
 	            echo '<td>';

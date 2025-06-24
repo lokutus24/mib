@@ -99,15 +99,16 @@ jQuery(document).ready(function($) {
 	});
 
 	// Resetnél:
-	$('#shortcode-form').on('reset', function () {
-	    setTimeout(function () {
-	        residentialParkIds = [];
-	        renderParkTags();
+        $('#shortcode-form').on('reset', function () {
+            setTimeout(function () {
+                residentialParkIds = [];
+                renderParkTags();
 
-	        apartmentSkus = [];
-			renderSkuTags();
-	    }, 0);
-	});
+                apartmentSkus = [];
+                        renderSkuTags();
+                $('#shortcode_type').val('');
+            }, 0);
+        });
 
     // Shortcode szerkesztés
 	$(document).on('click', '.edit-shortcode', function(e) {
@@ -128,11 +129,13 @@ jQuery(document).ready(function($) {
 	                $('#shortcode_name').val(shortcode).prop('readonly', true);
 
 	                // TÖBBES Residential Park ID-k betöltése tagként
-	                residentialParkIds = (data.residential_park_ids || []).map(Number);
-        			renderParkTags();
+                        residentialParkIds = (data.residential_park_ids || []).map(Number);
+                                renderParkTags();
 
-        			apartmentSkus = Array.isArray(data.apartment_skus) ? data.apartment_skus : [];
-					renderSkuTags();
+                                apartmentSkus = Array.isArray(data.apartment_skus) ? data.apartment_skus : [];
+                                        renderSkuTags();
+
+                        $('#shortcode_type').val(data.type || '');
 
 	                $('#residential_park_input').val('');
 	                $('input[name="filters[]"]').prop('checked', false);

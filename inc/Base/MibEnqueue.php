@@ -859,14 +859,18 @@ class MibEnqueue extends MibBaseController
 		//Shortcode
 		
 
-		if (!empty($this->filterType['apartment_skus'])) {
-			
-			$args = array_merge($args, ['name' => implode(',', $this->filterType['apartment_skus']) ]);
-		}
+                if (!empty($this->filterType['apartment_skus'])) {
 
-		if (!empty($this->filterType['extras']) && in_array('hide_unavailable', $this->filterType['extras']) ) {
-			$args = array_merge($args, ['status' => 'Available']);
-		}
+                        $args = array_merge($args, ['name' => implode(',', $this->filterType['apartment_skus']) ]);
+                }
+
+                if (!empty($this->filterType['type'])) {
+                        $args = array_merge($args, ['type' => $this->filterType['type']]);
+                }
+
+                if (!empty($this->filterType['extras']) && in_array('hide_unavailable', $this->filterType['extras']) ) {
+                        $args = array_merge($args, ['status' => 'Available']);
+                }
 
 		$page = 1;
 		if (isset($params['page']) ) {
@@ -934,14 +938,18 @@ class MibEnqueue extends MibBaseController
 			$args = array_merge($args, ['residentialParkId' => $this->residentialParkId ]);
 		}
 
-		if (!empty($this->filterType['apartment_skus'])) {
-			
-			$args = array_merge($args, ['name' => implode(',', $this->filterType['apartment_skus']) ]);
-		}
-		if (!empty($this->filterType['extras']) && in_array('hide_unavailable', $this->filterType['extras']) ) {
-			$args = array_merge($args, ['status' => 'Available']);
+                if (!empty($this->filterType['apartment_skus'])) {
 
-		}elseif(!empty($this->filterOptionDatas) && $this->filterOptionDatas['inactive_hide'] == 1){
+                        $args = array_merge($args, ['name' => implode(',', $this->filterType['apartment_skus']) ]);
+                }
+
+                if (!empty($this->filterType['type'])) {
+                        $args = array_merge($args, ['type' => $this->filterType['type']]);
+                }
+                if (!empty($this->filterType['extras']) && in_array('hide_unavailable', $this->filterType['extras']) ) {
+                        $args = array_merge($args, ['status' => 'Available']);
+
+                }elseif(!empty($this->filterOptionDatas) && $this->filterOptionDatas['inactive_hide'] == 1){
 			$args = array_merge($args, ['status' => 'Available']);
 		}
 
