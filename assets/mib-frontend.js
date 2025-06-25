@@ -3602,6 +3602,8 @@ function formatSquareMeter(value) {
                     cardContainer.replaceWith(response.data.html);
                     restoreViewMode();
                 }
+                var newTable = $('#custom-list-table-container table');
+                sortTableRows(newTable, sort, sortType);
 
                 if (wasAdvancedFiltersVisible) {
                     $('#advanced-filters').css('display', 'flex');
@@ -3662,10 +3664,38 @@ function formatSquareMeter(value) {
             error: function(error) {
                 console.error('Hiba a rendezés AJAX közben:', error);
                 $('#mib-spinner').hide();
+                sortTableRows($('#custom-list-table-container table'), sort, sortType);
             }
         });
     });
     checkFavorites();
+
+    function sortTableRows($table, field, direction) {
+        var indexMap = { name: 0, bruttoFloorArea: 1, price: 5 };
+        var idx = indexMap[field];
+        if (idx === undefined) return;
+
+        var rows = $table.find('tbody > tr').get();
+        rows.sort(function(a, b) {
+            var valA = $(a).children().eq(idx).text();
+            var valB = $(b).children().eq(idx).text();
+
+            if (field === 'price' || field === 'bruttoFloorArea') {
+                valA = parseFloat(valA.replace(/[^0-9.,-]/g, '').replace(',', '.')) || 0;
+                valB = parseFloat(valB.replace(/[^0-9.,-]/g, '').replace(',', '.')) || 0;
+            } else {
+                valA = valA.toLowerCase();
+                valB = valB.toLowerCase();
+            }
+
+            if (valA < valB) return direction === 'ASC' ? -1 : 1;
+            if (valA > valB) return direction === 'ASC' ? 1 : -1;
+            return 0;
+        });
+        $.each(rows, function(i, row) {
+            $table.find('tbody').append(row);
+        });
+    }
 
 
     $(document).on('click', '#toggle-advanced-filters', function() {
