@@ -3565,6 +3565,12 @@ jQuery(document).ready(function($) {
         $('#mib-spinner').show();
         var table = $('#custom-list-table-container');
         var cardContainer = $('#custom-card-container');
+        var shortcode = '';
+        var apartman_number = '';
+        if (cardContainer.hasClass('shortcode-card')) {
+            shortcode = cardContainer.data('shortcode');
+            apartman_number = cardContainer.data('apartman_number');
+        }
         // Collect current filters
         var selectedFloor = $("#custom-floor-slider").slider("values") || [0, 0];
         var selectedRoom = $("#custom-room-slider").slider("values") || [0, 0];
@@ -3616,7 +3622,8 @@ jQuery(document).ready(function($) {
                 sort: sort,
                 sortType: sortType,
                 page_type: pageType,
-                apartman_number: cardContainer.data('apartman_number') || undefined,
+                shortcode: shortcode,
+                apartman_number: apartman_number,
                 residental_park_id:selectedParkId
             },
             success: function(response) {
