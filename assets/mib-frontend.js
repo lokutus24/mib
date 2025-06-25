@@ -294,8 +294,28 @@ jQuery(document).ready(function($) {
         }).format(value);
     }
 
-    function formatSquareMeter(value) {
-        return value + ' m²';
+function formatSquareMeter(value) {
+    return value + ' m²';
+}
+
+    function getMainSliderValues() {
+        if (jQuery('#slider-range').length && jQuery('#slider-range')[0].noUiSlider) {
+            var vals = jQuery('#slider-range').slider('option', 'values');
+            if (vals) {
+                return [Number(vals[0]), Number(vals[1])];
+            }
+        }
+        return [Number(jQuery('#min-area').val()) || 0, Number(jQuery('#max-area').val()) || 0];
+    }
+
+    function getPriceSliderValues() {
+        if (jQuery('#price-slider-range').length && jQuery('#price-slider-range')[0].noUiSlider) {
+            var vals = jQuery('#price-slider-range').slider('option', 'values');
+            if (vals) {
+                return [Number(vals[0]), Number(vals[1])];
+            }
+        }
+        return [Number(jQuery('#min-price').val()) || 0, Number(jQuery('#max-price').val()) || 0];
     }
 
     function saveSliderValues(minValue, maxValue) {
@@ -323,7 +343,7 @@ jQuery(document).ready(function($) {
         }).get();
 
 
-        var priceRange = $("#price-slider-range").slider("values");
+        var priceRange = getPriceSliderValues();
 
         // Determine current sort settings
         var parts = $('#mib-sort-select').val() ? $('#mib-sort-select').val().split('|') : [];
@@ -401,7 +421,7 @@ jQuery(document).ready(function($) {
         }).get();
 
         // Get current square slider values
-        var squareRange = $("#slider-range").slider("values") || [0, 0];
+        var squareRange = getMainSliderValues();
 
         // Determine current sort settings
         var parts = $('#mib-sort-select').val() ? $('#mib-sort-select').val().split('|') : [];
@@ -541,20 +561,13 @@ jQuery(document).ready(function($) {
             return this.value;
         }).get();
 
-        var slider_min = $("#slider-range").slider("option", "values")[0];
-        var slider_max = $("#slider-range").slider("option", "values")[1];
-        //input
-        if (!slider_min && !slider_max) {
-            var slider_min = $('#min-area').val();
-            var slider_max = $('#max-area').val();
-        }
-        var price_slider_min_value = $("#price-slider-range").slider("option", "values")[0];
-        var price_slider_max_value = $("#price-slider-range").slider("option", "values")[1];
-        //input
-        if (!price_slider_min_value && !price_slider_max_value) {
-            var price_slider_min_value = $('#min-price').val();
-            var price_slider_max_value = $('#max-price').val();
-        }
+        var squareVals = getMainSliderValues();
+        var slider_min = squareVals[0];
+        var slider_max = squareVals[1];
+
+        var priceVals = getPriceSliderValues();
+        var price_slider_min_value = priceVals[0];
+        var price_slider_max_value = priceVals[1];
 
         $.ajax({
             url: ajaxurl,
@@ -646,20 +659,13 @@ jQuery(document).ready(function($) {
         }).get();
 
 
-        var slider_min = $("#slider-range").slider("option", "values")[0];
-        var slider_max = $("#slider-range").slider("option", "values")[1];
-        //input
-        if (!slider_min && !slider_max) {
-            var slider_min = $('#min-area').val();
-            var slider_max = $('#max-area').val();
-        }
-        var price_slider_min_value = $("#price-slider-range").slider("option", "values")[0];
-        var price_slider_max_value = $("#price-slider-range").slider("option", "values")[1];
-        //input
-        if (!price_slider_min_value && !price_slider_max_value) {
-            var price_slider_min_value = $('#min-price').val();
-            var price_slider_max_value = $('#max-price').val();
-        }
+        var squareVals = getMainSliderValues();
+        var slider_min = squareVals[0];
+        var slider_max = squareVals[1];
+
+        var priceVals = getPriceSliderValues();
+        var price_slider_min_value = priceVals[0];
+        var price_slider_max_value = priceVals[1];
 
 
         $.ajax({
@@ -744,20 +750,13 @@ jQuery(document).ready(function($) {
             return this.value;
         }).get();
 
-        var slider_min = $("#slider-range").slider("option", "values")[0];
-        var slider_max = $("#slider-range").slider("option", "values")[1];
-        //input
-        if (!slider_min && !slider_max) {
-            var slider_min = $('#min-area').val();
-            var slider_max = $('#max-area').val();
-        }
-        var price_slider_min_value = $("#price-slider-range").slider("option", "values")[0];
-        var price_slider_max_value = $("#price-slider-range").slider("option", "values")[1];
-        //input
-        if (!price_slider_min_value && !price_slider_max_value) {
-            var price_slider_min_value = $('#min-price').val();
-            var price_slider_max_value = $('#max-price').val();
-        }
+        var squareVals = getMainSliderValues();
+        var slider_min = squareVals[0];
+        var slider_max = squareVals[1];
+
+        var priceVals = getPriceSliderValues();
+        var price_slider_min_value = priceVals[0];
+        var price_slider_max_value = priceVals[1];
 
         $.ajax({
             url: ajaxurl,
@@ -842,20 +841,13 @@ jQuery(document).ready(function($) {
             return this.value;
         }).get();
 
-        var slider_min = $("#slider-range").slider("option", "values")[0];
-        var slider_max = $("#slider-range").slider("option", "values")[1];
-        //input
-        if (!slider_min && !slider_max) {
-            var slider_min = $('#min-area').val();
-            var slider_max = $('#max-area').val();
-        }
-        var price_slider_min_value = $("#price-slider-range").slider("option", "values")[0];
-        var price_slider_max_value = $("#price-slider-range").slider("option", "values")[1];
-        //input
-        if (!price_slider_min_value && !price_slider_max_value) {
-            var price_slider_min_value = $('#min-price').val();
-            var price_slider_max_value = $('#max-price').val();
-        }
+        var squareVals = getMainSliderValues();
+        var slider_min = squareVals[0];
+        var slider_max = squareVals[1];
+
+        var priceVals = getPriceSliderValues();
+        var price_slider_min_value = priceVals[0];
+        var price_slider_max_value = priceVals[1];
 
         $.ajax({
             url: ajaxurl,
@@ -951,20 +943,13 @@ jQuery(document).ready(function($) {
             return this.value;
         }).get();
 
-        var slider_min = $("#slider-range").slider("option", "values")[0];
-        var slider_max = $("#slider-range").slider("option", "values")[1];
-        //input
-        if (!slider_min && !slider_max) {
-            var slider_min = $('#min-area').val();
-            var slider_max = $('#max-area').val();
-        }
-        var price_slider_min_value = $("#price-slider-range").slider("option", "values")[0];
-        var price_slider_max_value = $("#price-slider-range").slider("option", "values")[1];
-        //input
-        if (!price_slider_min_value && !price_slider_max_value) {
-            var price_slider_min_value = $('#min-price').val();
-            var price_slider_max_value = $('#max-price').val();
-        }
+        var squareVals = getMainSliderValues();
+        var slider_min = squareVals[0];
+        var slider_max = squareVals[1];
+
+        var priceVals = getPriceSliderValues();
+        var price_slider_min_value = priceVals[0];
+        var price_slider_max_value = priceVals[1];
 
         //catalogus nézet (safe slider values)
         var floorVals = $("#custom-floor-slider").slider("option", "values") || [0, 0];
@@ -1181,21 +1166,13 @@ jQuery(document).ready(function($) {
                 return this.value;
             }).get();
 
-            var slider_min = $("#slider-range").slider("option", "values")[0];
-            var slider_max = $("#slider-range").slider("option", "values")[1];
+            var squareVals = getMainSliderValues();
+            var slider_min = squareVals[0];
+            var slider_max = squareVals[1];
 
-            if (!slider_min && !slider_max) {
-                slider_min = $('#min-area').val();
-                slider_max = $('#max-area').val();
-            }
-
-            var price_slider_min_value = $("#price-slider-range").slider("option", "values")[0];
-            var price_slider_max_value = $("#price-slider-range").slider("option", "values")[1];
-
-            if (!price_slider_min_value && !price_slider_max_value) {
-                price_slider_min_value = $('#min-price').val();
-                price_slider_max_value = $('#max-price').val();
-            }
+            var priceVals = getPriceSliderValues();
+            var price_slider_min_value = priceVals[0];
+            var price_slider_max_value = priceVals[1];
 
             $.ajax({
                 url: ajaxurl,
@@ -1280,21 +1257,13 @@ jQuery(document).ready(function($) {
                 return this.value;
             }).get();
 
-            var slider_min = $("#slider-range").slider("option", "values")[0];
-            var slider_max = $("#slider-range").slider("option", "values")[1];
+            var squareVals = getMainSliderValues();
+            var slider_min = squareVals[0];
+            var slider_max = squareVals[1];
 
-            if (!slider_min && !slider_max) {
-                slider_min = $('#min-area').val();
-                slider_max = $('#max-area').val();
-            }
-
-            var price_slider_min_value = $("#price-slider-range").slider("option", "values")[0];
-            var price_slider_max_value = $("#price-slider-range").slider("option", "values")[1];
-
-            if (!price_slider_min_value && !price_slider_max_value) {
-                price_slider_min_value = $('#min-price').val();
-                price_slider_max_value = $('#max-price').val();
-            }
+            var priceVals = getPriceSliderValues();
+            var price_slider_min_value = priceVals[0];
+            var price_slider_max_value = priceVals[1];
 
             $.ajax({
                 url: ajaxurl,
