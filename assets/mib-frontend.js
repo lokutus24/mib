@@ -3680,6 +3680,10 @@ jQuery(document).ready(function($) {
                     $('.catalog-gardenconnection-checkbox').prop('checked', false);
                 }
 
+                selectAvailability.forEach(function(value) {
+                    $('.catalog-availability-checkbox[value="' + value + '"]').prop('checked', true);
+                });
+
                 selectStairway.forEach(function(value) {
                     $('.catalog-stairway-checkbox[value="' + value + '"]').prop('checked', true);
                 });
