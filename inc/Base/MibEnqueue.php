@@ -971,11 +971,22 @@ class MibEnqueue extends MibBaseController
 
 		$table_data = $this->setDataToTable($datas);
 
-		//egyedi shortcode-os megjelenítés.
-		if (isset($_POST['shortcode']) && !empty($_POST['shortcode'])) {
+                //egyedi shortcode-os megjelenítés.
+                if (isset($_POST['shortcode']) && !empty($_POST['shortcode'])) {
 
-			$html = $this->getCardHtmlShortCode($table_data, $datas['total'], $currentPage, $this->filterType, $_POST['shortcode'], $_POST['apartman_number']);
-		}
+                        // merge dynamic filter configuration with current args so
+                        // sort options remain selected after AJAX refresh
+                        $shortcodeConfig = array_merge($this->filterType, $args);
+
+                        $html = $this->getCardHtmlShortCode(
+                            $table_data,
+                            $datas['total'],
+                            $currentPage,
+                            $shortcodeConfig,
+                            $_POST['shortcode'],
+                            $_POST['apartman_number']
+                        );
+                }
 		elseif ($type == 'card') {
 
 			$html = $this->getCardHtml($table_data, $datas['total'], $currentPage, $args);
