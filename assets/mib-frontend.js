@@ -3569,7 +3569,10 @@ jQuery(document).ready(function($) {
         var selectedFloor = $("#custom-floor-slider").slider("values") || [0, 0];
         var selectedRoom = $("#custom-room-slider").slider("values") || [0, 0];
 
-        var selectOrientation = $('.orientation-checkbox:checked').map(function() { return this.value; }).get();
+        var selectOritentation = $('.catalog-orientation-checkbox:checked').map(function() {
+            return this.value;
+        }).get();
+        
         var selectAvailability = $('.availability-checkbox:checked').map(function() { return this.value; }).get();
 
         var selectStairway = $('.catalog-stairway-checkbox:checked').map(function() {
@@ -3606,7 +3609,7 @@ jQuery(document).ready(function($) {
                 floor_slider_max_value: selectedFloor[1],
                 room_slider_min_value:selectedRoom[0],
                 room_slider_max_value:selectedRoom[1],
-                orientation: selectOrientation,
+                orientation: selectOritentation,
                 availability: selectAvailability,
                 garden_connection: selectGardenConnection,
                 stairway:selectStairway,
@@ -3659,6 +3662,10 @@ jQuery(document).ready(function($) {
                 }else{
                     $("#custom-square-slider").parent().remove();
                 }
+
+                selectOritentation.forEach(function(value) {
+                    $('.catalog-orientation-checkbox[value="' + value + '"]').prop('checked', true);
+                });
 
                 if (selectGardenConnection == 1) {
                     $('.catalog-gardenconnection-checkbox').prop('checked', true);
