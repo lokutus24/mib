@@ -3563,6 +3563,7 @@ function formatSquareMeter(value) {
             selectStairway = $('.catalog-stairway-checkbox:checked').map(function() { return this.value; }).get();
             selectGardenConnection = $('.catalog-gardenconnection-checkbox').is(':checked') ? 1 : 0;
         } else {
+            //táblás nézet
             selectedFloor = $('.floor-checkbox:checked').map(function() { return this.value; }).get();
             selectedRoom = $('.room-checkbox:checked').map(function() { return this.value; }).get();
             selectOritentation = $('.orientation-checkbox:checked').map(function() { return this.value; }).get();
@@ -3578,6 +3579,7 @@ function formatSquareMeter(value) {
 
         var wasAdvancedFiltersVisible = $('#advanced-filters').is(':visible');
 
+        console.log(selectedFloor);
         // AJAX request
         $.ajax({
             url: ajaxurl,
@@ -3591,8 +3593,10 @@ function formatSquareMeter(value) {
                 price_slider_max_value: priceRange[1],
                 floor_slider_min_value: selectedFloor[0],
                 floor_slider_max_value: selectedFloor[1],
+                floor: selectedFloor,
                 room_slider_min_value:selectedRoom[0],
                 room_slider_max_value:selectedRoom[1],
+                room:selectedRoom,
                 orientation: selectOritentation,
                 availability: selectAvailability,
                 garden_connection: selectGardenConnection,
