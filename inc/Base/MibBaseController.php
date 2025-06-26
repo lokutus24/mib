@@ -58,7 +58,7 @@ class MibBaseController
 	];
 
 
-        private $types = [
+    private $types = [
         'lakás',
         'üzlethelyiség',
         'iroda',
@@ -73,9 +73,9 @@ class MibBaseController
         //  'csökkentett',
     ];
 
-        public function getTypes() {
-            return $this->types;
-        }
+    public function getTypes() {
+        return $this->types;
+    }
 
 	public $numberOfApartmens = 9;
 

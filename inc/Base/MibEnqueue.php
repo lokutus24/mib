@@ -733,7 +733,7 @@ class MibEnqueue extends MibBaseController
                : $this->numberOfApartmens)
            : 50;
 
-        list($args, $page) = $this->getArgumentumsByCatalog($_POST);
+        list($args, $page) = ($_POST['page_type'] == 'card') ? $this->getArgumentumsByCatalog($_POST) : $this->getArgumentums($_POST);
        	// Retrieve all slider ranges: area, price, floor, room
         list($slider_min, $slider_max, $price_slider_min, $price_slider_max, $floor_slider_min, $floor_slider_max, $room_slider_min, $room_slider_max, $garden_connection) = $this->getBaseSliderDatas();
        $html = $this->getTable($args, $page, $perPage, $_POST['page_type']);

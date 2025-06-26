@@ -117,7 +117,7 @@ class MibCreateShortCode extends MibBaseController
 
     public function custom_list_table_shortcode($atts, $content = "")
     {
-        list($datas, $total) = $this->getDatas();
+        list($datas, $total) = $this->getDatas(false, 0, 50, ['type' => 'lakás']);
 
         $html = $this->getTableHtml($datas, $total, 1, []);
         return $html;
@@ -152,7 +152,7 @@ class MibCreateShortCode extends MibBaseController
         return $html;
     }
 
-    private function getDatas(bool $single = false, string $id = '', $perpage = 50)
+    private function getDatas(bool $single = false, string $id = '', $perpage = 50, $filterArgs = [])
     {
 
         $data = [];
@@ -207,6 +207,12 @@ class MibCreateShortCode extends MibBaseController
                 if (!empty($this->shortcodeType)) {
                     $arg['type'] = $this->shortcodeType;
                 }
+
+                // Add filterArgs to $arg
+                if (!empty($filterArgs)) {
+                    $arg = array_merge($arg, $filterArgs);
+                }
+
                 $arg['residentialParkId'] = $this->residentialParkId;
                 $all_data = $mibAuth->getApartmentsForFrontEnd($perpage, 1, $arg);
 
