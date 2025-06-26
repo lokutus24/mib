@@ -872,6 +872,11 @@ class MibEnqueue extends MibBaseController
                         $args = array_merge($args, ['status' => 'Available']);
                 }
 
+                // Force apartment type for table view
+                if (isset($params['page_type']) && $params['page_type'] === 'table') {
+                        $args = array_merge($args, ['type' => 'lakás']);
+                }
+
 		$page = 1;
 		if (isset($params['page']) ) {
 
@@ -950,8 +955,13 @@ class MibEnqueue extends MibBaseController
                         $args = array_merge($args, ['status' => 'Available']);
 
                 }elseif(!empty($this->filterOptionDatas) && $this->filterOptionDatas['inactive_hide'] == 1){
-			$args = array_merge($args, ['status' => 'Available']);
-		}
+                        $args = array_merge($args, ['status' => 'Available']);
+                }
+
+                // Force apartment type for table view
+                if (isset($params['page_type']) && $params['page_type'] === 'table') {
+                        $args = array_merge($args, ['type' => 'lakás']);
+                }
 
 		$page = 1;
 		if (isset($params['page']) ) {
