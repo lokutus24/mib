@@ -3540,34 +3540,43 @@ function formatSquareMeter(value) {
             shortcode = cardContainer.data('shortcode');
             apartman_number = cardContainer.data('apartman_number');
         }
-        // Collect current filters
-        var selectedFloor = $("#custom-floor-slider").slider("values") || [0, 0];
-        var selectedRoom = $("#custom-room-slider").slider("values") || [0, 0];
+        // Determine page type
+        var pageType = (cardContainer.length === 1) ? 'card' : 'table';
 
-        var selectOritentation = $('.catalog-orientation-checkbox:checked').map(function() {
-            return this.value;
-        }).get();
-        
-        var selectAvailability = $('.availability-checkbox:checked').map(function() { return this.value; }).get();
+        var selectedFloor = [0, 0];
+        var selectedRoom = [0, 0];
+        var selectOritentation = [];
+        var selectAvailability = [];
+        var selectStairway = [];
+        var squareRange = [0, 0];
+        var priceRange = [0, 0];
+        var selectGardenConnection = 0;
+        var selectedParkId = $('.select-residential-park').val();
 
-        var selectStairway = $('.catalog-stairway-checkbox:checked').map(function() {
-            return this.value;
-        }).get();
-        // Get slider values
-        // Get slider values (fallback to [0,0] if slider not present)
-        var squareRange = $("#custom-square-slider").slider("values") || [0, 0];
-        var priceRange = $("#custom-price-slider").slider("values") || [0, 0];
+        if (pageType === 'card') {
+            selectedFloor = $("#custom-floor-slider").slider("values") || [0, 0];
+            selectedRoom = $("#custom-room-slider").slider("values") || [0, 0];
+            squareRange = $("#custom-square-slider").slider("values") || [0, 0];
+            priceRange = $("#custom-price-slider").slider("values") || [0, 0];
+            selectOritentation = $('.catalog-orientation-checkbox:checked').map(function() { return this.value; }).get();
+            selectAvailability = $('.catalog-availability-checkbox:checked').map(function() { return this.value; }).get();
+            selectStairway = $('.catalog-stairway-checkbox:checked').map(function() { return this.value; }).get();
+            selectGardenConnection = $('.catalog-gardenconnection-checkbox').is(':checked') ? 1 : 0;
+        } else {
+            selectedFloor = $('.floor-checkbox:checked').map(function() { return this.value; }).get();
+            selectedRoom = $('.room-checkbox:checked').map(function() { return this.value; }).get();
+            selectOritentation = $('.orientation-checkbox:checked').map(function() { return this.value; }).get();
+            selectAvailability = $('.availability-checkbox:checked').map(function() { return this.value; }).get();
+            squareRange = getMainSliderValues();
+            priceRange = getPriceSliderValues();
+        }
+
         // Sort parameters
         var parts = this.value.split('|');
         var sort = parts[0] || '';
         var sortType = parts[1] || 'ASC';
-        // Determine page type
-        var pageType = (cardContainer.length === 1) ? 'card' : 'table';
 
-        var selectGardenConnection = $('.catalog-gardenconnection-checkbox').is(':checked') ? 1 : 0;
         var wasAdvancedFiltersVisible = $('#advanced-filters').is(':visible');
-
-        var selectedParkId = $('.select-residential-park').val();
 
         // AJAX request
         $.ajax({
@@ -3611,53 +3620,73 @@ function formatSquareMeter(value) {
                 }
 
                 $('#mib-spinner').hide();
-                
+
                 hoverDropDown();
                 updateFloorSelectionCount('floor', 'Emelet');
                 updateFloorSelectionCount('room', 'Szobák');
                 updateFloorSelectionCount('orientation', 'Tájolás');
 
-                if (response.data.room_slider_min != null) {
-                    initializeRoomSlider(selectedRoom[0], selectedRoom[1], response.data.room_slider_min, response.data.room_slider_max);
-                }else{
-                    $("#custom-room-slider").parent().remove();
-                }
+                if (pageType === 'card') {
+                    if (response.data.room_slider_min != null) {
+                        initializeRoomSlider(selectedRoom[0], selectedRoom[1], response.data.room_slider_min, response.data.room_slider_max);
+                    } else {
+                        $("#custom-room-slider").parent().remove();
+                    }
 
-                if (response.data.floor_slider_min != null) {
-                    initializeFloorSlider(selectedFloor[0], selectedFloor[1], response.data.floor_slider_min, response.data.floor_slider_max);
-                }else{
-                    $("#custom-floor-slider").parent().remove();
-                }
+                    if (response.data.floor_slider_min != null) {
+                        initializeFloorSlider(selectedFloor[0], selectedFloor[1], response.data.floor_slider_min, response.data.floor_slider_max);
+                    } else {
+                        $("#custom-floor-slider").parent().remove();
+                    }
 
-                if (response.data.price_slider_min != null) {
-                    initializeCatalogPriceSlider(priceRange[0], priceRange[1], response.data.price_slider_min, response.data.price_slider_max);
-                }else{
-                    $("#custom-price-slider").parent().remove();
-                }
-                
-                if (response.data.slider_min != null) {
-                    initializeCatalogSquareSlider(squareRange[0], squareRange[1], response.data.slider_min, response.data.slider_max);
-                }else{
-                    $("#custom-square-slider").parent().remove();
-                }
+                    if (response.data.price_slider_min != null) {
+                        initializeCatalogPriceSlider(priceRange[0], priceRange[1], response.data.price_slider_min, response.data.price_slider_max);
+                    } else {
+                        $("#custom-price-slider").parent().remove();
+                    }
 
-                selectOritentation.forEach(function(value) {
-                    $('.catalog-orientation-checkbox[value="' + value + '"]').prop('checked', true);
-                });
+                    if (response.data.slider_min != null) {
+                        initializeCatalogSquareSlider(squareRange[0], squareRange[1], response.data.slider_min, response.data.slider_max);
+                    } else {
+                        $("#custom-square-slider").parent().remove();
+                    }
 
-                if (selectGardenConnection == 1) {
-                    $('.catalog-gardenconnection-checkbox').prop('checked', true);
+                    selectOritentation.forEach(function(value) {
+                        $('.catalog-orientation-checkbox[value="' + value + '"]').prop('checked', true);
+                    });
+
+                    if (selectGardenConnection == 1) {
+                        $('.catalog-gardenconnection-checkbox').prop('checked', true);
+                    } else {
+                        $('.catalog-gardenconnection-checkbox').prop('checked', false);
+                    }
+
+                    selectAvailability.forEach(function(value) {
+                        $('.catalog-availability-checkbox[value="' + value + '"]').prop('checked', true);
+                    });
+
+                    selectStairway.forEach(function(value) {
+                        $('.catalog-stairway-checkbox[value="' + value + '"]').prop('checked', true);
+                    });
                 } else {
-                    $('.catalog-gardenconnection-checkbox').prop('checked', false);
+                    if ($("#slider-range").length) {
+                        initializeSlider(squareRange[0], squareRange[1], response.data.slider_min, response.data.slider_max);
+                        initializePriceSlider(priceRange[0], priceRange[1], response.data.price_slider_min, response.data.price_slider_max);
+                    } else {
+                        $('#min-price').val(priceRange[0]);
+                        $('#max-price').val(priceRange[1]);
+                        $('#min-area').val(squareRange[0]);
+                        $('#max-area').val(squareRange[1]);
+                    }
+
+                    selectOritentation.forEach(function(value) {
+                        $('.orientation-checkbox[value="' + value + '"]').prop('checked', true);
+                    });
+
+                    selectAvailability.forEach(function(value) {
+                        $('.availability-checkbox[value="' + value + '"]').prop('checked', true);
+                    });
                 }
-
-                selectAvailability.forEach(function(value) {
-                    $('.catalog-availability-checkbox[value="' + value + '"]').prop('checked', true);
-                });
-
-                selectStairway.forEach(function(value) {
-                    $('.catalog-stairway-checkbox[value="' + value + '"]').prop('checked', true);
-                });
 
                 $('.select-residential-park').val(selectedParkId);
             },
