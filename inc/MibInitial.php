@@ -17,14 +17,14 @@ final class MibInitial
 	
 	public static function getService(){
 
-                return [
-                        Pages\MibDashboard::class,
-                        Base\MibEnqueue::class,
-                        Base\MibSettingsLink::class,
-                        Base\MibCustomEndpoint::class,
-                        Base\MibCreateShortCode::class,
-                        Base\MibUpdater::class,
-                ];
+        return [
+                Pages\MibDashboard::class,
+                Base\MibEnqueue::class,
+                Base\MibSettingsLink::class,
+                Base\MibCustomEndpoint::class,
+                Base\MibCreateShortCode::class,
+                Base\MibUpdater::class,
+        ];
 		
 	}
 

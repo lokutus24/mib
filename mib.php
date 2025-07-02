@@ -3,7 +3,7 @@
 * Plugin Name: MIB Wordpress Connector
 * Plugin URI: https://lionstack.hu
 * Description: A plugin képes az ingatlanokat különböző szűrési feltételek mellett megjeleníteni
-* Version: 2.5
+* Version: 2.8
 * Author: Codefusion Kft.
 * Author URI: https://lionstack.hu
 **/
