@@ -3457,8 +3457,13 @@ function formatSquareMeter(value) {
 
             sliders.forEach(slider => {
                 const $slider = $('#' + slider.id);
-                if ($slider.length && $slider.data("ui-slider")) {
-                    const values = $slider.slider('option', 'values');
+                if ($slider.length) {
+                    let values;
+                    if ($slider[0].noUiSlider) {
+                        values = $slider[0].noUiSlider.get().map(parseFloat);
+                    } else if ($slider.data('ui-slider')) {
+                        values = $slider.slider('option', 'values');
+                    }
                     if (Array.isArray(values)) {
                         params.set(slider.key + '_min', values[0]);
                         params.set(slider.key + '_max', values[1]);
