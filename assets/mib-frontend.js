@@ -161,6 +161,10 @@ jQuery(document).ready(function($) {
 
     var debounceTimer;
 
+    function isDefaultCatalog() {
+        return $('#custom-card-container').length && !$('#custom-card-container').hasClass('shortcode-card');
+    }
+
     function initializeSlider(minValue, maxValue, defaultMin = 0, defaultMax = 200) {
 
         $("#slider-range").slider({
@@ -2428,6 +2432,10 @@ function formatSquareMeter(value) {
 
     function saveSquareCatalogSliderValues(minSquare, maxSquare) {
 
+        if (isDefaultCatalog()) {
+            return;
+        }
+
         $('#mib-spinner').show();
 
         var shortcode = '';
@@ -2570,6 +2578,9 @@ function formatSquareMeter(value) {
 
     function savePriceCatalogSliderValues(minPrice, maxPrice) {
 
+        if (isDefaultCatalog()) {
+            return;
+        }
 
         $('#mib-spinner').show();
 
@@ -2713,6 +2724,10 @@ function formatSquareMeter(value) {
     }
 
     function saveFloorSliderValues(minFloor, maxFloor) {
+
+        if (isDefaultCatalog()) {
+            return;
+        }
 
         $('#mib-spinner').show();
 
@@ -2861,6 +2876,10 @@ function formatSquareMeter(value) {
     }
 
     function saveRoomSliderValues(minRoom, maxRoom) {
+
+        if (isDefaultCatalog()) {
+            return;
+        }
 
         $('#mib-spinner').show();
 
