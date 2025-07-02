@@ -162,7 +162,7 @@ jQuery(document).ready(function($) {
     var debounceTimer;
 
     function isDefaultCatalog() {
-        return $('#custom-card-container').length && !$('#custom-card-container').hasClass('shortcode-card');
+        return $('#search-apartman-btn').length ;
     }
 
     function initializeSlider(minValue, maxValue, defaultMin = 0, defaultMax = 200) {
