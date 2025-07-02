@@ -20,7 +20,7 @@ class MibSettingsLink extends MibBaseController
 		
 		/* Ez határozza meg, hogy hogy néz ki a plugin admin része. */
 		$mylinks = array(
-		 '<a href="' . admin_url( 'admin.php?page=options' ) . '">Beállítás</a>',
+		 '<a href="' . admin_url( 'admin.php?page=miboptions' ) . '">Beállítás</a>',
 		 );
 		return array_merge( $links, $mylinks );
 	}
