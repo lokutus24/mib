@@ -10,6 +10,10 @@
 
 defined('ABSPATH') or die('nem kéne..');
 
+if (!defined('MIB_VERSION')) {
+    define('MIB_VERSION', '2.5');
+}
+
 
 
 if (file_exists(dirname(__FILE__)."/vendor/autoload.php")) {
