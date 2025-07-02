@@ -161,6 +161,10 @@ jQuery(document).ready(function($) {
 
     var debounceTimer;
 
+    function isDefaultCatalog() {
+        return $('#search-apartman-btn').length ;
+    }
+
     function initializeSlider(minValue, maxValue, defaultMin = 0, defaultMax = 200) {
 
         $("#slider-range").slider({
@@ -294,8 +298,28 @@ jQuery(document).ready(function($) {
         }).format(value);
     }
 
-    function formatSquareMeter(value) {
-        return value + ' m²';
+function formatSquareMeter(value) {
+    return value + ' m²';
+}
+
+    function getMainSliderValues() {
+        if (jQuery('#slider-range').length && jQuery('#slider-range')[0].noUiSlider) {
+            var vals = jQuery('#slider-range').slider('option', 'values');
+            if (vals) {
+                return [Number(vals[0]), Number(vals[1])];
+            }
+        }
+        return [Number(jQuery('#min-area').val()) || 0, Number(jQuery('#max-area').val()) || 0];
+    }
+
+    function getPriceSliderValues() {
+        if (jQuery('#price-slider-range').length && jQuery('#price-slider-range')[0].noUiSlider) {
+            var vals = jQuery('#price-slider-range').slider('option', 'values');
+            if (vals) {
+                return [Number(vals[0]), Number(vals[1])];
+            }
+        }
+        return [Number(jQuery('#min-price').val()) || 0, Number(jQuery('#max-price').val()) || 0];
     }
 
     function saveSliderValues(minValue, maxValue) {
@@ -323,7 +347,7 @@ jQuery(document).ready(function($) {
         }).get();
 
 
-        var priceRange = $("#price-slider-range").slider("values");
+        var priceRange = getPriceSliderValues();
 
         // Determine current sort settings
         var parts = $('#mib-sort-select').val() ? $('#mib-sort-select').val().split('|') : [];
@@ -401,7 +425,7 @@ jQuery(document).ready(function($) {
         }).get();
 
         // Get current square slider values
-        var squareRange = $("#slider-range").slider("values") || [0, 0];
+        var squareRange = getMainSliderValues();
 
         // Determine current sort settings
         var parts = $('#mib-sort-select').val() ? $('#mib-sort-select').val().split('|') : [];
@@ -541,20 +565,13 @@ jQuery(document).ready(function($) {
             return this.value;
         }).get();
 
-        var slider_min = $("#slider-range").slider("option", "values")[0];
-        var slider_max = $("#slider-range").slider("option", "values")[1];
-        //input
-        if (!slider_min && !slider_max) {
-            var slider_min = $('#min-area').val();
-            var slider_max = $('#max-area').val();
-        }
-        var price_slider_min_value = $("#price-slider-range").slider("option", "values")[0];
-        var price_slider_max_value = $("#price-slider-range").slider("option", "values")[1];
-        //input
-        if (!price_slider_min_value && !price_slider_max_value) {
-            var price_slider_min_value = $('#min-price').val();
-            var price_slider_max_value = $('#max-price').val();
-        }
+        var squareVals = getMainSliderValues();
+        var slider_min = squareVals[0];
+        var slider_max = squareVals[1];
+
+        var priceVals = getPriceSliderValues();
+        var price_slider_min_value = priceVals[0];
+        var price_slider_max_value = priceVals[1];
 
         $.ajax({
             url: ajaxurl,
@@ -646,20 +663,13 @@ jQuery(document).ready(function($) {
         }).get();
 
 
-        var slider_min = $("#slider-range").slider("option", "values")[0];
-        var slider_max = $("#slider-range").slider("option", "values")[1];
-        //input
-        if (!slider_min && !slider_max) {
-            var slider_min = $('#min-area').val();
-            var slider_max = $('#max-area').val();
-        }
-        var price_slider_min_value = $("#price-slider-range").slider("option", "values")[0];
-        var price_slider_max_value = $("#price-slider-range").slider("option", "values")[1];
-        //input
-        if (!price_slider_min_value && !price_slider_max_value) {
-            var price_slider_min_value = $('#min-price').val();
-            var price_slider_max_value = $('#max-price').val();
-        }
+        var squareVals = getMainSliderValues();
+        var slider_min = squareVals[0];
+        var slider_max = squareVals[1];
+
+        var priceVals = getPriceSliderValues();
+        var price_slider_min_value = priceVals[0];
+        var price_slider_max_value = priceVals[1];
 
 
         $.ajax({
@@ -744,20 +754,13 @@ jQuery(document).ready(function($) {
             return this.value;
         }).get();
 
-        var slider_min = $("#slider-range").slider("option", "values")[0];
-        var slider_max = $("#slider-range").slider("option", "values")[1];
-        //input
-        if (!slider_min && !slider_max) {
-            var slider_min = $('#min-area').val();
-            var slider_max = $('#max-area').val();
-        }
-        var price_slider_min_value = $("#price-slider-range").slider("option", "values")[0];
-        var price_slider_max_value = $("#price-slider-range").slider("option", "values")[1];
-        //input
-        if (!price_slider_min_value && !price_slider_max_value) {
-            var price_slider_min_value = $('#min-price').val();
-            var price_slider_max_value = $('#max-price').val();
-        }
+        var squareVals = getMainSliderValues();
+        var slider_min = squareVals[0];
+        var slider_max = squareVals[1];
+
+        var priceVals = getPriceSliderValues();
+        var price_slider_min_value = priceVals[0];
+        var price_slider_max_value = priceVals[1];
 
         $.ajax({
             url: ajaxurl,
@@ -842,20 +845,13 @@ jQuery(document).ready(function($) {
             return this.value;
         }).get();
 
-        var slider_min = $("#slider-range").slider("option", "values")[0];
-        var slider_max = $("#slider-range").slider("option", "values")[1];
-        //input
-        if (!slider_min && !slider_max) {
-            var slider_min = $('#min-area').val();
-            var slider_max = $('#max-area').val();
-        }
-        var price_slider_min_value = $("#price-slider-range").slider("option", "values")[0];
-        var price_slider_max_value = $("#price-slider-range").slider("option", "values")[1];
-        //input
-        if (!price_slider_min_value && !price_slider_max_value) {
-            var price_slider_min_value = $('#min-price').val();
-            var price_slider_max_value = $('#max-price').val();
-        }
+        var squareVals = getMainSliderValues();
+        var slider_min = squareVals[0];
+        var slider_max = squareVals[1];
+
+        var priceVals = getPriceSliderValues();
+        var price_slider_min_value = priceVals[0];
+        var price_slider_max_value = priceVals[1];
 
         $.ajax({
             url: ajaxurl,
@@ -951,20 +947,13 @@ jQuery(document).ready(function($) {
             return this.value;
         }).get();
 
-        var slider_min = $("#slider-range").slider("option", "values")[0];
-        var slider_max = $("#slider-range").slider("option", "values")[1];
-        //input
-        if (!slider_min && !slider_max) {
-            var slider_min = $('#min-area').val();
-            var slider_max = $('#max-area').val();
-        }
-        var price_slider_min_value = $("#price-slider-range").slider("option", "values")[0];
-        var price_slider_max_value = $("#price-slider-range").slider("option", "values")[1];
-        //input
-        if (!price_slider_min_value && !price_slider_max_value) {
-            var price_slider_min_value = $('#min-price').val();
-            var price_slider_max_value = $('#max-price').val();
-        }
+        var squareVals = getMainSliderValues();
+        var slider_min = squareVals[0];
+        var slider_max = squareVals[1];
+
+        var priceVals = getPriceSliderValues();
+        var price_slider_min_value = priceVals[0];
+        var price_slider_max_value = priceVals[1];
 
         //catalogus nézet (safe slider values)
         var floorVals = $("#custom-floor-slider").slider("option", "values") || [0, 0];
@@ -1181,21 +1170,13 @@ jQuery(document).ready(function($) {
                 return this.value;
             }).get();
 
-            var slider_min = $("#slider-range").slider("option", "values")[0];
-            var slider_max = $("#slider-range").slider("option", "values")[1];
+            var squareVals = getMainSliderValues();
+            var slider_min = squareVals[0];
+            var slider_max = squareVals[1];
 
-            if (!slider_min && !slider_max) {
-                slider_min = $('#min-area').val();
-                slider_max = $('#max-area').val();
-            }
-
-            var price_slider_min_value = $("#price-slider-range").slider("option", "values")[0];
-            var price_slider_max_value = $("#price-slider-range").slider("option", "values")[1];
-
-            if (!price_slider_min_value && !price_slider_max_value) {
-                price_slider_min_value = $('#min-price').val();
-                price_slider_max_value = $('#max-price').val();
-            }
+            var priceVals = getPriceSliderValues();
+            var price_slider_min_value = priceVals[0];
+            var price_slider_max_value = priceVals[1];
 
             $.ajax({
                 url: ajaxurl,
@@ -1280,21 +1261,13 @@ jQuery(document).ready(function($) {
                 return this.value;
             }).get();
 
-            var slider_min = $("#slider-range").slider("option", "values")[0];
-            var slider_max = $("#slider-range").slider("option", "values")[1];
+            var squareVals = getMainSliderValues();
+            var slider_min = squareVals[0];
+            var slider_max = squareVals[1];
 
-            if (!slider_min && !slider_max) {
-                slider_min = $('#min-area').val();
-                slider_max = $('#max-area').val();
-            }
-
-            var price_slider_min_value = $("#price-slider-range").slider("option", "values")[0];
-            var price_slider_max_value = $("#price-slider-range").slider("option", "values")[1];
-
-            if (!price_slider_min_value && !price_slider_max_value) {
-                price_slider_min_value = $('#min-price').val();
-                price_slider_max_value = $('#max-price').val();
-            }
+            var priceVals = getPriceSliderValues();
+            var price_slider_min_value = priceVals[0];
+            var price_slider_max_value = priceVals[1];
 
             $.ajax({
                 url: ajaxurl,
@@ -2459,6 +2432,10 @@ jQuery(document).ready(function($) {
 
     function saveSquareCatalogSliderValues(minSquare, maxSquare) {
 
+        if (isDefaultCatalog()) {
+            return;
+        }
+
         $('#mib-spinner').show();
 
         var shortcode = '';
@@ -2601,6 +2578,9 @@ jQuery(document).ready(function($) {
 
     function savePriceCatalogSliderValues(minPrice, maxPrice) {
 
+        if (isDefaultCatalog()) {
+            return;
+        }
 
         $('#mib-spinner').show();
 
@@ -2744,6 +2724,10 @@ jQuery(document).ready(function($) {
     }
 
     function saveFloorSliderValues(minFloor, maxFloor) {
+
+        if (isDefaultCatalog()) {
+            return;
+        }
 
         $('#mib-spinner').show();
 
@@ -2892,6 +2876,10 @@ jQuery(document).ready(function($) {
     }
 
     function saveRoomSliderValues(minRoom, maxRoom) {
+
+        if (isDefaultCatalog()) {
+            return;
+        }
 
         $('#mib-spinner').show();
 
@@ -3488,8 +3476,13 @@ jQuery(document).ready(function($) {
 
             sliders.forEach(slider => {
                 const $slider = $('#' + slider.id);
-                if ($slider.length && $slider.data("ui-slider")) {
-                    const values = $slider.slider('option', 'values');
+                if ($slider.length) {
+                    let values;
+                    if ($slider[0].noUiSlider) {
+                        values = $slider[0].noUiSlider.get().map(parseFloat);
+                    } else if ($slider.data('ui-slider')) {
+                        values = $slider.slider('option', 'values');
+                    }
                     if (Array.isArray(values)) {
                         params.set(slider.key + '_min', values[0]);
                         params.set(slider.key + '_max', values[1]);
@@ -3565,32 +3558,52 @@ jQuery(document).ready(function($) {
         $('#mib-spinner').show();
         var table = $('#custom-list-table-container');
         var cardContainer = $('#custom-card-container');
-        // Collect current filters
-        var selectedFloor = $("#custom-floor-slider").slider("values") || [0, 0];
-        var selectedRoom = $("#custom-room-slider").slider("values") || [0, 0];
+        var shortcode = '';
+        var apartman_number = '';
+        if (cardContainer.hasClass('shortcode-card')) {
+            shortcode = cardContainer.data('shortcode');
+            apartman_number = cardContainer.data('apartman_number');
+        }
+        // Determine page type
+        var pageType = (cardContainer.length === 1) ? 'card' : 'table';
 
-        var selectOrientation = $('.orientation-checkbox:checked').map(function() { return this.value; }).get();
-        var selectAvailability = $('.availability-checkbox:checked').map(function() { return this.value; }).get();
+        var selectedFloor = [0, 0];
+        var selectedRoom = [0, 0];
+        var selectOritentation = [];
+        var selectAvailability = [];
+        var selectStairway = [];
+        var squareRange = [0, 0];
+        var priceRange = [0, 0];
+        var selectGardenConnection = 0;
+        var selectedParkId = $('.select-residential-park').val();
 
-        var selectStairway = $('.catalog-stairway-checkbox:checked').map(function() {
-            return this.value;
-        }).get();
-        // Get slider values
-        // Get slider values (fallback to [0,0] if slider not present)
-        var squareRange = $("#custom-square-slider").slider("values") || [0, 0];
-        var priceRange = $("#custom-price-slider").slider("values") || [0, 0];
+        if (pageType === 'card') {
+            selectedFloor = $("#custom-floor-slider").slider("values") || [0, 0];
+            selectedRoom = $("#custom-room-slider").slider("values") || [0, 0];
+            squareRange = $("#custom-square-slider").slider("values") || [0, 0];
+            priceRange = $("#custom-price-slider").slider("values") || [0, 0];
+            selectOritentation = $('.catalog-orientation-checkbox:checked').map(function() { return this.value; }).get();
+            selectAvailability = $('.catalog-availability-checkbox:checked').map(function() { return this.value; }).get();
+            selectStairway = $('.catalog-stairway-checkbox:checked').map(function() { return this.value; }).get();
+            selectGardenConnection = $('.catalog-gardenconnection-checkbox').is(':checked') ? 1 : 0;
+        } else {
+            //táblás nézet
+            selectedFloor = $('.floor-checkbox:checked').map(function() { return this.value; }).get();
+            selectedRoom = $('.room-checkbox:checked').map(function() { return this.value; }).get();
+            selectOritentation = $('.orientation-checkbox:checked').map(function() { return this.value; }).get();
+            selectAvailability = $('.availability-checkbox:checked').map(function() { return this.value; }).get();
+            squareRange = getMainSliderValues();
+            priceRange = getPriceSliderValues();
+        }
+
         // Sort parameters
         var parts = this.value.split('|');
         var sort = parts[0] || '';
         var sortType = parts[1] || 'ASC';
-        // Determine page type
-        var pageType = (cardContainer.length === 1) ? 'card' : 'table';
 
-        var selectGardenConnection = $('.catalog-gardenconnection-checkbox').is(':checked') ? 1 : 0;
         var wasAdvancedFiltersVisible = $('#advanced-filters').is(':visible');
 
-        var selectedParkId = $('.select-residential-park').val();
-
+        console.log(selectedFloor);
         // AJAX request
         $.ajax({
             url: ajaxurl,
@@ -3604,16 +3617,19 @@ jQuery(document).ready(function($) {
                 price_slider_max_value: priceRange[1],
                 floor_slider_min_value: selectedFloor[0],
                 floor_slider_max_value: selectedFloor[1],
+                floor: selectedFloor,
                 room_slider_min_value:selectedRoom[0],
                 room_slider_max_value:selectedRoom[1],
-                orientation: selectOrientation,
+                room:selectedRoom,
+                orientation: selectOritentation,
                 availability: selectAvailability,
                 garden_connection: selectGardenConnection,
                 stairway:selectStairway,
                 sort: sort,
                 sortType: sortType,
                 page_type: pageType,
-                apartman_number: cardContainer.data('apartman_number') || undefined,
+                shortcode: shortcode,
+                apartman_number: apartman_number,
                 residental_park_id:selectedParkId
             },
             success: function(response) {
@@ -3623,6 +3639,8 @@ jQuery(document).ready(function($) {
                     cardContainer.replaceWith(response.data.html);
                     restoreViewMode();
                 }
+                var newTable = $('#custom-list-table-container table');
+                sortTableRows(newTable, sort, sortType);
 
                 if (wasAdvancedFiltersVisible) {
                     $('#advanced-filters').css('display', 'flex');
@@ -3630,55 +3648,111 @@ jQuery(document).ready(function($) {
                 }
 
                 $('#mib-spinner').hide();
-                
+
                 hoverDropDown();
                 updateFloorSelectionCount('floor', 'Emelet');
                 updateFloorSelectionCount('room', 'Szobák');
                 updateFloorSelectionCount('orientation', 'Tájolás');
 
-                if (response.data.room_slider_min != null) {
-                    initializeRoomSlider(selectedRoom[0], selectedRoom[1], response.data.room_slider_min, response.data.room_slider_max);
-                }else{
-                    $("#custom-room-slider").parent().remove();
-                }
+                if (pageType === 'card') {
+                    if (response.data.room_slider_min != null) {
+                        initializeRoomSlider(selectedRoom[0], selectedRoom[1], response.data.room_slider_min, response.data.room_slider_max);
+                    } else {
+                        $("#custom-room-slider").parent().remove();
+                    }
 
-                if (response.data.floor_slider_min != null) {
-                    initializeFloorSlider(selectedFloor[0], selectedFloor[1], response.data.floor_slider_min, response.data.floor_slider_max);
-                }else{
-                    $("#custom-floor-slider").parent().remove();
-                }
+                    if (response.data.floor_slider_min != null) {
+                        initializeFloorSlider(selectedFloor[0], selectedFloor[1], response.data.floor_slider_min, response.data.floor_slider_max);
+                    } else {
+                        $("#custom-floor-slider").parent().remove();
+                    }
 
-                if (response.data.price_slider_min != null) {
-                    initializeCatalogPriceSlider(priceRange[0], priceRange[1], response.data.price_slider_min, response.data.price_slider_max);
-                }else{
-                    $("#custom-price-slider").parent().remove();
-                }
-                
-                if (response.data.slider_min != null) {
-                    initializeCatalogSquareSlider(squareRange[0], squareRange[1], response.data.slider_min, response.data.slider_max);
-                }else{
-                    $("#custom-square-slider").parent().remove();
-                }
+                    if (response.data.price_slider_min != null) {
+                        initializeCatalogPriceSlider(priceRange[0], priceRange[1], response.data.price_slider_min, response.data.price_slider_max);
+                    } else {
+                        $("#custom-price-slider").parent().remove();
+                    }
 
-                if (selectGardenConnection == 1) {
-                    $('.catalog-gardenconnection-checkbox').prop('checked', true);
+                    if (response.data.slider_min != null) {
+                        initializeCatalogSquareSlider(squareRange[0], squareRange[1], response.data.slider_min, response.data.slider_max);
+                    } else {
+                        $("#custom-square-slider").parent().remove();
+                    }
+
+                    selectOritentation.forEach(function(value) {
+                        $('.catalog-orientation-checkbox[value="' + value + '"]').prop('checked', true);
+                    });
+
+                    if (selectGardenConnection == 1) {
+                        $('.catalog-gardenconnection-checkbox').prop('checked', true);
+                    } else {
+                        $('.catalog-gardenconnection-checkbox').prop('checked', false);
+                    }
+
+                    selectAvailability.forEach(function(value) {
+                        $('.catalog-availability-checkbox[value="' + value + '"]').prop('checked', true);
+                    });
+
+                    selectStairway.forEach(function(value) {
+                        $('.catalog-stairway-checkbox[value="' + value + '"]').prop('checked', true);
+                    });
                 } else {
-                    $('.catalog-gardenconnection-checkbox').prop('checked', false);
-                }
+                    if ($("#slider-range").length) {
+                        initializeSlider(squareRange[0], squareRange[1], response.data.slider_min, response.data.slider_max);
+                        initializePriceSlider(priceRange[0], priceRange[1], response.data.price_slider_min, response.data.price_slider_max);
+                    } else {
+                        $('#min-price').val(priceRange[0]);
+                        $('#max-price').val(priceRange[1]);
+                        $('#min-area').val(squareRange[0]);
+                        $('#max-area').val(squareRange[1]);
+                    }
 
-                selectStairway.forEach(function(value) {
-                    $('.catalog-stairway-checkbox[value="' + value + '"]').prop('checked', true);
-                });
+                    selectOritentation.forEach(function(value) {
+                        $('.orientation-checkbox[value="' + value + '"]').prop('checked', true);
+                    });
+
+                    selectAvailability.forEach(function(value) {
+                        $('.availability-checkbox[value="' + value + '"]').prop('checked', true);
+                    });
+                }
 
                 $('.select-residential-park').val(selectedParkId);
             },
             error: function(error) {
                 console.error('Hiba a rendezés AJAX közben:', error);
                 $('#mib-spinner').hide();
+                sortTableRows($('#custom-list-table-container table'), sort, sortType);
             }
         });
     });
     checkFavorites();
+
+    function sortTableRows($table, field, direction) {
+        var indexMap = { name: 0, bruttoFloorArea: 1, price: 5 };
+        var idx = indexMap[field];
+        if (idx === undefined) return;
+
+        var rows = $table.find('tbody > tr').get();
+        rows.sort(function(a, b) {
+            var valA = $(a).children().eq(idx).text();
+            var valB = $(b).children().eq(idx).text();
+
+            if (field === 'price' || field === 'bruttoFloorArea') {
+                valA = parseFloat(valA.replace(/[^0-9.,-]/g, '').replace(',', '.')) || 0;
+                valB = parseFloat(valB.replace(/[^0-9.,-]/g, '').replace(',', '.')) || 0;
+            } else {
+                valA = valA.toLowerCase();
+                valB = valB.toLowerCase();
+            }
+
+            if (valA < valB) return direction === 'ASC' ? -1 : 1;
+            if (valA > valB) return direction === 'ASC' ? 1 : -1;
+            return 0;
+        });
+        $.each(rows, function(i, row) {
+            $table.find('tbody').append(row);
+        });
+    }
 
 
     $(document).on('click', '#toggle-advanced-filters', function() {

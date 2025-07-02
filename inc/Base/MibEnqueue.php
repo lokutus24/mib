@@ -733,7 +733,8 @@ class MibEnqueue extends MibBaseController
                : $this->numberOfApartmens)
            : 50;
 
-        list($args, $page) = $this->getArgumentumsByCatalog($_POST);
+        list($args, $page) = ($_POST['page_type'] == 'card') ? $this->getArgumentumsByCatalog($_POST) : $this->getArgumentums($_POST);
+
        	// Retrieve all slider ranges: area, price, floor, room
         list($slider_min, $slider_max, $price_slider_min, $price_slider_max, $floor_slider_min, $floor_slider_max, $room_slider_min, $room_slider_max, $garden_connection) = $this->getBaseSliderDatas();
        $html = $this->getTable($args, $page, $perPage, $_POST['page_type']);
@@ -872,6 +873,11 @@ class MibEnqueue extends MibBaseController
                         $args = array_merge($args, ['status' => 'Available']);
                 }
 
+                // Force apartment type for table view
+                if (isset($params['page_type']) && $params['page_type'] === 'table') {
+                        $args = array_merge($args, ['type' => 'lakás']);
+                }
+
 		$page = 1;
 		if (isset($params['page']) ) {
 
@@ -950,8 +956,13 @@ class MibEnqueue extends MibBaseController
                         $args = array_merge($args, ['status' => 'Available']);
 
                 }elseif(!empty($this->filterOptionDatas) && $this->filterOptionDatas['inactive_hide'] == 1){
-			$args = array_merge($args, ['status' => 'Available']);
-		}
+                        $args = array_merge($args, ['status' => 'Available']);
+                }
+
+                // Force apartment type for table view
+                if (isset($params['page_type']) && $params['page_type'] === 'table') {
+                        $args = array_merge($args, ['type' => 'lakás']);
+                }
 
 		$page = 1;
 		if (isset($params['page']) ) {
@@ -971,11 +982,22 @@ class MibEnqueue extends MibBaseController
 
 		$table_data = $this->setDataToTable($datas);
 
-		//egyedi shortcode-os megjelenítés.
-		if (isset($_POST['shortcode']) && !empty($_POST['shortcode'])) {
+                //egyedi shortcode-os megjelenítés.
+                if (isset($_POST['shortcode']) && !empty($_POST['shortcode'])) {
 
-			$html = $this->getCardHtmlShortCode($table_data, $datas['total'], $currentPage, $this->filterType, $_POST['shortcode'], $_POST['apartman_number']);
-		}
+                        // merge dynamic filter configuration with current args so
+                        // sort options remain selected after AJAX refresh
+                        $shortcodeConfig = array_merge($this->filterType, $args);
+
+                        $html = $this->getCardHtmlShortCode(
+                            $table_data,
+                            $datas['total'],
+                            $currentPage,
+                            $shortcodeConfig,
+                            $_POST['shortcode'],
+                            $_POST['apartman_number']
+                        );
+                }
 		elseif ($type == 'card') {
 
 			$html = $this->getCardHtml($table_data, $datas['total'], $currentPage, $args);
