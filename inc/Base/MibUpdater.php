@@ -28,13 +28,29 @@ class MibUpdater extends MibBaseController
 
         if (!is_wp_error($response) && isset($response['response']['code']) && $response['response']['code'] == 200) {
             $data = json_decode(wp_remote_retrieve_body($response));
+
             if (isset($data->tag_name) && version_compare($current_version, $data->tag_name, '<')) {
+
+                $package_url = $data->zipball_url;
+                if (!empty($data->assets)) {
+                    foreach ($data->assets as $asset) {
+                        if (
+                            isset($asset->name)
+                            && strpos($asset->name, 'mib-connector.zip') !== false
+                            && isset($asset->browser_download_url)
+                        ) {
+                            $package_url = $asset->browser_download_url;
+                            break;
+                        }
+                    }
+                }
+
                 $transient->response[$plugin_slug] = (object) array(
                     'slug'        => dirname($plugin_slug),
                     'plugin'      => $plugin_slug,
                     'new_version' => $data->tag_name,
                     'url'         => $data->html_url,
-                    'package'     => $data->zipball_url,
+                    'package'     => $package_url,
                 );
             }
         }
