@@ -8,7 +8,7 @@ class MibUpdater extends MibBaseController
 {
     public function registerFunction()
     {
-        add_filter('site_transient_update_plugins', array($this, 'check_update'));
+        add_filter('pre_set_site_transient_update_plugins', array($this, 'check_update'));
     }
 
     public function check_update($transient)
