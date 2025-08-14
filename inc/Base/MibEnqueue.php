@@ -812,10 +812,10 @@ class MibEnqueue extends MibBaseController
 		    $args = array_merge($args, ['numberOfRooms' => $params['room_slider_min_value']."-".$params['room_slider_max_value'] ]);
 		}
 
-		if ( !empty($params['orientation'] ) ) {
-		    $params['orientation'] = (!is_string($params['orientation'])) ? implode(',',$params['orientation']) : $params['orientation'];
-		    $args = array_merge($args, ['orientation' => $params['orientation']]);
-		}
+                if ( !empty($params['typeOfBalcony'] ) ) {
+                    $params['typeOfBalcony'] = (!is_string($params['typeOfBalcony'])) ? implode(',', $params['typeOfBalcony']) : $params['typeOfBalcony'];
+                    $args = array_merge($args, ['typeOfBalcony' => $params['typeOfBalcony']]);
+                }
 
 		if ( !empty($params['availability'] ) ) {
 
@@ -910,10 +910,10 @@ class MibEnqueue extends MibBaseController
 		    $args = array_merge($args, ['numberOfRooms' => $params['room']]);
 		}
 
-		if ( !empty($params['orientation'] ) ) {
-		    $params['orientation'] = (!is_string($params['orientation'])) ? implode(',',$params['orientation']) : $params['orientation'];
-		    $args = array_merge($args, ['orientation' => $params['orientation']]);
-		}
+                if ( !empty($params['typeOfBalcony'] ) ) {
+                    $params['typeOfBalcony'] = (!is_string($params['typeOfBalcony'])) ? implode(',', $params['typeOfBalcony']) : $params['typeOfBalcony'];
+                    $args = array_merge($args, ['typeOfBalcony' => $params['typeOfBalcony']]);
+                }
 
 
 		if ( !empty($params['garden_connection'] ) ) {
