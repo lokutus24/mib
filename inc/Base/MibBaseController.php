@@ -204,7 +204,7 @@ class MibBaseController
 				'url' => home_url('/lakas/' . $projectSlug . '/' . sanitize_title($item->name) . '/'),
 		        'numberOfRooms' => $item->numberOfRooms,
 		        'price' => ($item->status == 'Available' || $item->status == 'Reserved') ? (!is_null($item->price) ? number_format($item->price, 0) . ' Ft' : '') : '',
-		        'bruttoFloorArea' => $item->bruttoFloorArea . ' m²',
+		        'salesFloorArea' => $item->salesFloorArea . ' m²',
 		        'floor' => ($item->floor == 0) ? 'földszint' : $item->floor,
 		        'balcony' => $item->balconyFloorArea . ' m²',
 		        'orientation' => array_search($item->orientation, $this->orientation), // Tájolás formázása
@@ -337,7 +337,7 @@ class MibBaseController
 	                $html .= '<div class="apartment-info-box">';
 	                $html .= '<div class="apartment-quickinfo responsive-grid">';
 	                $html .= '<div><strong class="third-text-color">Elérhető</strong><br><span class="quick-info-value">' . esc_html($data['rawname'] ?? '—') . '</span></div>';
-	                $html .= '<div><strong>Alapterület (m²)</strong><br><span class="quick-info-value">' . esc_html($data['bruttoFloorArea']) . '</span></div>';
+	                $html .= '<div><strong>Méret (m²)</strong><br><span class="quick-info-value">' . esc_html($data['salesFloorArea']) . '</span></div>';
 	                $html .= '<div><strong>Szobák száma</strong><br><span class="quick-info-value">' . esc_html($data['numberOfRooms']) . '</span></div>';
 	                $html .= '<div><strong>Emelet</strong><br><span class="quick-info-value">' . esc_html($data['floor']) . '</span></div>';
 	                $html .= '</div>';
@@ -477,7 +477,7 @@ class MibBaseController
         $sort_labels = [
             'name' => __( 'Név', 'mib' ),
             'price' => __( 'Ár', 'mib' ),
-            'bruttoFloorArea' => __( 'Alapterület', 'mib' ),
+            'salesFloorArea' => __( 'Alapterület', 'mib' ),
         ];
         // Determine current sort from AJAX parameters
         $current_sort = $filterType['sort'] ?? '';
@@ -515,7 +515,7 @@ class MibBaseController
 
 		            $html .= '<tr id="mibtr">';
 			            $html .= '<td id="mibtd">' . $data['name'].'</td>';
-			            $html .= '<td id="mibtd">' . esc_html($data['bruttoFloorArea']) . '</td>';
+			            $html .= '<td id="mibtd">' . esc_html($data['salesFloorArea']) . '</td>';
 			            $html .= '<td id="mibtd">' . esc_html($data['numberOfRooms']) . '</td>';
 			            $html .= '<td id="mibtd">' . esc_html($data['floor']) . '</td>';
 			            $html .= '<td id="mibtd">' . esc_html($data['orientation']) . '</td>';
@@ -661,7 +661,7 @@ class MibBaseController
 	        $sort_labels = [
 	            'name' => __('Név', 'mib'),
 	            'price' => __('Ár', 'mib'),
-	            'bruttoFloorArea' => __('Alapterület', 'mib'),
+	            'salesFloorArea' => __('Alapterület', 'mib'),
 	        ];
 	        // Determine current sort settings
 	        $current_sort = $filterType['sort'] ?? '';
@@ -735,7 +735,7 @@ class MibBaseController
 				            $html .= '</div>';
 				            $html .= '<div>';
 				                $html .= '<small class="d-block text-muted">Alapterület (m2)</small>';
-				                $html .= '<strong class="fs-5">' . esc_html($data['bruttoFloorArea']) . '</strong>';
+				                $html .= '<strong class="fs-5">' . esc_html($data['salesFloorArea']) . '</strong>';
 				            $html .= '</div>';
 				            $html .= '<div class="text-end">';
 				                $html .= '<small class="d-block text-muted">Emelet</small>';
@@ -866,7 +866,7 @@ class MibBaseController
         $sort_labels = [
             'name' => __('Név', 'mib'),
             'price' => __('Ár', 'mib'),
-            'bruttoFloorArea' => __('Alapterület', 'mib'),
+            'salesFloorArea' => __('Alapterület', 'mib'),
         ];
         // Determine current sort settings
         $current_sort = $filterType['sort'] ?? '';
@@ -955,7 +955,7 @@ class MibBaseController
 				            $html .= '</div>';
 				            $html .= '<div>';
 				                $html .= '<small class="d-block text-muted">Alapterület (m2)</small>';
-				                $html .= '<strong class="fs-5">' . esc_html($data['bruttoFloorArea']) . '</strong>';
+				                $html .= '<strong class="fs-5">' . esc_html($data['salesFloorArea']) . '</strong>';
 				            $html .= '</div>';
 				            $html .= '<div class="text-end">';
 				                $html .= '<small class="d-block text-muted">Emelet</small>';
@@ -1078,7 +1078,7 @@ class MibBaseController
 				            $html .= '</div>';
 				            $html .= '<div>';
 				                $html .= '<small class="d-block text-muted">Alapterület (m2)</small>';
-				                $html .= '<strong class="fs-5">' . esc_html($data['bruttoFloorArea']) . '</strong>';
+				                $html .= '<strong class="fs-5">' . esc_html($data['salesFloorArea']) . '</strong>';
 				            $html .= '</div>';
 				            $html .= '<div class="text-end">';
 				                $html .= '<small class="d-block text-muted">Emelet</small>';
