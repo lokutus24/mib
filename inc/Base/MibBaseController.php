@@ -31,22 +31,22 @@ class MibBaseController
 		'Északnyugati' => 'northWest'
 	];
 
-        private $orientationShortName = [
-                'Északi' => 'É',
-                'Északkeleti' => 'ÉK',
-                'Keleti' => 'K',
-                'Délkeleti' => 'DK',
-                'Déli' => 'D',
-                'Délnyugati' => 'DNY',
-                'Nyugati' => 'W' ,
-                'Északnyugati' => 'ÉNY'
-        ];
+    private $orientationShortName = [
+        'Északi' => 'É',
+        'Északkeleti' => 'ÉK',
+        'Keleti' => 'K',
+        'Délkeleti' => 'DK',
+        'Déli' => 'D',
+        'Délnyugati' => 'DNY',
+        'Nyugati' => 'W' ,
+        'Északnyugati' => 'ÉNY'
+    ];
 
-        private $balconyTypes = [
-                'Terasz' => 'terasz',
-                'Erkély' => 'erkély',
-                'Lodgia' => 'lodgia'
-        ];
+    private $balconyTypes = [
+        'Terasz' => 'terasz',
+        'Erkély' => 'erkély',
+        'Lodgia' => 'lodgia'
+    ];
 
 	private $availability = [
 		'Nem elérhetőek elrejtése' => 'Available', 
@@ -483,7 +483,7 @@ class MibBaseController
         $sort_labels = [
             'name' => __( 'Név', 'mib' ),
             'price' => __( 'Ár', 'mib' ),
-            'salesFloorArea' => __( 'Alapterület', 'mib' ),
+            'salesFloorArea' => __( 'Méret', 'mib' ),
         ];
         // Determine current sort from AJAX parameters
         $current_sort = $filterType['sort'] ?? '';
@@ -504,7 +504,7 @@ class MibBaseController
 	        $html .= '<thead>';
 	        $html .= '<tr id="mibheadertr" class="secondary-color">';
 	        $html .= '<th id="mibheaderth" class="secondary-color">' . __('Lakás', 'mib') . '</th>';
-	        $html .= '<th id="mibheaderth" class="secondary-color">' . __('Alapterület', 'mib') . '</th>';
+	        $html .= '<th id="mibheaderth" class="secondary-color">' . __('Méret', 'mib') . '</th>';
 	        $html .= '<th id="mibheaderth" class="secondary-color">' . __('Szobák száma', 'mib') . '</th>';
 	        $html .= '<th id="mibheaderth" class="secondary-color">' . __('Emelet', 'mib') . '</th>';
 	        $html .= '<th id="mibheaderth" class="secondary-color">' . __('Tájolás', 'mib') . '</th>';
@@ -667,7 +667,7 @@ class MibBaseController
 	        $sort_labels = [
 	            'name' => __('Név', 'mib'),
 	            'price' => __('Ár', 'mib'),
-	            'salesFloorArea' => __('Alapterület', 'mib'),
+	            'salesFloorArea' => __('Méret', 'mib'),
 	        ];
 	        // Determine current sort settings
 	        $current_sort = $filterType['sort'] ?? '';
@@ -740,7 +740,7 @@ class MibBaseController
 				                $html .= '<strong class="fs-5">' . esc_html($data['numberOfRooms']) . '</strong>';
 				            $html .= '</div>';
 				            $html .= '<div>';
-				                $html .= '<small class="d-block text-muted">Alapterület (m2)</small>';
+				                $html .= '<small class="d-block text-muted">Méret (m2)</small>';
 				                $html .= '<strong class="fs-5">' . esc_html($data['salesFloorArea']) . '</strong>';
 				            $html .= '</div>';
 				            $html .= '<div class="text-end">';
@@ -872,7 +872,7 @@ class MibBaseController
         $sort_labels = [
             'name' => __('Név', 'mib'),
             'price' => __('Ár', 'mib'),
-            'salesFloorArea' => __('Alapterület', 'mib'),
+            'salesFloorArea' => __('Méret', 'mib'),
         ];
         // Determine current sort settings
         $current_sort = $filterType['sort'] ?? '';
@@ -960,7 +960,7 @@ class MibBaseController
 				                $html .= '<strong class="fs-5">' . esc_html($data['numberOfRooms']) . '</strong>';
 				            $html .= '</div>';
 				            $html .= '<div>';
-				                $html .= '<small class="d-block text-muted">Alapterület (m2)</small>';
+				                $html .= '<small class="d-block text-muted">Méret (m2)</small>';
 				                $html .= '<strong class="fs-5">' . esc_html($data['salesFloorArea']) . '</strong>';
 				            $html .= '</div>';
 				            $html .= '<div class="text-end">';
@@ -1083,7 +1083,7 @@ class MibBaseController
 				                $html .= '<strong class="fs-5">' . esc_html($data['numberOfRooms']) . '</strong>';
 				            $html .= '</div>';
 				            $html .= '<div>';
-				                $html .= '<small class="d-block text-muted">Alapterület (m2)</small>';
+				                $html .= '<small class="d-block text-muted">Méret (m2)</small>';
 				                $html .= '<strong class="fs-5">' . esc_html($data['salesFloorArea']) . '</strong>';
 				            $html .= '</div>';
 				            $html .= '<div class="text-end">';
