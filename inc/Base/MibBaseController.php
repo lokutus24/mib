@@ -31,16 +31,22 @@ class MibBaseController
 		'Északnyugati' => 'northWest'
 	];
 
-	private $orientationShortName = [
-		'Északi' => 'É', 
-		'Északkeleti' => 'ÉK', 
-		'Keleti' => 'K', 
-		'Délkeleti' => 'DK', 
-		'Déli' => 'D',
-		'Délnyugati' => 'DNY', 
-		'Nyugati' => 'W' ,
-		'Északnyugati' => 'ÉNY'
-	];
+        private $orientationShortName = [
+                'Északi' => 'É',
+                'Északkeleti' => 'ÉK',
+                'Keleti' => 'K',
+                'Délkeleti' => 'DK',
+                'Déli' => 'D',
+                'Délnyugati' => 'DNY',
+                'Nyugati' => 'W' ,
+                'Északnyugati' => 'ÉNY'
+        ];
+
+        private $balconyTypes = [
+                'Terasz' => 'terasz',
+                'Erkély' => 'erkély',
+                'Lodgia' => 'lodgia'
+        ];
 
 	private $availability = [
 		'Nem elérhetőek elrejtése' => 'Available', 
@@ -1163,9 +1169,9 @@ class MibBaseController
 	                        Összetett kereső
 	                    </button>
 	                    <ul class="primary-color mt-1 dropdown-menu" aria-labelledby="advancedSearchDropdown">';
-				foreach ($this->orientation as $key => $value) {
-					$html .= '<li><label class="dropdown-item"><input type="checkbox" class="orientation-checkbox" name="orientation[]" value="' . esc_attr($value) . '"> ' . esc_html($key) . '</label></li>';
-				}
+                                foreach ($this->balconyTypes as $key => $value) {
+                                        $html .= '<li><label class="dropdown-item"><input type="checkbox" class="orientation-checkbox" name="typeOfBalcony[]" value="' . esc_attr($value) . '"> ' . esc_html($key) . '</label></li>';
+                                }
 				foreach ($this->availability as $key => $value) {
 					$html .= '<li><label class="dropdown-item"><input type="checkbox" class="availability-checkbox" name="availability[]" value="' . esc_attr($value) . '"> ' . esc_html($key) . '</label></li>';
 				}
@@ -1431,36 +1437,36 @@ class MibBaseController
 	    return $html;
 	}
 
-	private function getFilterOrientationByCatalog($filterType) {
-	    // Tájolások konvertálása tömbbé, ha szükséges
-	    if (isset($filterType['orientation']) && !is_array($filterType['orientation'])) {
-	        $filterType['orientation'] = explode(',', $filterType['orientation']);
-	    }
+        private function getFilterOrientationByCatalog($filterType) {
+            // Erkély típusok konvertálása tömbbé, ha szükséges
+            if (isset($filterType['typeOfBalcony']) && !is_array($filterType['typeOfBalcony'])) {
+                $filterType['typeOfBalcony'] = explode(',', $filterType['typeOfBalcony']);
+            }
 
-	    $html = '<div class="catalog-dropdown mt-3">
-	                <div class="dropdown">
-	                    <button class="btn btn-dark dropdown-toggle" type="button" id="orientationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-	                        Tájolás
-	                    </button>
-	                    <ul class="third-color mt-1 p-2 dropdown-menu" aria-labelledby="orientationDropdown">';
+            $html = '<div class="catalog-dropdown mt-3">
+                        <div class="dropdown">
+                            <button class="btn btn-dark dropdown-toggle" type="button" id="orientationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                Erkély típusa
+                            </button>
+                            <ul class="third-color mt-1 p-2 dropdown-menu" aria-labelledby="orientationDropdown">';
 
-	    // Tájolások listája
-	    foreach ($this->orientation as $key => $value) {
-	        $orientationChecked = (isset($filterType['orientation']) && in_array($value, (array)$filterType['orientation'])) ? 'checked' : '';
+            // Erkély típusok listája
+            foreach ($this->balconyTypes as $key => $value) {
+                $orientationChecked = (isset($filterType['typeOfBalcony']) && in_array($value, (array)$filterType['typeOfBalcony'])) ? 'checked' : '';
 
-	        $html .= '<li>
-	                    <label class="dropdown-item">
-	                        <input type="checkbox" class="catalog-orientation-checkbox form-check-input" name="orientation[]" value="' . $value . '" ' . $orientationChecked . '> ' . $key . '
-	                    </label>
-	                  </li>';
-	    }
+                $html .= '<li>
+                            <label class="dropdown-item">
+                                <input type="checkbox" class="catalog-orientation-checkbox form-check-input" name="typeOfBalcony[]" value="' . $value . '" ' . $orientationChecked . '> ' . $key . '
+                            </label>
+                          </li>';
+            }
 
-	    $html .=   '</ul>
-	                </div>
-	            </div>';
+            $html .=   '</ul>
+                        </div>
+                    </div>';
 
-	    return $html;
-	}
+            return $html;
+        }
 
 
     private function getFilterFloor($filterType) {
@@ -1534,29 +1540,29 @@ class MibBaseController
 	    return $html;
 	}
 
-	private function getFilterOrientation($filterType) {
-	    // Tájolások konvertálása tömbbé, ha szükséges
-	    if (isset($filterType['orientation']) && !is_array($filterType['orientation'])) {
-	        $filterType['orientation'] = explode(',', $filterType['orientation']);
-	    }
+        private function getFilterOrientation($filterType) {
+            // Erkély típusok konvertálása tömbbé, ha szükséges
+            if (isset($filterType['typeOfBalcony']) && !is_array($filterType['typeOfBalcony'])) {
+                $filterType['typeOfBalcony'] = explode(',', $filterType['typeOfBalcony']);
+            }
 
-	    $html = '<div class="mb-2">
-	                <div class="dropdown">
-	                    <button class="btn btn-dark dropdown-toggle primary-color" type="button" id="orientationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-	                        Tájolás
-	                    </button>
-	                    <ul class="primary-color mt-1 dropdown-menu" aria-labelledby="orientationDropdown">';
+            $html = '<div class="mb-2">
+                        <div class="dropdown">
+                            <button class="btn btn-dark dropdown-toggle primary-color" type="button" id="orientationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                Erkély típusa
+                            </button>
+                            <ul class="primary-color mt-1 dropdown-menu" aria-labelledby="orientationDropdown">';
 
-	    // Tájolások listája
-	    foreach ($this->orientation as $key => $value) {
-	        $orientationChecked = (isset($filterType['orientation']) && in_array($value, (array)$filterType['orientation'])) ? 'checked' : '';
+            // Erkély típusok listája
+            foreach ($this->balconyTypes as $key => $value) {
+                $orientationChecked = (isset($filterType['typeOfBalcony']) && in_array($value, (array)$filterType['typeOfBalcony'])) ? 'checked' : '';
 
-	        $html .= '<li>
-	                    <label class="dropdown-item">
-	                        <input type="checkbox" class="orientation-checkbox" name="orientation[]" value="' . $value . '" ' . $orientationChecked . '> ' . $key . '
-	                    </label>
-	                  </li>';
-	    }
+                $html .= '<li>
+                            <label class="dropdown-item">
+                                <input type="checkbox" class="orientation-checkbox" name="typeOfBalcony[]" value="' . $value . '" ' . $orientationChecked . '> ' . $key . '
+                            </label>
+                          </li>';
+            }
 
 	    $html .=   '</ul>
 	                </div>

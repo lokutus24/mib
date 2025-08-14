@@ -365,7 +365,7 @@ function formatSquareMeter(value) {
                 price_slider_max_value: priceRange[1],
                 floor: selectedFloor,
                 room: selectedRoom,
-                orientation: selectOritentation,
+                typeOfBalcony: selectOritentation,
                 availability: selectAvailability,
                 sort: sort,
                 sortType: sortType,
@@ -383,7 +383,7 @@ function formatSquareMeter(value) {
                 hoverDropDown();
                 updateFloorSelectionCount('floor', 'Emelet');
                 updateFloorSelectionCount('room', 'Szobák');
-                updateFloorSelectionCount('orientation', 'Tájolás');
+                updateFloorSelectionCount('orientation', 'Erkély típusa');
 
                 initializeSlider(minValue, maxValue, response.data.slider_min, response.data.slider_max);
                 initializePriceSlider(priceRange[0], priceRange[1], response.data.price_slider_min, response.data.price_slider_max);
@@ -443,7 +443,7 @@ function formatSquareMeter(value) {
                 slider_max_value: squareRange[1],
                 floor: selectedFloor,
                 room: selectedRoom,
-                orientation: selectOritentation,
+                typeOfBalcony: selectOritentation,
                 availability: selectAvailability,
                 sort: sort,
                 sortType: sortType,
@@ -461,7 +461,7 @@ function formatSquareMeter(value) {
                 hoverDropDown();
                 updateFloorSelectionCount('floor', 'Emelet');
                 updateFloorSelectionCount('room', 'Szobák');
-                updateFloorSelectionCount('orientation', 'Tájolás');
+                updateFloorSelectionCount('orientation', 'Erkély típusa');
                 
                 initializeSlider(squareRange[0], squareRange[1], response.data.slider_min, response.data.slider_max);
                 initializePriceSlider(minValue, maxValue, response.data.price_slider_min, response.data.price_slider_max);
@@ -581,7 +581,7 @@ function formatSquareMeter(value) {
                 action: 'filter_data_by_floor',
                 floor: selectedFloors, // Tömbben küldi az összes bejelölt emelet értékét
                 room: selectedRoom,
-                orientation: selectOritentation,
+                typeOfBalcony: selectOritentation,
                 availability: selectAvailability,
                 slider_min_value: slider_min,
                 slider_max_value: slider_max,
@@ -601,7 +601,7 @@ function formatSquareMeter(value) {
                 hoverDropDown();
                 updateFloorSelectionCount('floor', 'Emelet');
                 updateFloorSelectionCount('room', 'Szobák');
-                updateFloorSelectionCount('orientation', 'Tájolás');
+                updateFloorSelectionCount('orientation', 'Erkély típusa');
                 
                 if ( $("#slider-range").length ) {
                     initializeSlider(slider_min, slider_max, response.data.slider_min, response.data.slider_max);
@@ -680,7 +680,7 @@ function formatSquareMeter(value) {
                 action: 'filter_data_by_room',
                 floor: selectedFloor, // Tömbben küldi az összes bejelölt emelet értékét
                 room: selectedRoom,
-                orientation: selectOritentation,
+                typeOfBalcony: selectOritentation,
                 availability: selectAvailability,
                 slider_min_value: slider_min,
                 slider_max_value: slider_max,
@@ -699,7 +699,7 @@ function formatSquareMeter(value) {
                 hoverDropDown();
                 updateFloorSelectionCount('floor', 'Emelet');
                 updateFloorSelectionCount('room', 'Szobák');
-                updateFloorSelectionCount('orientation', 'Tájolás');
+                updateFloorSelectionCount('orientation', 'Erkély típusa');
                 
                 if ($("#slider-range").length ) {
                     initializeSlider(slider_min, slider_max, response.data.slider_min, response.data.slider_max);
@@ -770,7 +770,7 @@ function formatSquareMeter(value) {
                 action: 'filter_data_by_orientation',
                 floor: selectedFloor,
                 room: selectedRoom,
-                orientation: selectOritentation,
+                typeOfBalcony: selectOritentation,
                 availability: selectAvailability,
                 slider_min_value: slider_min,
                 slider_max_value: slider_max,
@@ -789,7 +789,7 @@ function formatSquareMeter(value) {
                 hoverDropDown();
                 updateFloorSelectionCount('floor', 'Emelet');
                 updateFloorSelectionCount('room', 'Szobák');
-                updateFloorSelectionCount('orientation', 'Tájolás');
+                updateFloorSelectionCount('orientation', 'Erkély típusa');
                 
 
                 if ($("#slider-range").length ) {
@@ -861,7 +861,7 @@ function formatSquareMeter(value) {
                 action: 'filter_data_by_availability',
                 floor: selectedFloor,
                 room: selectedRoom,
-                orientation: selectOritentation,
+                typeOfBalcony: selectOritentation,
                 availability: selectAvailability,
                 slider_min_value: slider_min,
                 slider_max_value: slider_max,
@@ -880,7 +880,7 @@ function formatSquareMeter(value) {
                 hoverDropDown();
                 updateFloorSelectionCount('floor', 'Emelet');
                 updateFloorSelectionCount('room', 'Szobák');
-                updateFloorSelectionCount('orientation', 'Tájolás');
+                updateFloorSelectionCount('orientation', 'Erkély típusa');
             
                 if ($("#slider-range").length ) {
                     initializeSlider(slider_min, slider_max, response.data.slider_min, response.data.slider_max);
@@ -990,7 +990,7 @@ function formatSquareMeter(value) {
                 page: page,
                 floor: selectedFloor,
                 room: selectedRoom,
-                orientation: selectOritentation,
+                typeOfBalcony: selectOritentation,
                 availability: selectAvailability,
                 slider_min_value: slider_min,
                 slider_max_value: slider_max,
@@ -1190,7 +1190,7 @@ function formatSquareMeter(value) {
                     price_slider_max_value: maxPrice,
                     floor: selectedFloor,
                     room: selectedRoom,
-                    orientation: selectOrientation,
+                    typeOfBalcony: selectOrientation,
                     availability: selectAvailability,
                     page_type: (cardContainer.length == 1) ? 'card' : 'table'
                 },
@@ -1205,7 +1205,7 @@ function formatSquareMeter(value) {
                     hoverDropDown();
                     updateFloorSelectionCount('floor', 'Emelet');
                     updateFloorSelectionCount('room', 'Szobák');
-                    updateFloorSelectionCount('orientation', 'Tájolás');
+                    updateFloorSelectionCount('orientation', 'Erkély típusa');
 
                     if ($("#slider-range").length ) {
                         initializeSlider(slider_min, slider_max, response.data.slider_min, response.data.slider_max);
@@ -1281,7 +1281,7 @@ function formatSquareMeter(value) {
                     price_slider_max_value: maxPrice,
                     floor: selectedFloor,
                     room: selectedRoom,
-                    orientation: selectOrientation,
+                    typeOfBalcony: selectOrientation,
                     availability: selectAvailability,
                     page_type: (cardContainer.length == 1) ? 'card' : 'table'
                 },
@@ -1296,7 +1296,7 @@ function formatSquareMeter(value) {
                     hoverDropDown();
                     updateFloorSelectionCount('floor', 'Emelet');
                     updateFloorSelectionCount('room', 'Szobák');
-                    updateFloorSelectionCount('orientation', 'Tájolás');
+                    updateFloorSelectionCount('orientation', 'Erkély típusa');
 
                     if ($("#slider-range").length ) {
                         initializeSlider(slider_min, slider_max, response.data.slider_min, response.data.slider_max);
@@ -1393,7 +1393,7 @@ function formatSquareMeter(value) {
                 slider_min_value:minSquare,//terület
                 slider_max_value:maxSquare,//terület
                 availability: selectAvailability,
-                orientation: selectOritentation,
+                typeOfBalcony: selectOritentation,
                 garden_connection: selectGardenConnection,
                 stairway:selectStairway,
                 sort: sort,
@@ -1546,7 +1546,7 @@ function formatSquareMeter(value) {
             type: 'POST',
             data: {
                 action: 'set_orientation_values_by_catalog',
-                orientation: selectOritentation,
+                typeOfBalcony: selectOritentation,
                 floor_slider_min_value: minFloor,
                 floor_slider_max_value: maxFloor,
                 room_slider_min_value: minRoom,
@@ -1687,7 +1687,7 @@ function formatSquareMeter(value) {
             type: 'POST',
             data: {
                 action: 'set_garden_connection_values_by_catalog',
-                orientation:selectOritentation,
+                typeOfBalcony:selectOritentation,
                 floor_slider_min_value: minFloor,
                 floor_slider_max_value: maxFloor,
                 room_slider_min_value: minRoom,
@@ -1828,7 +1828,7 @@ function formatSquareMeter(value) {
             type: 'POST',
             data: {
                 action: 'set_orientation_values_by_catalog',
-                orientation: selectOritentation,
+                typeOfBalcony: selectOritentation,
                 floor_slider_min_value: minFloor,
                 floor_slider_max_value: maxFloor,
                 room_slider_min_value: minRoom,
@@ -1966,7 +1966,7 @@ function formatSquareMeter(value) {
             type: 'POST',
             data: {
                 action: 'set_residential_park_id',
-                orientation: selectOritentation,
+                typeOfBalcony: selectOritentation,
                 floor_slider_min_value: minFloor,
                 floor_slider_max_value: maxFloor,
                 room_slider_min_value: minRoom,
@@ -2153,7 +2153,7 @@ function formatSquareMeter(value) {
                 price_slider_min_value: minPrice,
                 price_slider_max_value: maxPrice,
                 availability: selectAvailability,
-                orientation: selectOritentation,
+                typeOfBalcony: selectOritentation,
                 garden_connection: selectGardenConnection,
                 page_type: page_type,
             },
@@ -2493,7 +2493,7 @@ function formatSquareMeter(value) {
                 slider_min_value:minSquare,//terület
                 slider_max_value:maxSquare,//terület
                 availability: selectAvailability,
-                orientation: selectOritentation,
+                typeOfBalcony: selectOritentation,
                 garden_connection: selectGardenConnection,
                 stairway:selectStairway,
                 sort: sort,
@@ -2642,7 +2642,7 @@ function formatSquareMeter(value) {
                 sort: sort,
                 sortType: sortType,
                 availability: selectAvailability,
-                orientation: selectOritentation,
+                typeOfBalcony: selectOritentation,
                 garden_connection: selectGardenConnection,
                 stairway:selectStairway,
                 page_type: (cardContainer.length == 1) ? 'card' : 'table',
@@ -2790,7 +2790,7 @@ function formatSquareMeter(value) {
                 slider_min_value: minSquare, // terület
                 slider_max_value: maxSquare, // terület
                 availability: selectAvailability,
-                orientation: selectOritentation,
+                typeOfBalcony: selectOritentation,
                 garden_connection: selectGardenConnection,
                 stairway:selectStairway,
                 sort: sort,
@@ -2940,7 +2940,7 @@ function formatSquareMeter(value) {
                 slider_min_value: minSquare, // terület
                 slider_max_value: maxSquare, // terület
                 availability: selectAvailability,
-                orientation: selectOritentation,
+                typeOfBalcony: selectOritentation,
                 garden_connection: selectGardenConnection,
                 stairway:selectStairway,
                 sort: sort,
@@ -3280,7 +3280,7 @@ function formatSquareMeter(value) {
                 slider_min_value: minSquare, // terület
                 slider_max_value: maxSquare, // terület
                 availability: selectAvailability,
-                orientation: selectOritentation,
+                typeOfBalcony: selectOritentation,
                 garden_connection: selectGardenConnection,
                 stairway:selectStairway,
                 sort: sort,
@@ -3621,7 +3621,7 @@ function formatSquareMeter(value) {
                 room_slider_min_value:selectedRoom[0],
                 room_slider_max_value:selectedRoom[1],
                 room:selectedRoom,
-                orientation: selectOritentation,
+                typeOfBalcony: selectOritentation,
                 availability: selectAvailability,
                 garden_connection: selectGardenConnection,
                 stairway:selectStairway,
@@ -3652,7 +3652,7 @@ function formatSquareMeter(value) {
                 hoverDropDown();
                 updateFloorSelectionCount('floor', 'Emelet');
                 updateFloorSelectionCount('room', 'Szobák');
-                updateFloorSelectionCount('orientation', 'Tájolás');
+                updateFloorSelectionCount('orientation', 'Erkély típusa');
 
                 if (pageType === 'card') {
                     if (response.data.room_slider_min != null) {

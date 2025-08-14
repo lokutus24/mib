@@ -143,9 +143,9 @@ class MibManagerCallbacks extends MibBaseController
 			<input type="number" name="mib-filter-room-to" size="20" value="<?=$room_to;?>" placeholder="ig">
 		</div>
 		
-		<div class="row" style="margin-bottom: 10px;">
-			Tájolás: <input type="checkbox" name="mib-filter-orientation" size="45" <?=$orientation_checked;?>>
-		</div>
+                <div class="row" style="margin-bottom: 10px;">
+                        Erkély típusa: <input type="checkbox" name="mib-filter-orientation" size="45" <?=$orientation_checked;?>>
+                </div>
 
 		<div class="row" style="margin-bottom: 10px;">
 			Elérhetőség: <input type="checkbox" name="mib-filter-availability" size="45" <?=$availability_checked;?>>
