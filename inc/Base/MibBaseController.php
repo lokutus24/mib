@@ -1707,39 +1707,51 @@ class MibBaseController
 
 
 
-	public function getPaginate($currentPage = 1, $totalItems = 750, $itemsPerPage = 50) {
+	public function getPaginate($currentPage = 1, $totalItems = 0, $itemsPerPage = 50)
+	{
+	    // Normalizálás
+	    $currentPage  = max(1, (int) $currentPage);
+	    $totalItems   = max(0, (int) $totalItems);
+	    $itemsPerPage = (int) $itemsPerPage;
 
-	    $html = ' ';
+	    // Ha üres string/0 jött, állítsunk biztonságos alapértéket
+	    if ($itemsPerPage <= 0) {
+	        $itemsPerPage = 50;
+	    }
 
-	    $totalPages = ceil($totalItems / $itemsPerPage);
+	    // Oldalszám
+	    $totalPages = (int) ceil($totalItems / $itemsPerPage);
 
-	    $html .= '<nav aria-label="mib pagination">';
+	    // Ha nincs vagy csak 1 oldal, ne rajzoljunk paginát
+	    if ($totalPages <= 1) {
+	        return '';
+	    }
+
+	    // Biztonság kedvéért a currentPage ne lógjon ki
+	    if ($currentPage > $totalPages) {
+	        $currentPage = $totalPages;
+	    }
+
+	    $html  = '<nav aria-label="mib pagination">';
 	    $html .= '<ul class="pagination" style="display:flex;">';
 
-	    if ($totalPages>1) {
-	    	// Előző oldal
-	    	$prevPage = $currentPage > 1 ? $currentPage - 1 : 1;
-	    	$disabledClass = $currentPage > 1 ? '' : ' disabled';
-	    	$html .= '<li class="page-item' . $disabledClass . '"><a id="page-link" class="page-link" data-page="' . $prevPage . '">«</a></li>';
-		}
+	    // Előző
+	    $prevPage = ($currentPage > 1) ? $currentPage - 1 : 1;
+	    $disabledClass = ($currentPage > 1) ? '' : ' disabled';
+	    $html .= '<li class="page-item' . $disabledClass . '"><a id="page-link" class="page-link" data-page="' . $prevPage . '">«</a></li>';
 
-	    // Oldalszámok
+	    // Oldalszámok (ha sok oldal van, érdemes lenne ablakosítani, de most marad a teljes lista)
 	    for ($i = 1; $i <= $totalPages; $i++) {
-	        $activeClass = $currentPage == $i ? ' active' : '';
+	        $activeClass = ($currentPage === $i) ? ' active' : '';
 	        $html .= '<li class="page-item' . $activeClass . '"><a id="page-link" class="page-link" data-page="' . $i . '">' . $i . '</a></li>';
 	    }
 
-	    if ($totalPages>1) {
-	    	
-	    	// Következő oldal
-	    	$nextPage = $currentPage < $totalPages ? $currentPage + 1 : $totalPages;
-	    	$disabledClass = $currentPage < $totalPages ? '' : ' disabled';
-	    	$html .= '<li class="page-item' . $disabledClass . '"><a id="page-link" class="page-link" data-page="' . $nextPage . '">»</a></li>';
-	    }
-	    
+	    // Következő
+	    $nextPage = ($currentPage < $totalPages) ? $currentPage + 1 : $totalPages;
+	    $disabledClass = ($currentPage < $totalPages) ? '' : ' disabled';
+	    $html .= '<li class="page-item' . $disabledClass . '"><a id="page-link" class="page-link" data-page="' . $nextPage . '">»</a></li>';
 
-	    $html .= '</ul>';
-	    $html .= '</nav>';
+	    $html .= '</ul></nav>';
 
 	    return $html;
 	}

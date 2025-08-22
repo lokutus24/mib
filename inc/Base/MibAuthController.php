@@ -83,141 +83,141 @@ class MibAuthController extends MibBaseController
 	
 	public function getApartments()
 	{
+	    if (empty($this->mibOptions['token'])) {
+	        return []; // nincs token → üres tömb, ne dőljön el
+	    }
 
-		$args = array(
-		    'headers' => array(
-		        'Authorization' => "Bearer {$this->mibOptions['token']}"
-		    )
-		);
+	    $headers = ['Authorization' => "Bearer {$this->mibOptions['token']}"];
+	    $per_page = 50;
+	    $page = 1;
+	    $all_data = [];
 
-		$total_records = 0; // Az összes rekord száma
-		$per_page = 50; // Az oldalankénti rekordok száma
-		$page = 1; // Az első oldalról kezdünk
-		$all_data = array(); // Az összes adatot tároló tömb
+	    do {
+	        $url = add_query_arg([
+	            'page'    => $page,
+	            'perPage' => $per_page,
+	        ], $this->filterApartmentsUrl);
 
-		do {
+	        $response = wp_remote_get($url, ['headers' => $headers]);
 
-		    $args['body'] = array(
-		        'page' => $page,
-		        'perPage' => $per_page
-		    );
+	        if (is_wp_error($response)) {
+	            error_log('MIB getApartments wp_remote_get error: ' . $response->get_error_message());
+	            break;
+	        }
 
-		    $response = wp_remote_get($this->filterApartmentsUrl, $args);
+	        $body = wp_remote_retrieve_body($response);
+	        $json = json_decode($body);
 
+	        $items = (is_object($json) && isset($json->data) && is_array($json->data)) ? $json->data : [];
 
-		    if (!is_wp_error($response)) {
+	        $all_data = array_merge($all_data, $items);
+	        $count_on_page = is_array($items) ? count($items) : 0;
 
-		        $body = wp_remote_retrieve_body($response);
-		        $data = json_decode($body);
+	        $page++;
 
-		        if ($data) {
-		            $all_data = array_merge($all_data, $data->data); // Hozzáadjuk az aktuális oldal adatait az összes adathoz
-		            $total_records += count($data->data); // Frissítjük az összes rekord számát
+	    } while ($count_on_page === $per_page);
 
-		            $page++; // Növeljük az oldalszámot a következő kéréshez
-		        }
-
-		    }else{
-		        // Hiba kezelése, ha szükséges
-		        break; // Kilépünk a ciklusból, ha hiba történt
-		    }
-
-		} while (count($data->data) == $per_page); // Amíg az aktuális oldalon a rekordok száma megegyezik az oldalankénti rekordok számával
-
-        return $all_data;
-		
+	    return $all_data;
 	}
 
 	public function getApartmentsForFrontEnd($per_page = 50, $page = 1, $arg = [])
 	{
-
-		$args = array(
-		    'headers' => array(
-		        'Authorization' => "Bearer {$this->mibOptions['token']}"
-		    )
-		);
-
-		$total_records = 0; // Az összes rekord száma
-		$all_data = array(); // Az összes adatot tároló tömb
-
-		$arg['page'] = $page;
-		$arg['perPage'] = $per_page;
-		$args['body'] = $arg;
-
-	    $response = wp_remote_get($this->filterApartmentsUrl, $args);
-
-	    if (!is_wp_error($response)) {
-
-	        $body = wp_remote_retrieve_body($response);
-	        $data = json_decode($body);
-
-	        if ($data) {
-	            $all_data = $data->data; // Hozzáadjuk az aktuális oldal adatait az összes adathoz
-	            $total_records = $data->count; // Frissítjük az összes rekord számát
-	        }
-
+	    if (empty($this->mibOptions['token'])) {
+	        return ["data" => [], "total" => 0];
 	    }
 
-        return ["data" => $all_data, "total" => $total_records];
-		
+	    $headers = ['Authorization' => "Bearer {$this->mibOptions['token']}"];
+
+	    $query = array_merge($arg, [
+	        'page'    => (int)$page,
+	        'perPage' => (int)$per_page,
+	    ]);
+
+	    $url = add_query_arg($query, $this->filterApartmentsUrl);
+	    $response = wp_remote_get($url, ['headers' => $headers]);
+
+	    if (is_wp_error($response)) {
+	        error_log('MIB getApartmentsForFrontEnd wp_remote_get error: ' . $response->get_error_message());
+	        return ["data" => [], "total" => 0];
+	    }
+
+	    $body = wp_remote_retrieve_body($response);
+	    $json = json_decode($body);
+
+	    $items = (is_object($json) && isset($json->data) && is_array($json->data)) ? $json->data : [];
+	    $total = (int)($json->count ?? 0);
+
+	    return ["data" => $items, "total" => $total];
 	}
 
-	public function getOneApartment($id){
+	public function getOneApartment($id)
+	{
+	    $all_data = [];
+	    $total_records = 0;
 
-		$parkId = $this->mibOptions['mib-residential-park-id'];
-		$response = wp_remote_get( "https://ugyfel.mibportal.hu:3000/apartments/{$parkId}/{$id}", array(
-		    'timeout'     => 0, // Set to 0 for no timeout or to a reasonable time in seconds.
-		    'redirection' => 10,
-		    'httpversion' => '1.1',
-		    'headers'     => array(
-		        'Authorization' => "Bearer {$this->mibOptions['token']}"
-		    ),
-		    'body'        => array(
-		        'id' => $id
-		    ),
-		    'method'      => 'GET',
-		    'data_format' => 'body'
-		));
+	    if (empty($this->mibOptions['token'])) {
+	        return ["data" => $all_data, "total" => $total_records];
+	    }
 
-		if ( !is_wp_error( $response ) ) {
+	    $parkId = $this->mibOptions['mib-residential-park-id'];
+	    $url = "https://ugyfel.mibportal.hu:3000/apartments/{$parkId}/{$id}";
 
-		    $body = wp_remote_retrieve_body( $response );
-		    $data = json_decode($body);
+	    $response = wp_remote_get($url, [
+	        'timeout'     => 10,
+	        'redirection' => 10,
+	        'httpversion' => '1.1',
+	        'headers'     => ['Authorization' => "Bearer {$this->mibOptions['token']}"],
+	    ]);
 
-		    if ($data) {
-	            $all_data = $data; // Hozzáadjuk az aktuális oldal adatait az összes adathoz
-	            $total_records = 1; // Frissítjük az összes rekord számát
+	    if (!is_wp_error($response)) {
+	        $body = wp_remote_retrieve_body($response);
+	        $json = json_decode($body);
+
+	        if ($json) {
+	            $all_data = [$json];
+	            $total_records = 1;
 	        }
-		    return ["data" => [$all_data], "total" => $total_records];
-		}
+	    } else {
+	        error_log('MIB getOneApartment error: ' . $response->get_error_message());
+	    }
+
+	    return ["data" => $all_data, "total" => $total_records];
 	}
 
-	public function getOneApartmentsById($id){
+	public function getOneApartmentsById($id)
+	{
+	    $all_data = [];
+	    $total_records = 0;
 
-		$response = wp_remote_get( "https://ugyfel.mibportal.hu:3000/apartments?name={$id}", array(
-		    'timeout'     => 0, // Set to 0 for no timeout or to a reasonable time in seconds.
-		    'redirection' => 10,
-		    'httpversion' => '1.1',
-		    'headers'     => array(
-		        'Authorization' => "Bearer {$this->mibOptions['token']}"
-		    ),
-		    'body'        => array(
-		        'name' => $id,
-		    ),
-		    'method'      => 'GET',
-		    'data_format' => 'body'
-		));
+	    if (empty($this->mibOptions['token'])) {
+	        return ["data" => $all_data, "total" => $total_records];
+	    }
 
-		if ( !is_wp_error( $response ) ) {
+	    $url = add_query_arg(['name' => $id], "https://ugyfel.mibportal.hu:3000/apartments");
 
-		    $body = wp_remote_retrieve_body( $response );
-		    $data = json_decode($body);
+	    $response = wp_remote_get($url, [
+	        'timeout'     => 10,
+	        'redirection' => 10,
+	        'httpversion' => '1.1',
+	        'headers'     => ['Authorization' => "Bearer {$this->mibOptions['token']}"],
+	    ]);
 
-		    if ($data) {
-	            $all_data = $data->data[0]; // Hozzáadjuk az aktuális oldal adatait az összes adathoz
-	            $total_records = 1; // Frissítjük az összes rekord számát
+	    if (!is_wp_error($response)) {
+	        $body = wp_remote_retrieve_body($response);
+	        $json = json_decode($body);
+
+	        $first = (is_object($json) && isset($json->data) && is_array($json->data) && !empty($json->data))
+	            ? $json->data[0]
+	            : null;
+
+	        if ($first) {
+	            $all_data = [$first];
+	            $total_records = 1;
 	        }
-		    return ["data" => [$all_data], "total" => $total_records];
-		}
+	    } else {
+	        error_log('MIB getOneApartmentsById error: ' . $response->get_error_message());
+	    }
+
+	    return ["data" => $all_data, "total" => $total_records];
 	}
 }
