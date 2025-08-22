@@ -433,13 +433,14 @@ class MibManagerCallbacks extends MibBaseController
 	                'load_more' => 'Paginate helyett Load more',
 	                'available_only' => 'Elérhetőség',
 	                'hide_unavailable' => 'Nem elérhetők elrejtése alapbeállítás',
-	                'orientation_filters' => 'Tájolás szűrés',
-	                'display_logo' => 'Logo megjelenítés',
-	                'display_address' => 'Helység megjelenítés',
-	                'garden_connection_filter' => 'Kertkapcsolat szűrés',
-					'staircase_filter' => 'Lépcsőház szűrés',
-					'sort_filter' => 'Rendezés',
-	            ];
+                        'orientation_filters' => 'Tájolás szűrés',
+                        'display_logo' => 'Logo megjelenítés',
+                        'display_address' => 'Helység megjelenítés',
+                        'garden_connection_filter' => 'Kertkapcsolat szűrés',
+                                        'staircase_filter' => 'Lépcsőház szűrés',
+                                        'sort_filter' => 'Rendezés',
+                        'gallery_first_image' => 'Lakás galéria első képének megjelenítése',
+                    ];
 	            echo "<hr><strong>További beállítások:</strong><br>";
 	            foreach ($extra_options as $key => $label) {
 	                echo "<label><input type='checkbox' name='extras[]' value='{$key}'> {$label}</label><br>";
