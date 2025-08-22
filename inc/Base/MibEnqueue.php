@@ -17,10 +17,11 @@ class MibEnqueue extends MibBaseController
 	public function __construct()
 	{
 		parent::__construct();
-		if (isset($_POST['shortcode'])) {
-			$this->filterType = $this->get_shortcode_config_by_name($_POST['shortcode']);
-		}
-	}
+                if (isset($_POST['shortcode'])) {
+                        $this->filterType = $this->get_shortcode_config_by_name($_POST['shortcode']);
+                        $this->selectedShortcodeOption = $this->filterType;
+                }
+        }
 
 	public function registerFunction(){
 
