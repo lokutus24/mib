@@ -79,6 +79,21 @@ class MibBaseController
         //  'csökkentett',
     ];
 
+    private $parkNames = [
+	    7  => 'Albion 32',
+	    9  => 'BudaBright',
+	    10 => 'PápayPark',
+	    11 => 'Loft52',
+	    12 => 'MyLelle',
+	    31 => 'Páva 8',
+	    35 => 'BartokHarmonyHomes',
+	    40 => 'Novus Liget',
+	    41 => 'Frangepán',
+	    42 => 'BrickeryHomes',
+	    43 => 'Revital Park',
+	    44 => 'Vác Dunakert',
+	];
+
     public function getTypes() {
         return $this->types;
     }
@@ -142,58 +157,47 @@ class MibBaseController
 		$table_data = [];
         foreach ($datas['data'] as $item) {
 
-		    /*if (isset($item->apartmentsDocuments)) {
-		        $filteredPdfDocuments = array_values(array_filter($item->apartmentsDocuments, fn($doc) => $doc->extension === 'pdf'));
-		        $filteredPngDocuments = array_values(array_filter($item->apartmentsDocuments, fn($doc) => $doc->extension === 'png'));
-		    }
-
-		    $pdfDocument = (!empty($filteredPdfDocuments) && isset($filteredPdfDocuments[0]->preview)) ? $filteredPdfDocuments[0]->preview : '';
-		    $pngDocument = (!empty($filteredPngDocuments) && isset($filteredPngDocuments[0]->preview)) ? $filteredPngDocuments[0]->preview : '';*/
-
 		    // Lekérjük az adatokat a get_attachments_by_meta_values függvényből
 		    $attachments = $this->get_attachments_by_meta_values($item->name);
 
-		    // Alapértelmezett értékek
-		    //$alaprajz = (!empty($pdfDocument)) ? '<a href="'.$pdfDocument.'" target="_blank" rel="noopener">Alaprajz megtekintése</a>' : '';
-		    //$szintrajz = (!empty($pngDocument)) ? '<a href="'.$pngDocument.'" target="_blank" rel="noopener">Szintrajz megtekintése</a>' : '';
-		    
-                    $image = '';
-                    $szintrajz = '';
-                    $alaprajz = '';
+            $image = '';
+            $szintrajz = '';
+            $alaprajz = '';
 
-                    $useGalleryImage = (
-                        !empty($this->selectedShortcodeOption['extras']) &&
-                        in_array('gallery_first_image', $this->selectedShortcodeOption['extras'])
-                    );
+            $useGalleryImage = (
+                !empty($this->selectedShortcodeOption['extras']) &&
+                in_array('gallery_first_image', $this->selectedShortcodeOption['extras'])
+            );
 
-                    if (isset($item->apartmentsImages) && !empty($item->apartmentsImages)) {
-                        foreach ($item->apartmentsImages as $img) {
-                            if (
-                                $useGalleryImage &&
-                                empty($image) &&
-                                isset($img->category) &&
-                                $img->category === 'Gallery' &&
-                                isset($img->src)
-                            ) {
-                                $image = $img->src;
-                            }
-                            if (isset($img->category) && $img->category === 'Synopsis' && isset($img->src)) {
-                                $szintrajz = '<a href="'.$img->src.'" target="_blank" rel="noopener">Szintrajz megtekintése</a>';
-                            }
-                        }
+            if (isset($item->apartmentsImages) && !empty($item->apartmentsImages)) {
+                foreach ($item->apartmentsImages as $img) {
+                    if (
+                        $useGalleryImage &&
+                        empty($image) &&
+                        isset($img->category) &&
+                        $img->category === 'Gallery' &&
+                        isset($img->src)
+                    ) {
+                        $image = $img->src;
                     }
-
-                    if (isset($item->apartmentsDocuments) && !empty($item->apartmentsDocuments)) {
-                        foreach ($item->apartmentsDocuments as $img) {
-                            if (isset($img->category) && $img->category === 'Floorplan' && isset($img->src)) {
-                                if (!$useGalleryImage || empty($image)) {
-                                    $image = $img->src;
-                                }
-                                $alaprajz = '<a href="'.$img->src.'" target="_blank" rel="noopener">Alaprajz megtekintése</a>';
-                                break;
-                            }
-                        }
+                    if (isset($img->category) && $img->category === 'Synopsis' && isset($img->src)) {
+                        $szintrajz = '<a href="'.$img->src.'" target="_blank" rel="noopener">Szintrajz megtekintése</a>';
                     }
+                }
+
+
+                if (isset($item->apartmentsDocuments) && !empty($item->apartmentsDocuments)) {
+	                foreach ($item->apartmentsDocuments as $img) {
+	                    if (isset($img->category) && $img->category === 'Floorplan' && isset($img->src)) {
+	                        if (!$useGalleryImage || empty($image)) {
+	                            $image = $img->src;
+	                        }
+	                        $alaprajz = '<a href="'.$img->src.'" target="_blank" rel="noopener">Alaprajz megtekintése</a>';
+	                        break;
+	                    }
+	                }
+	            }
+            }
 
 		    // Végigmegyünk az adatbázisból lekért csatolmányokon és frissítjük a megfelelő értékeket
 		    if (!empty($attachments)) {
