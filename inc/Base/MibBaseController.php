@@ -1393,18 +1393,21 @@ class MibBaseController
 	    return $html;
 	}
 
-	private function getFilterResidentalParksShortCodeByCatalog($parkIds) {
+        private function getFilterResidentalParksShortCodeByCatalog($parkIds) {
 
-	    // Alapértelmezett értékek
-	    $html = '<select class="form-select select-residential-park" aria-label="Park kiválasztása">';
-	    $html .= '<option value="" selected>Park kiválasztása</option>';
-		    		foreach ($parkIds as $park => $id) {
-		    			$html .= '<option value="'.$id.'">'.$id.'</option>';
-		    		}
-	    $html .= '</select>';
+            // Alapértelmezett értékek
+            $html = '<select class="form-select select-residential-park" aria-label="Park kiválasztása">';
+            $html .= '<option value="" selected>Park kiválasztása</option>';
 
-	    return $html;
-	}
+            foreach ($parkIds as $park => $id) {
+                $name = $this->parkNames[$id] ?? $id;
+                $html .= '<option value="'.$id.'">'.$name.'</option>';
+            }
+
+            $html .= '</select>';
+
+            return $html;
+        }
 
 
 	private function getFilterResidentalParkShortCodeByCatalog() {
