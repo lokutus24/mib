@@ -613,23 +613,28 @@ class MibBaseController
 
 	    $html .= '</div>';
 
-
+	    	
 	    $html .= '<div class="custom-filter-container">';
 		$html .= '<div class="mb-2">';
-		$html .= '<button type="button" class="btn btn-outline-secondary btn-sm" id="toggle-advanced-filters">';
-		$html .= '<i class="fas fa-sliders-h me-1"></i> További szűrők';
-		$html .= '</button>';
+
+			if (in_array('orientation_filters', $filterType['extras']) || in_array('available_only', $filterType['extras']) || in_array('garden_connection_filter', $filterType['extras']) || in_array('staircase_filter', $filterType['extras']) ) {
+			$html .= '<button type="button" class="btn btn-outline-secondary btn-sm" id="toggle-advanced-filters">';
+			$html .= '<i class="fas fa-sliders-h me-1"></i> További szűrők';
+			$html .= '</button>';
+
+			}
 		$html .= '</div>';
+	   
 
 		$html .= '<div id="advanced-filters" class="flex-wrap" style="display:none;">';
 
 			// Tájolás szűrő
-			if (in_array('orientation_filters', $filterType['extras'])) {
+			if (in_array('orientation_filters', $filterType['extras']) ) {
 			    $html .= $this->getFilterOrientationByCatalog($filterType);
 			}
 
 			// Elérhetőség szűrő
-			if (in_array('available_only', $filterType['extras']) && !in_array('hide_unavailable', $filterType['extras'])) {
+			if (in_array('available_only', $filterType['extras']) && !in_array('hide_unavailable', $filterType['extras']) ) {
 			    $html .= $this->getFilterAvailabilityByCatalog($filterType);
 			}
 
@@ -1393,21 +1398,21 @@ class MibBaseController
 	    return $html;
 	}
 
-        private function getFilterResidentalParksShortCodeByCatalog($parkIds) {
+    private function getFilterResidentalParksShortCodeByCatalog($parkIds) {
 
-            // Alapértelmezett értékek
-            $html = '<select class="form-select select-residential-park" aria-label="Park kiválasztása">';
-            $html .= '<option value="" selected>Park kiválasztása</option>';
+        // Alapértelmezett értékek
+        $html = '<select class="form-select select-residential-park" aria-label="Park kiválasztása">';
+        $html .= '<option value="" selected>Park kiválasztása</option>';
 
-            foreach ($parkIds as $park => $id) {
-                $name = $this->parkNames[$id] ?? $id;
-                $html .= '<option value="'.$id.'">'.$name.'</option>';
-            }
-
-            $html .= '</select>';
-
-            return $html;
+        foreach ($parkIds as $park => $id) {
+            $name = $this->parkNames[$id] ?? $id;
+            $html .= '<option value="'.$id.'">'.$name.'</option>';
         }
+
+        $html .= '</select>';
+
+        return $html;
+    }
 
 
 	private function getFilterResidentalParkShortCodeByCatalog() {
