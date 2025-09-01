@@ -159,6 +159,19 @@ jQuery(function($) {
 });
 jQuery(document).ready(function($) {
 
+    $.ajaxPrefilter(function(options, originalOptions, jqXHR) {
+        var district = $('.district-select').val();
+        if (district) {
+            if (typeof options.data === 'string') {
+                options.data += (options.data ? '&' : '') + 'district=' + encodeURIComponent(district);
+            } else if (options.data) {
+                options.data.district = district;
+            } else {
+                options.data = { district: district };
+            }
+        }
+    });
+
     var debounceTimer;
 
     function isDefaultCatalog() {
@@ -907,6 +920,97 @@ function formatSquareMeter(value) {
                     $('#min-area').val(slider_min);
                     $('#max-area').val(slider_max);
                 }
+            }
+        });
+    });
+
+    $(document).on('change', '.district-select', function(e) {
+
+        e.preventDefault();
+        $('#mib-spinner').show();
+        var table = $('#custom-list-table-container');
+
+        var cardContainer = $('#custom-card-container');
+
+        var selectedFloor = $('.floor-checkbox:checked').map(function() {
+            return this.value;
+        }).get();
+        var selectedRoom = $('.room-checkbox:checked').map(function() {
+            return this.value;
+        }).get();
+
+        var selectOritentation = $('.orientation-checkbox:checked').map(function() {
+            return this.value;
+        }).get();
+
+        var selectAvailability = $('.availability-checkbox:checked').map(function() {
+            return this.value;
+        }).get();
+
+        var squareVals = getMainSliderValues();
+        var slider_min = squareVals[0];
+        var slider_max = squareVals[1];
+
+        var priceVals = getPriceSliderValues();
+        var price_slider_min_value = priceVals[0];
+        var price_slider_max_value = priceVals[1];
+
+        $.ajax({
+            url: ajaxurl,
+            type: 'POST',
+            dataType: 'JSON',
+            data: {
+                action: 'filter_data_by_district',
+                floor: selectedFloor,
+                room: selectedRoom,
+                typeOfBalcony: selectOritentation,
+                availability: selectAvailability,
+                slider_min_value: slider_min,
+                slider_max_value: slider_max,
+                price_slider_min_value: price_slider_min_value,
+                price_slider_max_value: price_slider_max_value,
+                page_type: (cardContainer.length == 1) ? 'card' : 'table'
+            },
+            success: function(response) {
+                if (table.length>0) {
+                  table.replaceWith(response.data.html);
+                }else{
+                   cardContainer.replaceWith(response.data.html);
+                   restoreViewMode();
+                }
+                $('#mib-spinner').hide();
+                hoverDropDown();
+                updateFloorSelectionCount('floor', 'Emelet');
+                updateFloorSelectionCount('room', 'Szobák');
+                updateFloorSelectionCount('orientation', 'Erkély típusa');
+
+                if ($("#slider-range").length ) {
+                    initializeSlider(slider_min, slider_max, response.data.slider_min, response.data.slider_max);
+                    initializePriceSlider(price_slider_min_value, price_slider_max_value, response.data.price_slider_min, response.data.price_slider_max);
+                }else{
+                    $('#min-price').val(price_slider_min_value);
+                    $('#max-price').val(price_slider_max_value);
+
+                    $('#min-area').val(slider_min);
+                    $('#max-area').val(slider_max);
+                }
+                checkIfAnyFilterIsActive();
+            },
+            error: function(error) {
+                console.log(error);
+                $('#mib-spinner').hide();
+                hoverDropDown();
+                if ($("#slider-range").length ) {
+                    initializeSlider(slider_min, slider_max, response.data?.slider_min, response.data?.slider_max);
+                    initializePriceSlider(price_slider_min_value, price_slider_max_value, response.data?.price_slider_min, response.data?.price_slider_max);
+                }else{
+                    $('#min-price').val(price_slider_min_value);
+                    $('#max-price').val(price_slider_max_value);
+
+                    $('#min-area').val(slider_min);
+                    $('#max-area').val(slider_max);
+                }
+                checkIfAnyFilterIsActive();
             }
         });
     });
@@ -3455,6 +3559,10 @@ function formatSquareMeter(value) {
         }
 
         if ($(".availability-checkbox:checked").length > 0) {
+            isActive = true;
+        }
+
+        if ($('.district-select').val()) {
             isActive = true;
         }
 
