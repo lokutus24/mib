@@ -46,11 +46,14 @@ class MibEnqueue extends MibBaseController
 		add_action('wp_ajax_filter_data_by_room', array($this, "filter_data_by_room") );
 		add_action('wp_ajax_nopriv_filter_data_by_room', array($this, "filter_data_by_room"));
 
-		add_action('wp_ajax_filter_data_by_orientation', array($this, "filter_data_by_orientation") );
-		add_action('wp_ajax_nopriv_filter_data_by_orientation', array($this, "filter_data_by_orientation"));
+                add_action('wp_ajax_filter_data_by_orientation', array($this, "filter_data_by_orientation") );
+                add_action('wp_ajax_nopriv_filter_data_by_orientation', array($this, "filter_data_by_orientation"));
 
-		add_action('wp_ajax_filter_data_by_availability', array($this, "filter_data_by_availability") );
-		add_action('wp_ajax_nopriv_filter_data_by_availability', array($this, "filter_data_by_availability"));
+                add_action('wp_ajax_filter_data_by_availability', array($this, "filter_data_by_availability") );
+                add_action('wp_ajax_nopriv_filter_data_by_availability', array($this, "filter_data_by_availability"));
+
+                add_action('wp_ajax_filter_data_by_district', array($this, "filter_data_by_district") );
+                add_action('wp_ajax_nopriv_filter_data_by_district', array($this, "filter_data_by_district"));
 
 		add_action('wp_ajax_deletefilters', array($this, "delete_filters") );
 		add_action('wp_ajax_nopriv_deletefilters', array($this, "delete_filters"));
@@ -835,6 +838,9 @@ class MibEnqueue extends MibBaseController
 		    $params['stairway'] = (!is_string($params['stairway'])) ? implode(',',$params['stairway']) : $params['stairway'];
 		    $args = array_merge($args, ['stairway' => $params['stairway']]);
 		} 
+		if ( !empty($params['district'] ) ) {
+			$args = array_merge($args, ['district' => sanitize_text_field($params['district'])]);
+		}
 		// Sorting parameters
 		if ( !empty($params['sort']) ) {
 		    $args = array_merge($args, ['sort' => sanitize_text_field($params['sort'])]);
@@ -929,6 +935,9 @@ class MibEnqueue extends MibBaseController
 			$params['availability'] = (!is_string($params['availability'])) ? implode(',',$params['availability']) : $params['availability'];
        		    $args = array_merge($args, ['status' => $params['availability']]);
        		}
+		if ( !empty($params['district'] ) ) {
+			$args = array_merge($args, ['district' => sanitize_text_field($params['district'])]);
+		}
        		// Sorting parameters
        		if (!empty($params['sort'])) {
        		    $args = array_merge($args, ['sort' => sanitize_text_field($params['sort'])]);
@@ -1050,4 +1059,21 @@ class MibEnqueue extends MibBaseController
 
 
 
+        public function filter_data_by_district()
+        {
+                $perPage = ($_POST['page_type'] == 'card') ? ((isset($_POST['apartman_number']) && !empty($_POST['apartman_number']) ) ? $_POST['apartman_number'] : $this->numberOfApartmens) : 50;
+                list($args, $page) = $this->getArgumentums($_POST);
+                list($slider_min, $slider_max, $price_slider_min, $price_slider_max) = $this->getBaseSliderDatas();
+                $html = $this->getTable($args, $page, $perPage, $_POST['page_type']);
+
+                wp_send_json_success([
+                        'html'           => $html,
+                'slider_min' => $slider_min,
+                'slider_max' => $slider_max,
+                'price_slider_min' => $price_slider_min,
+                'price_slider_max' => $price_slider_max,
+            ]);
+
+            wp_die();
+        }
 }
