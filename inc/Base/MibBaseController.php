@@ -80,19 +80,45 @@ class MibBaseController
     ];
 
     private $parkNames = [
-	    7  => 'Albion 32',
-	    9  => 'BudaBright',
-	    10 => 'PápayPark',
-	    11 => 'Loft52',
-	    12 => 'MyLelle',
-	    31 => 'Páva 8',
-	    35 => 'BartokHarmonyHomes',
-	    40 => 'Novus Liget',
-	    41 => 'Frangepán',
-	    42 => 'BrickeryHomes',
-	    43 => 'Revital Park',
-	    44 => 'Vác Dunakert',
-	];
+            7  => 'Albion 32',
+            9  => 'BudaBright',
+            10 => 'PápayPark',
+            11 => 'Loft52',
+            12 => 'MyLelle',
+            31 => 'Páva 8',
+            35 => 'BartokHarmonyHomes',
+            40 => 'Novus Liget',
+            41 => 'Frangepán',
+            42 => 'BrickeryHomes',
+            43 => 'Revital Park',
+            44 => 'Vác Dunakert',
+        ];
+
+    private $districtNames = [
+        'I' => 'I. kerület',
+        'II' => 'II. kerület',
+        'III' => 'III. kerület',
+        'IV' => 'IV. kerület',
+        'V' => 'V. kerület',
+        'VI' => 'VI. kerület',
+        'VII' => 'VII. kerület',
+        'VIII' => 'VIII. kerület',
+        'IX' => 'IX. kerület',
+        'X' => 'X. kerület',
+        'XI' => 'XI. kerület',
+        'XII' => 'XII. kerület',
+        'XIII' => 'XIII. kerület',
+        'XIV' => 'XIV. kerület',
+        'XV' => 'XV. kerület',
+        'XVI' => 'XVI. kerület',
+        'XVII' => 'XVII. kerület',
+        'XVIII' => 'XVIII. kerület',
+        'XIX' => 'XIX. kerület',
+        'XX' => 'XX. kerület',
+        'XXI' => 'XXI. kerület',
+        'XXII' => 'XXII. kerület',
+        'XXIII' => 'XXIII. kerület',
+    ];
 
 	private $districtNames = [
 	    0  => 'I',
@@ -652,17 +678,20 @@ class MibBaseController
 		$html .= '</div>';
 	   
 
-		$html .= '<div id="advanced-filters" class="flex-wrap" style="display:none;">';
+                $html .= '<div id="advanced-filters" class="flex-wrap" style="display:none;">';
 
-			// Tájolás szűrő
-			if (in_array('orientation_filters', $filterType['extras']) ) {
-			    $html .= $this->getFilterOrientationByCatalog($filterType);
-			}
+                        // Tájolás szűrő
+                        if (in_array('orientation_filters', $filterType['extras']) ) {
+                            $html .= $this->getFilterOrientationByCatalog($filterType);
+                        }
 
-			// Elérhetőség szűrő
-			if (in_array('available_only', $filterType['extras']) && !in_array('hide_unavailable', $filterType['extras']) ) {
-			    $html .= $this->getFilterAvailabilityByCatalog($filterType);
-			}
+                        // Kerület szűrő
+                        $html .= $this->getFilterDistrictByCatalog($filterType);
+
+                        // Elérhetőség szűrő
+                        if (in_array('available_only', $filterType['extras']) && !in_array('hide_unavailable', $filterType['extras']) ) {
+                            $html .= $this->getFilterAvailabilityByCatalog($filterType);
+                        }
 
 			// Kertkapcsolat szűrő
 			if (in_array('garden_connection_filter', $filterType['extras'])) {
@@ -893,11 +922,13 @@ class MibBaseController
 		$html .= '</button>';
 		$html .= '</div>';
 
-		$html .= '<div id="advanced-filters" class="flex-wrap" style="display:none;">';
+                $html .= '<div id="advanced-filters" class="flex-wrap" style="display:none;">';
 
-				if (isset($this->filterOptionDatas['mib-filter-orientation']) && $this->filterOptionDatas['mib-filter-orientation'] == true) {
-	                $html .= $this->getFilterOrientationByCatalog($filterType);
-	            }
+                $html .= $this->getFilterDistrictByCatalog($filterType);
+
+                                if (isset($this->filterOptionDatas['mib-filter-orientation']) && $this->filterOptionDatas['mib-filter-orientation'] == true) {
+                        $html .= $this->getFilterOrientationByCatalog($filterType);
+                    }
 	            //ha a "Nem elérhetők elrejtése alapbeállítás" alapból nincs bepipálva.
 	            if (isset($this->filterOptionDatas['mib-filter-availability']) && $this->filterOptionDatas['mib-filter-availability'] == true && $this->filterOptionDatas['inactive_hide'] != 1) {
                     $html .= $this->getFilterAvailabilityByCatalog($filterType);
@@ -1519,6 +1550,23 @@ class MibBaseController
             return $html;
         }
 
+        private function getFilterDistrictByCatalog($filterType) {
+            $selected = $filterType['district'] ?? '';
+
+            $html = '<div class="catalog-dropdown mt-3">'
+                . '<select id="district-select" class="form-select district-select">'
+                . '<option value="">Kerület</option>';
+
+            foreach ($this->districtNames as $key => $value) {
+                $selectedAttr = ($selected === $key) ? ' selected' : '';
+                $html .= '<option value="' . esc_attr($key) . '"' . $selectedAttr . '>' . esc_html($value) . '</option>';
+            }
+
+            $html .= '</select></div>';
+
+            return $html;
+        }
+
 
     private function getFilterFloor($filterType) {
 
@@ -1619,10 +1667,27 @@ class MibBaseController
 	                </div>
 	            </div>';
 
-	    return $html;
-	}
+            return $html;
+        }
 
-	private function getFilterAvailability($filterType) {
+        private function getFilterDistrict($filterType) {
+            $selected = $filterType['district'] ?? '';
+
+            $html = '<div class="mb-2">'
+                . '<select id="district-select" class="form-select district-select">'
+                . '<option value="">Kerület</option>';
+
+            foreach ($this->districtNames as $key => $value) {
+                $selectedAttr = ($selected === $key) ? ' selected' : '';
+                $html .= '<option value="' . esc_attr($key) . '"' . $selectedAttr . '>' . esc_html($value) . '</option>';
+            }
+
+            $html .= '</select></div>';
+
+            return $html;
+        }
+
+        private function getFilterAvailability($filterType) {
 
 	    if (isset($filterType['status']) && !is_array($filterType['status'])) {
 	        $filterType['status'] = explode(',', $filterType['status']);
