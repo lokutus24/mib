@@ -46,14 +46,14 @@ class MibEnqueue extends MibBaseController
 		add_action('wp_ajax_filter_data_by_room', array($this, "filter_data_by_room") );
 		add_action('wp_ajax_nopriv_filter_data_by_room', array($this, "filter_data_by_room"));
 
-                add_action('wp_ajax_filter_data_by_orientation', array($this, "filter_data_by_orientation") );
-                add_action('wp_ajax_nopriv_filter_data_by_orientation', array($this, "filter_data_by_orientation"));
+        add_action('wp_ajax_filter_data_by_orientation', array($this, "filter_data_by_orientation") );
+        add_action('wp_ajax_nopriv_filter_data_by_orientation', array($this, "filter_data_by_orientation"));
 
-                add_action('wp_ajax_filter_data_by_availability', array($this, "filter_data_by_availability") );
-                add_action('wp_ajax_nopriv_filter_data_by_availability', array($this, "filter_data_by_availability"));
+        add_action('wp_ajax_filter_data_by_availability', array($this, "filter_data_by_availability") );
+        add_action('wp_ajax_nopriv_filter_data_by_availability', array($this, "filter_data_by_availability"));
 
-                add_action('wp_ajax_filter_data_by_district', array($this, "filter_data_by_district") );
-                add_action('wp_ajax_nopriv_filter_data_by_district', array($this, "filter_data_by_district"));
+        add_action('wp_ajax_filter_data_by_district', array($this, "filter_data_by_district") );
+        add_action('wp_ajax_nopriv_filter_data_by_district', array($this, "filter_data_by_district"));
 
 		add_action('wp_ajax_deletefilters', array($this, "delete_filters") );
 		add_action('wp_ajax_nopriv_deletefilters', array($this, "delete_filters"));
@@ -816,10 +816,15 @@ class MibEnqueue extends MibBaseController
 		    $args = array_merge($args, ['numberOfRooms' => $params['room_slider_min_value']."-".$params['room_slider_max_value'] ]);
 		}
 
-                if ( !empty($params['typeOfBalcony'] ) ) {
-                    $params['typeOfBalcony'] = (!is_string($params['typeOfBalcony'])) ? implode(',', $params['typeOfBalcony']) : $params['typeOfBalcony'];
-                    $args = array_merge($args, ['typeOfBalcony' => $params['typeOfBalcony']]);
-                }
+        if ( !empty($params['typeOfBalcony'] ) ) {
+            $params['typeOfBalcony'] = (!is_string($params['typeOfBalcony'])) ? implode(',', $params['typeOfBalcony']) : $params['typeOfBalcony'];
+            $args = array_merge($args, ['typeOfBalcony' => $params['typeOfBalcony']]);
+        }
+
+
+        if ( !empty($params['district'] ) ) {
+			$args = array_merge($args, ['district' => sanitize_text_field($params['district'])]);
+		}
 
 		if ( !empty($params['availability'] ) ) {
 
@@ -1059,21 +1064,30 @@ class MibEnqueue extends MibBaseController
 
 
 
-        public function filter_data_by_district()
-        {
-                $perPage = ($_POST['page_type'] == 'card') ? ((isset($_POST['apartman_number']) && !empty($_POST['apartman_number']) ) ? $_POST['apartman_number'] : $this->numberOfApartmens) : 50;
-                list($args, $page) = $this->getArgumentums($_POST);
-                list($slider_min, $slider_max, $price_slider_min, $price_slider_max) = $this->getBaseSliderDatas();
-                $html = $this->getTable($args, $page, $perPage, $_POST['page_type']);
+    public function filter_data_by_district()
+    {
+        $perPage = ($_POST['page_type'] == 'card') ? ((isset($_POST['apartman_number']) && !empty($_POST['apartman_number']) ) ? $_POST['apartman_number'] : $this->numberOfApartmens) : 50;
 
-                wp_send_json_success([
-                        'html'           => $html,
-                'slider_min' => $slider_min,
-                'slider_max' => $slider_max,
-                'price_slider_min' => $price_slider_min,
-                'price_slider_max' => $price_slider_max,
-            ]);
+		list($args, $page) = $this->getArgumentumsByCatalog($_POST);
 
-            wp_die();
-        }
+        list($slider_min, $slider_max, $price_slider_min, $price_slider_max, $floor_slider_min, $floor_slider_max, $room_slider_min, $room_slider_max, $garden_connection) = $this->getBaseSliderDatas();
+		$html = $this->getTable($args, $page, $perPage, $_POST['page_type']);
+
+        wp_send_json_success([
+            'html'                => $html,
+            'slider_min'          => $slider_min,
+            'slider_max'          => $slider_max,
+            'price_slider_min'    => $price_slider_min,
+            'price_slider_max'    => $price_slider_max,
+            'floor_slider_min'    => $floor_slider_min,
+            'floor_slider_max'    => $floor_slider_max,
+            'room_slider_min'     => $room_slider_min,
+            'room_slider_max'     => $room_slider_max,
+            'garden_connection'   => $garden_connection,
+            'orientation_filter'  => ( (isset($_POST['apartman_number']) && !empty($this->filterType) && in_array('orientation_filters', $this->filterType['extras'])) ) ? 1 : null,
+            'available_only'      => ( (isset($_POST['apartman_number']) && !empty($this->filterType) && in_array('available_only', $this->filterType['extras'])) ) ? 1 : null
+        ]);
+
+		wp_die();
+    }
 }
