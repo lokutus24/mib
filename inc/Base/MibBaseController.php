@@ -629,9 +629,7 @@ class MibBaseController
 		                        $html .= $this->getFilterAreaShortCodeByCatalog($filterType['ranges']['area']['min'], $filterType['ranges']['area']['max']);
 		                    }
 
-		                    if (count($filterType['residential_park_ids'])>1) {
-		                    	$html .= $this->getFilterResidentalParksShortCodeByCatalog($filterType['residential_park_ids']);
-		                    }
+		          
 
 	                	}
 	                }
@@ -642,7 +640,14 @@ class MibBaseController
 
 	    	
 	    $html .= '<div class="custom-filter-container">';
-		$html .= '<div class="mb-2">';
+
+	    
+
+		$html .= '<div class="mb-2" id="parksfilter">';
+
+			if (count($filterType['residential_park_ids'])>1) {
+	        	$html .= $this->getFilterResidentalParksShortCodeByCatalog($filterType['residential_park_ids']);
+	        }
 
 			if (in_array('orientation_filters', $filterType['extras']) || in_array('available_only', $filterType['extras']) || in_array('garden_connection_filter', $filterType['extras']) || in_array('staircase_filter', $filterType['extras']) ) {
 			$html .= '<button type="button" class="btn btn-outline-secondary btn-sm" id="toggle-advanced-filters">';
@@ -651,7 +656,7 @@ class MibBaseController
 
 			}
 		$html .= '</div>';
-	   
+	   			
 
                 $html .= '<div id="advanced-filters" class="flex-wrap" style="display:none;">';
 
@@ -1433,8 +1438,8 @@ class MibBaseController
     private function getFilterResidentalParksShortCodeByCatalog($parkIds) {
 
         // Alapértelmezett értékek
-        $html = '<select class="form-select select-residential-park" aria-label="Park kiválasztása">';
-        $html .= '<option value="" selected>Park kiválasztása</option>';
+        $html = '<select class="form-select select-residential-park" aria-label="Lakópark kiválasztása">';
+        $html .= '<option value="" selected>Lakópark kiválasztása</option>';
 
         foreach ($parkIds as $park => $id) {
             $name = $this->parkNames[$id] ?? $id;

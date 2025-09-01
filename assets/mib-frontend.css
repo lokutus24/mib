@@ -1301,7 +1301,14 @@ width: 100% !important; /* Kis százalékos szélesség, hogy négy blokk elfér
 }
 
 .select-residential-park{
-    width: 150px !important;
+    width: 210px !important;
     height: 57px;
     margin-top: 10px;
+}
+#parksfilter{
+    display: flex;
+}
+#toggle-advanced-filters{
+    height: 57px;
+    margin: 10px;
 }
