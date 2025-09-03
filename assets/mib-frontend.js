@@ -3626,8 +3626,9 @@ function formatSquareMeter(value) {
         const selectAvailability = $('.catalog-availability-checkbox:checked').length;
         const selectGardenConnection = $('.catalog-gardenconnection-checkbox:checked').length;
         const selectStairway = $('.catalog-stairway-checkbox:checked').length;
+        const selectOtthonStart = $('.catalog-otthonstart-checkbox:checked').length;
 
-        if (selectOrientation > 0 || selectAvailability > 0 || selectGardenConnection>0 || selectStairway>0) {
+        if (selectOrientation > 0 || selectAvailability > 0 || selectGardenConnection > 0 || selectStairway > 0 || selectOtthonStart > 0) {
             isActive = true;
         }
 
@@ -3947,6 +3948,20 @@ function formatSquareMeter(value) {
             $filters.css('display', 'flex');
             $button.html('<i class="fas fa-times me-1"></i> Szűrők bezárása');
         }
+    });
+
+    // Otthon start filter
+    $(document).on('change', '.catalog-otthonstart-checkbox', function() {
+        const checked = $(this).is(':checked');
+        $('[data-otthon-start]').each(function() {
+            const match = Number($(this).data('otthon-start')) === 1;
+            if (checked && !match) {
+                $(this).hide();
+            } else {
+                $(this).show();
+            }
+        });
+        checkIfAnyFilterIsActive();
     });
 
 });

@@ -52,9 +52,13 @@ class MibBaseController
 		'Nem elérhetőek elrejtése' => 'Available', 
 	];
 
-	private $gardenConnection = [
-		'Igen' => 1, 
-	];
+        private $gardenConnection = [
+                'Igen' => 1,
+        ];
+
+        private $otthonStart = [
+                'Igen' => 1,
+        ];
 
 	private $stairWay = [
 		'A' => 'A', 
@@ -241,9 +245,19 @@ class MibBaseController
 		        }
 		    }
 
-		    $host = parse_url(home_url(), PHP_URL_HOST);
-			$parts = explode('.', $host);
-			$projectSlug = (count($parts) >= 2) ? $parts[count($parts) - 2] : 'projekt';
+                    $host = parse_url(home_url(), PHP_URL_HOST);
+                        $parts = explode('.', $host);
+                        $projectSlug = (count($parts) >= 2) ? $parts[count($parts) - 2] : 'projekt';
+
+                    $otthonStart = false;
+                    $badgeUrl = '';
+                    if (!is_null($item->price) && !is_null($item->salesFloorArea) && $item->salesFloorArea > 0) {
+                        $pricePerMeter = $item->price / $item->salesFloorArea;
+                        if ($item->price < 100000000 && $pricePerMeter <= 1500000) {
+                            $otthonStart = true;
+                            $badgeUrl = 'https://via.placeholder.com/80x80?text=OS';
+                        }
+                    }
 
 		    $table_data[] = array(
 		        'id' => $item->id,
@@ -271,7 +285,9 @@ class MibBaseController
 		        'szintrajz' => $szintrajz, // Frissített szintrajz
 		        'notes' => ($item->residentialPark->notes) ? $item->residentialPark->notes : '',
 		        'logo' => ($item->residentialPark->logo) ? $item->residentialPark->logo : '',
-                'address' => ($item->residentialPark->address) ? $item->residentialPark->address : '',
+                        'address' => ($item->residentialPark->address) ? $item->residentialPark->address : '',
+                        'otthonStart' => $otthonStart,
+                        'otthonStartBadge' => $badgeUrl,
                 'rooms' => isset($item->rooms) && is_array($item->rooms) ? array_map(function($room){
                             return [
                                 'category_name' => $room->category_name ?? '',
@@ -364,9 +380,12 @@ class MibBaseController
 	        $html .= '<div class="apartment-top primary-color">';
 
 	            // Bal oldal: alaprajz
-	            $html .= '<div class="apartment-plan">';
-	            $html .= '<img crossorigin="anonymous" src="' . esc_url($data['image']) . '" alt="Lakás alaprajz">';
-	            $html .= '</div>';
+                    $html .= '<div class="apartment-plan position-relative">';
+                    $html .= '<img crossorigin="anonymous" src="' . esc_url($data['image']) . '" alt="Lakás alaprajz">';
+                    if (!empty($data['otthonStartBadge'])) {
+                        $html .= '<img src="' . esc_url($data['otthonStartBadge']) . '" alt="Otthon Start" style="position:absolute;top:10px;right:10px;width:80px;" />';
+                    }
+                    $html .= '</div>';
 
 	            // Jobb oldal
 	            $html .= '<div class="apartment-details">';
@@ -649,7 +668,7 @@ class MibBaseController
 	        	$html .= $this->getFilterResidentalParksShortCodeByCatalog($filterType['residential_park_ids']);
 	        }
 
-			if (in_array('orientation_filters', $filterType['extras']) || in_array('available_only', $filterType['extras']) || in_array('garden_connection_filter', $filterType['extras']) || in_array('staircase_filter', $filterType['extras']) ) {
+                        if (in_array('orientation_filters', $filterType['extras']) || in_array('available_only', $filterType['extras']) || in_array('garden_connection_filter', $filterType['extras']) || in_array('staircase_filter', $filterType['extras']) || in_array('otthon_start_filter', $filterType['extras']) ) {
 			$html .= '<button type="button" class="btn btn-outline-secondary btn-sm" id="toggle-advanced-filters">';
 			$html .= '<i class="fas fa-sliders-h me-1"></i> További szűrők';
 			$html .= '</button>';
@@ -674,14 +693,18 @@ class MibBaseController
                         }
 
 			// Kertkapcsolat szűrő
-			if (in_array('garden_connection_filter', $filterType['extras'])) {
-			    $html .= $this->getFilterGardenConnectionByCatalog($filterType);
-			}
+                        if (in_array('garden_connection_filter', $filterType['extras'])) {
+                            $html .= $this->getFilterGardenConnectionByCatalog($filterType);
+                        }
 
-			// Lépcsőház szűrő
-			if (in_array('staircase_filter', $filterType['extras'])) {
-			    $html .= $this->getFilterStairwayByCatalog($filterType);
-			}
+                        if (in_array('otthon_start_filter', $filterType['extras'])) {
+                            $html .= $this->getFilterOtthonStartByCatalog($filterType);
+                        }
+
+                        // Lépcsőház szűrő
+                        if (in_array('staircase_filter', $filterType['extras'])) {
+                            $html .= $this->getFilterStairwayByCatalog($filterType);
+                        }
 
 		$html .= '</div>'; // advanced-filters vége
 		$html .= '</div>'; // custom-filter-container vége
@@ -759,13 +782,16 @@ class MibBaseController
 					$address = $data['address'];
 				}
 
-		        $html .= '<div class="card-wrapper col-md-4 mb-3" data-id="' . esc_attr($data['id']) . '">'; // 4 oszlopos grid
-		        $html .= '<div class="card h-100 position-relative">'; // A kártyát relatív pozicionáljuk
-		        
-		        // Kép wrapper, flexbox középre igazítással
-		        $html .= '<div class="primary-color card-image-wrapper">';
-		        $html .= '<img src="' . $data['image'] . '" class="card-img-top" alt="Lakás képe" crossorigin="anonymous">';
-		        $html .= '</div>';
+                        $html .= '<div class="card-wrapper col-md-4 mb-3" data-id="' . esc_attr($data['id']) . '" data-otthon-start="' . ($data['otthonStart'] ? 1 : 0) . '">'; // 4 oszlopos grid
+                        $html .= '<div class="card h-100 position-relative">'; // A kártyát relatív pozicionáljuk
+
+                        // Kép wrapper, flexbox középre igazítással
+                        $html .= '<div class="primary-color card-image-wrapper">';
+                        $html .= '<img src="' . $data['image'] . '" class="card-img-top" alt="Lakás képe" crossorigin="anonymous">';
+                        if (!empty($data['otthonStartBadge'])) {
+                            $html .= '<img src="' . esc_url($data['otthonStartBadge']) . '" alt="Otthon Start" style="position:absolute;top:10px;right:10px;width:60px;" />';
+                        }
+                        $html .= '</div>';
 
 		        $html .= '<div id="apartment-card-body" class="secondary-color card-body d-flex flex-column justify-content-between text-white">';
 
@@ -982,13 +1008,16 @@ class MibBaseController
 					$address = $data['address'];
 				}
 
-		        $html .= '<div class="card-wrapper col-md-4 mb-3">'; // 4 oszlopos grid
-		        $html .= '<div class="card h-100 position-relative">'; // A kártyát relatív pozicionáljuk
-		        
-		        // Kép wrapper, flexbox középre igazítással
-		        $html .= '<div class="primary-color card-image-wrapper">';
-		        $html .= '<img src="' . $data['image'] . '" class="card-img-top" alt="Lakás képe" crossorigin="anonymous">';
-		        $html .= '</div>';
+                        $html .= '<div class="card-wrapper col-md-4 mb-3" data-otthon-start="' . ($data['otthonStart'] ? 1 : 0) . '">'; // 4 oszlopos grid
+                        $html .= '<div class="card h-100 position-relative">'; // A kártyát relatív pozicionáljuk
+
+                        // Kép wrapper, flexbox középre igazítással
+                        $html .= '<div class="primary-color card-image-wrapper">';
+                        $html .= '<img src="' . $data['image'] . '" class="card-img-top" alt="Lakás képe" crossorigin="anonymous">';
+                        if (!empty($data['otthonStartBadge'])) {
+                            $html .= '<img src="' . esc_url($data['otthonStartBadge']) . '" alt="Otthon Start" style="position:absolute;top:10px;right:10px;width:60px;" />';
+                        }
+                        $html .= '</div>';
 
 		        $html .= '<div id="apartment-card-body" class="secondary-color card-body d-flex flex-column justify-content-between text-white">';
 
@@ -1105,13 +1134,16 @@ class MibBaseController
 					$address = $data['address'];
 				}
 
-		        $html .= '<div class="card-wrapper col-md-4 mb-3" data-id="' . esc_attr($data['id']) . '">'; // 4 oszlopos grid
-		        $html .= '<div class="card h-100 position-relative">'; // A kártyát relatív pozicionáljuk
-		        
-		        // Kép wrapper, flexbox középre igazítással
-		        $html .= '<div class="primary-color card-image-wrapper">';
-		        $html .= '<img src="' . $data['image'] . '" class="card-img-top" alt="Lakás képe" crossorigin="anonymous">';
-		        $html .= '</div>';
+                        $html .= '<div class="card-wrapper col-md-4 mb-3" data-id="' . esc_attr($data['id']) . '" data-otthon-start="' . ($data['otthonStart'] ? 1 : 0) . '">'; // 4 oszlopos grid
+                        $html .= '<div class="card h-100 position-relative">'; // A kártyát relatív pozicionáljuk
+
+                        // Kép wrapper, flexbox középre igazítással
+                        $html .= '<div class="primary-color card-image-wrapper">';
+                        $html .= '<img src="' . $data['image'] . '" class="card-img-top" alt="Lakás képe" crossorigin="anonymous">';
+                        if (!empty($data['otthonStartBadge'])) {
+                            $html .= '<img src="' . esc_url($data['otthonStartBadge']) . '" alt="Otthon Start" style="position:absolute;top:10px;right:10px;width:60px;" />';
+                        }
+                        $html .= '</div>';
 
 		        $html .= '<div id="apartment-card-body" class="secondary-color card-body d-flex flex-column justify-content-between text-white">';
 
@@ -1737,11 +1769,11 @@ class MibBaseController
 	}
 
 
-	private function getFilterGardenConnectionByCatalog()
-	{
-		if (isset($filterType['mib-garden_connection']) && !is_array($filterType['mib-garden_connection'])) {
-	        $filterType['mib-garden_connection'] = explode(',', $filterType['mib-garden_connection']);
-	    }
+        private function getFilterGardenConnectionByCatalog()
+        {
+                if (isset($filterType['mib-garden_connection']) && !is_array($filterType['mib-garden_connection'])) {
+                $filterType['mib-garden_connection'] = explode(',', $filterType['mib-garden_connection']);
+            }
 
 	    $html = '<div class="catalog-dropdown mt-3">
 	                <div class="dropdown">
@@ -1765,8 +1797,38 @@ class MibBaseController
 	                </div>
 	            </div>';
 
-	    return $html;
-	}
+            return $html;
+        }
+
+        private function getFilterOtthonStartByCatalog($filterType = [])
+        {
+            if (isset($filterType['otthon_start']) && !is_array($filterType['otthon_start'])) {
+                $filterType['otthon_start'] = explode(',', $filterType['otthon_start']);
+            }
+
+            $html = '<div class="catalog-dropdown mt-3">
+                        <div class="dropdown">
+                            <button class="btn btn-dark dropdown-toggle" type="button" id="otthonStartDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                Otthon start feltételeinek megfelelő?
+                            </button>
+                            <ul class="third-color mt-1 p-2 dropdown-menu" aria-labelledby="otthonStartDropdown">';
+
+            foreach ($this->otthonStart as $key => $value) {
+                $checked = (isset($filterType['otthon_start']) && in_array($value, (array)$filterType['otthon_start'])) ? 'checked' : '';
+
+                $html .= '<li>
+                            <label class="dropdown-item">
+                                <input type="checkbox" class="catalog-otthonstart-checkbox form-check-input" name="otthon_start[]" value="' . $value . '" ' . $checked . '> ' . $key . '
+                            </label>
+                          </li>';
+            }
+
+            $html .=   '</ul>
+                        </div>
+                    </div>';
+
+            return $html;
+        }
 
 
 
