@@ -52,13 +52,13 @@ class MibBaseController
 		'Nem elérhetőek elrejtése' => 'Available', 
 	];
 
-        private $gardenConnection = [
-                'Igen' => 1,
-        ];
+    private $gardenConnection = [
+            'Igen' => 1,
+    ];
 
-        private $otthonStart = [
-                'Igen' => 1,
-        ];
+    private $otthonStart = [
+            'Igen' => 1,
+    ];
 
 	private $stairWay = [
 		'A' => 'A', 
@@ -84,19 +84,19 @@ class MibBaseController
     ];
 
     private $parkNames = [
-            7  => 'Albion 32',
-            9  => 'BudaBright',
-            10 => 'PápayPark',
-            11 => 'Loft52',
-            12 => 'MyLelle',
-            31 => 'Páva 8',
-            35 => 'BartokHarmonyHomes',
-            40 => 'Novus Liget',
-            41 => 'Frangepán',
-            42 => 'BrickeryHomes',
-            43 => 'Revital Park',
-            44 => 'Vác Dunakert',
-        ];
+        7  => 'Albion 32',
+        9  => 'BudaBright',
+        10 => 'PápayPark',
+        11 => 'Loft52',
+        12 => 'MyLelle',
+        31 => 'Páva 8',
+        35 => 'BartokHarmonyHomes',
+        40 => 'Novus Liget',
+        41 => 'Frangepán',
+        42 => 'BrickeryHomes',
+        43 => 'Revital Park',
+        44 => 'Vác Dunakert',
+    ];
 
     private $districtNames = [
         'I' => 'I. kerület',
@@ -139,15 +139,15 @@ class MibBaseController
 
 	public $residentialParkId = 12;
 
-        public $shortcodesOptions = [];
+    public $shortcodesOptions = [];
 
-        public $selectedShortcodeOption = [];
+    public $selectedShortcodeOption = [];
 
-        public $selectedApartmanNames = [];
+    public $selectedApartmanNames = [];
 
-        public $shortCodeApartmanName = '';
+    public $shortCodeApartmanName = '';
 
-        public $shortcodeType = '';
+    public $shortcodeType = '';
 
     public function __construct() {
 
@@ -245,19 +245,21 @@ class MibBaseController
 		        }
 		    }
 
-                    $host = parse_url(home_url(), PHP_URL_HOST);
-                        $parts = explode('.', $host);
-                        $projectSlug = (count($parts) >= 2) ? $parts[count($parts) - 2] : 'projekt';
+            $host = parse_url(home_url(), PHP_URL_HOST);
+            $parts = explode('.', $host);
+            $projectSlug = (count($parts) >= 2) ? $parts[count($parts) - 2] : 'projekt';
 
-                    $otthonStart = false;
-                    $badgeUrl = '';
-                    if (!is_null($item->price) && !is_null($item->salesFloorArea) && $item->salesFloorArea > 0) {
-                        $pricePerMeter = $item->price / $item->salesFloorArea;
-                        if ($item->price < 100000000 && $pricePerMeter <= 1500000) {
-                            $otthonStart = true;
-                            $badgeUrl = 'https://via.placeholder.com/80x80?text=OS';
-                        }
-                    }
+            $otthonStart = false;
+			$badgeUrl = '';
+
+			if (!is_null($item->price) && !is_null($item->salesFloorArea) && $item->salesFloorArea > 0) {
+			    $pricePerMeter = $item->price / $item->salesFloorArea;
+
+			    if ($pricePerMeter <= 1500000 && $item->price < 100000000) {
+			        $otthonStart = true;
+			        $badgeUrl = 'https://placehold.co/80x80?text=OS';
+			    }
+			}
 
 		    $table_data[] = array(
 		        'id' => $item->id,
@@ -1932,7 +1934,5 @@ class MibBaseController
 
 	    return $html;
 	}
-
-
 
 }
