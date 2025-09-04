@@ -61,8 +61,9 @@ class MibManagerCallbacks extends MibBaseController
 					'mib-filter-floor-to' => (isset($_POST['mib-filter-floor-to'] ) ) ? $_POST['mib-filter-floor-to'] : '',
 					'mib-filter-room-from' => (isset($_POST['mib-filter-room-from'] ) ) ? $_POST['mib-filter-room-from'] : '',
 					'mib-filter-room-to' => (isset($_POST['mib-filter-room-to'] ) ) ? $_POST['mib-filter-room-to'] : '',
-					'mib-filter-room' => (isset($_POST['mib-filter-room'] ) && $_POST['mib-filter-room'] == 'on') ? true : false,
-					'mib-filter-orientation' => (isset($_POST['mib-filter-orientation'] ) && $_POST['mib-filter-orientation'] == 'on') ? true : false,
+                                        'mib-filter-room' => (isset($_POST['mib-filter-room'] ) && $_POST['mib-filter-room'] == 'on') ? true : false,
+                                        'mib-filter-district' => (isset($_POST['mib-filter-district'] ) && $_POST['mib-filter-district'] == 'on') ? true : false,
+                                        'mib-filter-orientation' => (isset($_POST['mib-filter-orientation'] ) && $_POST['mib-filter-orientation'] == 'on') ? true : false,
 					'mib-filter-availability' => (isset($_POST['mib-filter-availability'] ) && $_POST['mib-filter-availability'] == 'on') ? true : false,
 					'mib-filter-deletefilters' => (isset($_POST['mib-filter-deletefilters'] ) && $_POST['mib-filter-deletefilters'] == 'on') ? true : false,
 					'mib-filter-square-meter' => (isset($_POST['mib-filter-square-meter'] ) && $_POST['mib-filter-square-meter'] == 'on') ? true : false,
@@ -95,10 +96,11 @@ class MibManagerCallbacks extends MibBaseController
 
 		$room_checked = (isset($mib_filter_options['mib-filter-room'])  && $mib_filter_options['mib-filter-room'] == 1) ? 'checked' : '';
 		$room_from = (isset($mib_filter_options['mib-filter-room-from'] ) ) ? $mib_filter_options['mib-filter-room-from'] : '';
-		$room_to = (isset($mib_filter_options['mib-filter-room-to']) ) ? $mib_filter_options['mib-filter-room-to'] : '';
+                $room_to = (isset($mib_filter_options['mib-filter-room-to']) ) ? $mib_filter_options['mib-filter-room-to'] : '';
 
 
-		$orientation_checked = (isset($mib_filter_options['mib-filter-orientation'])  && $mib_filter_options['mib-filter-orientation'] == 1) ? 'checked' : '';
+                $district_checked = (isset($mib_filter_options['mib-filter-district'])  && $mib_filter_options['mib-filter-district'] == 1) ? 'checked' : '';
+                $orientation_checked = (isset($mib_filter_options['mib-filter-orientation'])  && $mib_filter_options['mib-filter-orientation'] == 1) ? 'checked' : '';
 		$availability_checked = (isset($mib_filter_options['mib-filter-availability'])  && $mib_filter_options['mib-filter-availability'] == 1) ? 'checked' : '';
 		$deletefilters_checked = (isset($mib_filter_options['mib-filter-deletefilters'])  && $mib_filter_options['mib-filter-deletefilters'] == 1) ? 'checked' : '';
 		$square_meter = (isset($mib_filter_options['mib-filter-square-meter'])  && $mib_filter_options['mib-filter-square-meter'] == 1) ? 'checked' : '';
@@ -137,19 +139,23 @@ class MibManagerCallbacks extends MibBaseController
 			Szobák: <input type="checkbox" name="mib-filter-room" size="45" <?=$room_checked;?>>
 		</div>
 
-		<div class="row" style="margin-bottom: 10px;">
-			Szobák megjelenítése: 
-			<input type="number" name="mib-filter-room-from" size="20" value="<?=$room_from;?>" placeholder="tól. szoba = 0">
-			<input type="number" name="mib-filter-room-to" size="20" value="<?=$room_to;?>" placeholder="ig">
-		</div>
-		
                 <div class="row" style="margin-bottom: 10px;">
-                        Erkély típusa: <input type="checkbox" name="mib-filter-orientation" size="45" <?=$orientation_checked;?>>
+                        Szobák megjelenítése:
+                        <input type="number" name="mib-filter-room-from" size="20" value="<?=$room_from;?>" placeholder="tól. szoba = 0">
+                        <input type="number" name="mib-filter-room-to" size="20" value="<?=$room_to;?>" placeholder="ig">
                 </div>
 
-		<div class="row" style="margin-bottom: 10px;">
-			Elérhetőség: <input type="checkbox" name="mib-filter-availability" size="45" <?=$availability_checked;?>>
-		</div>
+                <div class="row" style="margin-bottom: 10px;">
+                        Kerület: <input type="checkbox" name="mib-filter-district" size="45" <?=$district_checked;?> >
+                </div>
+
+                <div class="row" style="margin-bottom: 10px;">
+                        Erkély típusa: <input type="checkbox" name="mib-filter-orientation" size="45" <?=$orientation_checked;?> >
+                </div>
+
+                <div class="row" style="margin-bottom: 10px;">
+                        Elérhetőség: <input type="checkbox" name="mib-filter-availability" size="45" <?=$availability_checked;?> >
+                </div>
 
 		<div class="row" style="margin-bottom: 10px;">
 			Nem elérhetők elrejtése alapbeállítás: <input type="checkbox" name="inactive_hide" size="45" <?=$inactive_hide;?> >
@@ -432,8 +438,9 @@ class MibManagerCallbacks extends MibBaseController
 	                'use_number_inputs' => 'Slider helyett szám inputok',
 	                'load_more' => 'Paginate helyett Load more',
 	                'available_only' => 'Elérhetőség',
-	                'hide_unavailable' => 'Nem elérhetők elrejtése alapbeállítás',
+                        'hide_unavailable' => 'Nem elérhetők elrejtése alapbeállítás',
                         'orientation_filters' => 'Tájolás szűrés',
+                        'district_filter' => 'Kerület szűrés',
                         'display_logo' => 'Logo megjelenítés',
                         'display_address' => 'Helység megjelenítés',
                         'garden_connection_filter' => 'Kertkapcsolat szűrés',
