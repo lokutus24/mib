@@ -632,14 +632,14 @@ class MibBaseController
 	                		echo '';
 	                	}else{
 
+	                		// Kerület szűrő
+	                        if (in_array('district_filter', $filterType['extras'])) {
+	                            $html .= $this->getFilterDistrictByCatalog($filterType);
+	                        }
+
 	                		if (in_array('price', $filterType['filters'])) {
 		                        $html .= $this->getFilterPriceShortCodeByCatalog($filterType['ranges']['price']['min'], $filterType['ranges']['price']['max']);
 		                    }
-
-		                	if (in_array('floor', $filterType['filters'])) {
-
-							    $html .= $this->getFilterFloorShortCodeByCatalog($filterType['ranges']['floor']['min'], $filterType['ranges']['floor']['max']);
-							}
 
 		                    if (in_array('room', $filterType['filters'])) {
 		                        $html .= $this->getFilterRoomShortCodeByCatalog($filterType['ranges']['room']['min'], $filterType['ranges']['room']['max']);
@@ -666,11 +666,7 @@ class MibBaseController
 
 		$html .= '<div class="mb-2" id="parksfilter">';
 
-			if (count($filterType['residential_park_ids'])>1) {
-	        	$html .= $this->getFilterResidentalParksShortCodeByCatalog($filterType['residential_park_ids']);
-	        }
-
-                        if (in_array('orientation_filters', $filterType['extras']) || in_array('available_only', $filterType['extras']) || in_array('garden_connection_filter', $filterType['extras']) || in_array('staircase_filter', $filterType['extras']) || in_array('otthon_start_filter', $filterType['extras']) ) {
+            if (in_array('orientation_filters', $filterType['extras']) || in_array('available_only', $filterType['extras']) || in_array('garden_connection_filter', $filterType['extras']) || in_array('staircase_filter', $filterType['extras']) || in_array('otthon_start_filter', $filterType['extras']) || in_array('district_filter', $filterType['extras']) ) {
 			$html .= '<button type="button" class="btn btn-outline-secondary btn-sm" id="toggle-advanced-filters">';
 			$html .= '<i class="fas fa-sliders-h me-1"></i> További szűrők';
 			$html .= '</button>';
@@ -681,13 +677,18 @@ class MibBaseController
 
                 $html .= '<div id="advanced-filters" class="flex-wrap" style="display:none;">';
 
+                		if (in_array('floor', $filterType['filters'])) {
+
+						    $html .= $this->getFilterFloorShortCodeByCatalog($filterType['ranges']['floor']['min'], $filterType['ranges']['floor']['max']);
+						}
+
+                		if (count($filterType['residential_park_ids'])>1) {
+				        	$html .= $this->getFilterResidentalParksShortCodeByCatalog($filterType['residential_park_ids']);
+				        }
                         // Tájolás szűrő
                         if (in_array('orientation_filters', $filterType['extras']) ) {
                             $html .= $this->getFilterOrientationByCatalog($filterType);
                         }
-
-                        // Kerület szűrő
-                        $html .= $this->getFilterDistrictByCatalog($filterType);
 
                         // Elérhetőség szűrő
                         if (in_array('available_only', $filterType['extras']) && !in_array('hide_unavailable', $filterType['extras']) ) {
@@ -903,11 +904,12 @@ class MibBaseController
 	                // Filterek megjelenítése
 	                if (!empty($this->filterOptionDatas)) {
 
+	                	if (isset($this->filterOptionDatas['mib-filter-district']) && $this->filterOptionDatas['mib-filter-district'] == true) {
+	                        $html .= $this->getFilterDistrictByCatalog($filterType);
+	                    }
+
 	                	if (isset($this->filterOptionDatas['mib-filter-price_range']) && $this->filterOptionDatas['mib-filter-price_range'] == true) {
 	                        $html .= $this->priceFilterPriceByCatalog($filterType);
-	                    }
-	                    if (isset($this->filterOptionDatas['mib-filter-floor']) && $this->filterOptionDatas['mib-filter-floor'] == true) {
-	                        $html .= $this->getFilterFloorByCatalog($filterType);
 	                    }
 	                    if (isset($this->filterOptionDatas['mib-filter-room']) && $this->filterOptionDatas['mib-filter-room'] == true) {
 	                        $html .= $this->getFilterRoomByCatalog($filterType);
@@ -923,36 +925,62 @@ class MibBaseController
 	    $html .= '</div>';
 
 
-	    $html .= '<div class="custom-filter-container">';
-		$html .= '<div class="mb-2">';
-		$html .= '<button type="button" class="btn btn-outline-secondary btn-sm" id="toggle-advanced-filters">';
-		$html .= '<i class="fas fa-sliders-h me-1"></i> További szűrők';
-		$html .= '</button>';
-		$html .= '</div>';
+            $html .= '<div class="custom-filter-container">';
 
-                $html .= '<div id="advanced-filters" class="flex-wrap" style="display:none;">';
+                $showAdvanced = false;
+                if (isset($this->filterOptionDatas['mib-filter-district']) && $this->filterOptionDatas['mib-filter-district'] == true) {
+                    $showAdvanced = true;
+                }
+                if (isset($this->filterOptionDatas['mib-filter-orientation']) && $this->filterOptionDatas['mib-filter-orientation'] == true) {
+                    $showAdvanced = true;
+                }
+                if (isset($this->filterOptionDatas['mib-filter-availability']) && $this->filterOptionDatas['mib-filter-availability'] == true && $this->filterOptionDatas['inactive_hide'] != 1) {
+                    $showAdvanced = true;
+                }
+                if (isset($this->filterOptionDatas['mib-garden_connection']) && $this->filterOptionDatas['mib-garden_connection'] == true) {
+                    $showAdvanced = true;
+                }
+                if (isset($this->filterOptionDatas['mib-stairway']) && $this->filterOptionDatas['mib-stairway'] == true) {
+                    $showAdvanced = true;
+                }
 
-                $html .= $this->getFilterDistrictByCatalog($filterType);
+                if ($showAdvanced) {
+                    $html .= '<div class="mb-2">';
+                    $html .= '<div class="mb-2" id="parksfilter">';
+                    $html .= '<button type="button" class="btn btn-outline-secondary btn-sm" id="toggle-advanced-filters">';
+                    $html .= '<i class="fas fa-sliders-h me-1"></i> További szűrők';
+                    $html .= '</button>';
+                    $html .= '</div>';
+                    $html .= '</div>';
 
-                                if (isset($this->filterOptionDatas['mib-filter-orientation']) && $this->filterOptionDatas['mib-filter-orientation'] == true) {
+                    $html .= '<div id="advanced-filters" class="flex-wrap" style="display:none;">';
+
+                    if (isset($this->filterOptionDatas['mib-filter-floor']) && $this->filterOptionDatas['mib-filter-floor'] == true) {
+	                    $html .= $this->getFilterFloorByCatalog($filterType);
+	                }
+
+                    if (isset($this->filterOptionDatas['mib-filter-orientation']) && $this->filterOptionDatas['mib-filter-orientation'] == true) {
                         $html .= $this->getFilterOrientationByCatalog($filterType);
                     }
-	            //ha a "Nem elérhetők elrejtése alapbeállítás" alapból nincs bepipálva.
-	            if (isset($this->filterOptionDatas['mib-filter-availability']) && $this->filterOptionDatas['mib-filter-availability'] == true && $this->filterOptionDatas['inactive_hide'] != 1) {
-                    $html .= $this->getFilterAvailabilityByCatalog($filterType);
+
+                    if (isset($this->filterOptionDatas['mib-filter-availability']) && $this->filterOptionDatas['mib-filter-availability'] == true && $this->filterOptionDatas['inactive_hide'] != 1) {
+                        $html .= $this->getFilterAvailabilityByCatalog($filterType);
+                    }
+
+                    if (isset($this->filterOptionDatas['mib-garden_connection']) && $this->filterOptionDatas['mib-garden_connection'] == true) {
+                        $html .= $this->getFilterGardenConnectionByCatalog($filterType);
+                    }
+
+                    if (isset($this->filterOptionDatas['mib-stairway']) && $this->filterOptionDatas['mib-stairway'] == true) {
+                        $html .= $this->getFilterStairwayByCatalog($filterType);
+                    }
+
+                    $html .= '</div>';
                 }
 
-                if (isset($this->filterOptionDatas['mib-garden_connection']) && $this->filterOptionDatas['mib-garden_connection'] == true) {
-                    $html .= $this->getFilterGardenConnectionByCatalog($filterType);
-                }
+        $html .= '</div>';
+        //mib-stairway
 
-                if (isset($this->filterOptionDatas['mib-stairway']) && $this->filterOptionDatas['mib-stairway'] == true) {
-                    $html .= $this->getFilterStairwayByCatalog($filterType);
-                }
-
-                //mib-stairway
-                
-        $html .= '</div></div>';
         // Display total count returned by API
         $html .= '<p id="mib-total-count" class="mb-3">' . sprintf( __( 'Találatok száma: %d', 'mib' ), $totalItems ) . '</p>';
         // Sorting options (AJAX)
@@ -1472,7 +1500,7 @@ class MibBaseController
     private function getFilterResidentalParksShortCodeByCatalog($parkIds) {
 
         // Alapértelmezett értékek
-        $html = '<select class="form-select select-residential-park" aria-label="Lakópark kiválasztása">';
+        $html = '<select class="form-select select-residential-park" id="select-residential-park" aria-label="Lakópark kiválasztása">';
         $html .= '<option value="" selected>Lakópark kiválasztása</option>';
 
         foreach ($parkIds as $park => $id) {

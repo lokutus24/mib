@@ -323,7 +323,7 @@ body .mibfloorplan{
     right: 0; /* A trigger elem bal oldalához igazítja */
 }
 .dropdown-item{
-    color:white !important;
+    color:black !important;
 }
 
 .floor-checkbox{
@@ -352,8 +352,8 @@ body .mibfloorplan{
 
 .btn-dark, .btn-dark:hover{
 
-    /*background-color: #3a322d !important;*/
-    max-height: 38px;
+    background-color: white !important
+    max-height: 60px !important;
 }
 
 #mib-spinner{
@@ -1289,6 +1289,9 @@ width: 100% !important; /* Kis százalékos szélesség, hogy négy blokk elfér
 #advanced-filters{
     gap: 10px;
     flex-wrap: wrap !important;
+    background: #f9f9f9 !important;
+    padding: 10px !important;
+    border-radius: 10px !important;
 }
 
 .room-list{
@@ -1300,15 +1303,42 @@ width: 100% !important; /* Kis százalékos szélesség, hogy négy blokk elfér
     margin-bottom: 5px;
 }
 
-.select-residential-park{
+#select-residential-park{
     width: 210px !important;
-    height: 57px;
-    margin-top: 10px;
+    margin-top: 16px;
+    height: 58px;
 }
+#toggle-advanced-filters,
 #parksfilter{
-    display: flex;
+    display: grid !important;
 }
-#toggle-advanced-filters{
-    height: 57px;
-    margin: 10px;
+.dropdown button {
+    height: 58px;
+    background: white;
+    border: 1px solid #d3d3d3;
+    color: black;
+    cursor: pointer; /* érdemes hozzáadni */
+}
+
+.dropdown button:hover {
+    background: #f5f5f5; /* világosszürke hover */
+    border-color: #bbb; /* opcionális */
+    color: black;
+}
+#district-select{
+    height: 58px;
+}
+#toggle-advanced-filters button,
+#parksfilter button{
+    height: 58px;
+    background: white !important;
+    border: 1px solid #d3d3d3;
+    color: black;
+    cursor: pointer;
+}
+#toggle-advanced-filters button:hover,
+#parksfilter button:hover {
+    background: #f5f5f5 !important;
+    border-color: #bbb;
+    color: black;
 }
