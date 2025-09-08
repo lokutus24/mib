@@ -1182,7 +1182,29 @@ class MibBaseController
 	}
 
     public function getFilters(){
-        return $this->getCatalogFilterHtml([], true);
+        $filters = [];
+
+        $map = [
+            'district'         => 'district',
+            'orientation'      => 'typeOfBalcony',
+            'availability'     => 'status',
+            'garden_connection'=> 'garden_connection',
+            'stairway'         => 'stairway',
+            'otthonStart'      => 'otthon_start',
+        ];
+
+        foreach ($map as $queryKey => $filterKey) {
+            if (isset($_GET[$queryKey])) {
+                $value = $_GET[$queryKey];
+                if (is_array($value)) {
+                    $filters[$filterKey] = array_map('sanitize_text_field', $value);
+                } else {
+                    $filters[$filterKey] = sanitize_text_field($value);
+                }
+            }
+        }
+
+        return $this->getCatalogFilterHtml($filters, true);
     }
 
     private function getSearch()
