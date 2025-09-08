@@ -3672,13 +3672,45 @@ function formatSquareMeter(value) {
                 }
             });
 
+            return params;
+        }
+
+        function getAllParams() {
+            const params = getSliderParams();
+
+            const district = $('.district-select').val();
+            if (district) {
+                params.set('district', district);
+            }
+
+            $('.catalog-orientation-checkbox:checked').each(function() {
+                params.append('orientation[]', $(this).val());
+            });
+
+            $('.catalog-availability-checkbox:checked').each(function() {
+                params.append('availability[]', $(this).val());
+            });
+
+            $('.catalog-gardenconnection-checkbox:checked').each(function() {
+                params.append('garden_connection[]', $(this).val());
+            });
+
+            $('.catalog-stairway-checkbox:checked').each(function() {
+                params.append('stairway[]', $(this).val());
+            });
+
+            $('.catalog-otthonstart-checkbox:checked').each(function() {
+                params.append('otthonStart[]', $(this).val());
+            });
+
             return params.toString();
         }
 
         $('#search-apartman-btn').on('click', function(e) {
             e.preventDefault();
-            const paramStr = getSliderParams();
-            const newUrl = '/lakaslista' + (paramStr ? '?' + paramStr : '');
+            const baseUrl = $(this).data('target-url') || '/lakaslista';
+            const paramStr = getAllParams();
+            const newUrl = baseUrl + (paramStr ? '?' + paramStr : '');
             window.location.href = newUrl;
         });
     }
