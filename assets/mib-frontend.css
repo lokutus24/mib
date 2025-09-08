@@ -1208,16 +1208,22 @@ width: 100% !important; /* Kis százalékos szélesség, hogy négy blokk elfér
     border-color: #0d2d3e;
 }
 
-.search-mib-filter-container{
+#search-apartman-btn{
     text-align: center;
+    border: 1px solid #d3d3d3;
+    height: 58px;
+    cursor: pointer;
+    text-transform: uppercase;
+    justify-content: center; 
+    align-items: center;
+    display: flex;
 }
 
-#search-apartman-btn{
-    border-radius: 20px;
-    color: white;
-    text-transform: uppercase;
-    font-weight: 500;
+#search-apartman-btn:hover{
+    background-color: #f5f5f5;
 }
+
+
 /* A slider sávja */
 #custom-square-slider,
 #custom-price-slider,
@@ -1328,7 +1334,7 @@ width: 100% !important; /* Kis százalékos szélesség, hogy négy blokk elfér
 #district-select{
     height: 58px;
 }
-#toggle-advanced-filters button,
+
 #parksfilter button{
     height: 58px;
     background: white !important;
@@ -1336,7 +1342,6 @@ width: 100% !important; /* Kis százalékos szélesség, hogy négy blokk elfér
     color: black;
     cursor: pointer;
 }
-#toggle-advanced-filters button:hover,
 #parksfilter button:hover {
     background: #f5f5f5 !important;
     border-color: #bbb;

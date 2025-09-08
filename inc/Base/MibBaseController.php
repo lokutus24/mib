@@ -1182,9 +1182,9 @@ class MibBaseController
 	    return $html;
 	}
 
-        public function getFilters(){
-            return $this->getCatalogFilterHtml([], true);
-        }
+    public function getFilters(){
+        return $this->getCatalogFilterHtml([], true);
+    }
 
     private function getSearch()
     {
@@ -1535,10 +1535,10 @@ class MibBaseController
             }
             $html .= '</div>';
 
+
             if ($includeSearchButton) {
-                $html .= '<div class="search-mib-filter-container">';
-                $html .= '<button id="search-apartman-btn" class="btn third-color" data-target-url="' . esc_url($this->filterApartmentsUrl) . '">Lakások keresése <i class="fa fa-arrow-right" aria-hidden="true"></i></button>';
-                $html .= '</div>';
+
+                $html .= '<div class="search-mib-filter-container" id="search-apartman-btn" class="btn third-color">Lakások keresése <i class="fa fa-arrow-right" aria-hidden="true"></i></div>';
             }
 
             return $html;
