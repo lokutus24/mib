@@ -30,11 +30,35 @@ class MibCustomEndpoint extends MibBaseController {
                     'required' => true,
                     'type' => 'integer',
                 ],
+                'park_id' => [
+                    'required' => true,
+                    'type' => 'integer',
+                ],
+            ],
+        ]);
+
+        register_rest_route('custom/v1', '/attachments', [
+            'methods' => 'GET',
+            'callback' => [$this, 'get_attachments_callback'],
+            'permission_callback' => [$this, 'custom_permission_callback'],
+            'args' => [
+                'park_id' => [
+                    'required' => true,
+                    'type' => 'integer',
+                ],
+                'identifier' => [
+                    'required' => false,
+                    'type' => 'string',
+                ],
+                'property_id' => [
+                    'required' => false,
+                    'type' => 'integer',
+                ],
             ],
         ]);
     }
 
-    private function get_existing_attachment_by_type($identifier, $type) {
+    private function get_existing_attachment_by_type($identifier, $type, $park_id) {
         global $wpdb;
 
         // Lekérdezzük az attachment ID-t az identifier és type alapján
@@ -44,11 +68,15 @@ class MibCustomEndpoint extends MibBaseController {
             INNER JOIN {$wpdb->posts} p ON pm.post_id = p.ID
             WHERE pm.meta_key = 'identifier' AND pm.meta_value = %s
             AND EXISTS (
-                SELECT 1 FROM {$wpdb->postmeta} pm2 
+                SELECT 1 FROM {$wpdb->postmeta} pm2
                 WHERE pm2.post_id = pm.post_id AND pm2.meta_key = 'type' AND pm2.meta_value = %s
             )
+            AND EXISTS (
+                SELECT 1 FROM {$wpdb->postmeta} pm3
+                WHERE pm3.post_id = pm.post_id AND pm3.meta_key = 'park_id' AND pm3.meta_value = %s
+            )
             LIMIT 1
-        ", $identifier, $type));
+        ", $identifier, $type, $park_id));
 
         return $attachment_id ? intval($attachment_id) : false;
     }
@@ -62,6 +90,7 @@ class MibCustomEndpoint extends MibBaseController {
         $type = $request->get_param('type');
         $identifier = $request->get_param('identifier');
         $property_id = $request->get_param('property_id');
+        $park_id = $request->get_param('park_id');
         $file = $request->get_file_params();
 
         // Ellenőrizzük, hogy a fájl létezik-e
@@ -70,7 +99,7 @@ class MibCustomEndpoint extends MibBaseController {
         }
 
         // Ellenőrizzük, hogy van-e már meglévő attachment ehhez a type-hoz
-        $existing_attachment_id = $this->get_existing_attachment_by_type($identifier, $type);
+        $existing_attachment_id = $this->get_existing_attachment_by_type($identifier, $type, $park_id);
 
         // Ha létezik, töröljük a régit
         if ($existing_attachment_id) {
@@ -105,12 +134,59 @@ class MibCustomEndpoint extends MibBaseController {
         update_post_meta($attachment_id, 'type', $type);
         update_post_meta($attachment_id, 'identifier', $identifier);
         update_post_meta($attachment_id, 'property_id', $property_id);
+        update_post_meta($attachment_id, 'park_id', $park_id);
 
         return rest_ensure_response([
             'message'        => 'A fájl sikeresen feltöltve.',
             'attachment_id'  => $attachment_id,
             'file_url'       => $upload['url'],
         ]);
+    }
+
+    public function get_attachments_callback(WP_REST_Request $request) {
+        $park_id = $request->get_param('park_id');
+        $identifier = $request->get_param('identifier');
+        $property_id = $request->get_param('property_id');
+
+        $attachments = [];
+
+        if ($identifier) {
+            $attachments = $this->get_attachments_by_meta_values($identifier, $park_id);
+        } else {
+            $meta_query = [
+                [
+                    'key'   => 'park_id',
+                    'value' => $park_id,
+                ],
+            ];
+
+            if ($property_id) {
+                $meta_query[] = [
+                    'key'   => 'property_id',
+                    'value' => $property_id,
+                ];
+            }
+
+            $query = new \WP_Query([
+                'post_type'      => 'attachment',
+                'post_status'    => 'inherit',
+                'posts_per_page' => -1,
+                'meta_query'     => $meta_query,
+            ]);
+
+            foreach ($query->posts as $post) {
+                $attachments[] = [
+                    'attachment_id'  => $post->ID,
+                    'attachment_url' => wp_get_attachment_url($post->ID),
+                    'type'           => get_post_meta($post->ID, 'type', true),
+                    'identifier'     => get_post_meta($post->ID, 'identifier', true),
+                    'property_id'    => get_post_meta($post->ID, 'property_id', true),
+                    'park_id'        => get_post_meta($post->ID, 'park_id', true),
+                ];
+            }
+        }
+
+        return rest_ensure_response($attachments);
     }
 
     /**

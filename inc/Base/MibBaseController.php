@@ -188,8 +188,8 @@ class MibBaseController
 		$table_data = [];
         foreach ($datas['data'] as $item) {
 
-		    // Lekérjük az adatokat a get_attachments_by_meta_values függvényből
-		    $attachments = $this->get_attachments_by_meta_values($item->name);
+                // Lekérjük az adatokat a get_attachments_by_meta_values függvényből
+                $attachments = $this->get_attachments_by_meta_values($item->name, $this->residentialParkId);
 
             $image = '';
             $szintrajz = '';
@@ -307,19 +307,22 @@ class MibBaseController
         return $table_data;
 	}
 
-	public function get_attachments_by_meta_values($identifier) {
-	    global $wpdb;
+    public function get_attachments_by_meta_values($identifier, $park_id) {
+        global $wpdb;
 
-	    // Lekérdezzük azokat az attachment ID-ket, amelyek megfelelnek az identifier és type feltételeknek
-	    $query = $wpdb->prepare("
-	        SELECT pm1.post_id 
-	        FROM {$wpdb->postmeta} pm1
-	        INNER JOIN {$wpdb->postmeta} pm2 ON pm1.post_id = pm2.post_id
-	        WHERE pm1.meta_key = 'identifier' 
-	        AND pm1.meta_value = %s
-	        AND pm2.meta_key = 'type'
-	        AND pm2.meta_value IN ('szintrajz', 'alaprajz', 'lakas_kep')
-	    ", $identifier);
+        // Lekérdezzük azokat az attachment ID-ket, amelyek megfelelnek az identifier, type és park_id feltételeknek
+        $query = $wpdb->prepare("
+            SELECT pm1.post_id
+            FROM {$wpdb->postmeta} pm1
+            INNER JOIN {$wpdb->postmeta} pm2 ON pm1.post_id = pm2.post_id
+            INNER JOIN {$wpdb->postmeta} pm3 ON pm1.post_id = pm3.post_id
+            WHERE pm1.meta_key = 'identifier'
+            AND pm1.meta_value = %s
+            AND pm2.meta_key = 'type'
+            AND pm2.meta_value IN ('szintrajz', 'alaprajz', 'lakas_kep')
+            AND pm3.meta_key = 'park_id'
+            AND pm3.meta_value = %s
+        ", $identifier, $park_id);
 
 	    $post_ids = $wpdb->get_col($query);
 
@@ -330,15 +333,16 @@ class MibBaseController
 	    // Most lekérjük az attachment-ek URL-jeit
 	    $attachments = [];
 
-	    foreach ($post_ids as $post_id) {
-	        $attachments[] = [
-	            'attachment_id'  => $post_id,
-	            'attachment_url' => wp_get_attachment_url($post_id),
-	            'type'           => get_post_meta($post_id, 'type', true),
-	            'identifier'     => get_post_meta($post_id, 'identifier', true),
-	            'property_id'    => get_post_meta($post_id, 'property_id', true),
-	        ];
-	    }
+            foreach ($post_ids as $post_id) {
+                $attachments[] = [
+                    'attachment_id'  => $post_id,
+                    'attachment_url' => wp_get_attachment_url($post_id),
+                    'type'           => get_post_meta($post_id, 'type', true),
+                    'identifier'     => get_post_meta($post_id, 'identifier', true),
+                    'property_id'    => get_post_meta($post_id, 'property_id', true),
+                    'park_id'        => get_post_meta($post_id, 'park_id', true),
+                ];
+            }
 
 	    return $attachments;
 	}
