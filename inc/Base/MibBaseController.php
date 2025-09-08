@@ -1740,11 +1740,11 @@ class MibBaseController
 	    return $html;
 	}
 
-	private function getFilterAvailabilityByCatalog()
-	{
-		if (isset($filterType['status']) && !is_array($filterType['status'])) {
-	        $filterType['status'] = explode(',', $filterType['status']);
-	    }
+        private function getFilterAvailabilityByCatalog($filterType = [])
+        {
+            if (isset($filterType['status']) && !is_array($filterType['status'])) {
+                $filterType['status'] = explode(',', $filterType['status']);
+            }
 
 	    $html = '<div class="catalog-dropdown mt-3">
 	                <div class="dropdown">
@@ -1772,10 +1772,10 @@ class MibBaseController
 	}
 
 
-        private function getFilterGardenConnectionByCatalog()
+        private function getFilterGardenConnectionByCatalog($filterType = [])
         {
-                if (isset($filterType['mib-garden_connection']) && !is_array($filterType['mib-garden_connection'])) {
-                $filterType['mib-garden_connection'] = explode(',', $filterType['mib-garden_connection']);
+            if (isset($filterType['garden_connection']) && !is_array($filterType['garden_connection'])) {
+                $filterType['garden_connection'] = explode(',', $filterType['garden_connection']);
             }
 
 	    $html = '<div class="catalog-dropdown mt-3">
@@ -1835,11 +1835,11 @@ class MibBaseController
 
 
 
-	private function getFilterStairwayByCatalog()
-	{
-		if (isset($filterType['mib-stairway']) && !is_array($filterType['mib-stairway'])) {
-	        $filterType['mib-stairway'] = explode(',', $filterType['mib-stairway']);
-	    }
+        private function getFilterStairwayByCatalog($filterType = [])
+        {
+            if (isset($filterType['stairway']) && !is_array($filterType['stairway'])) {
+                $filterType['stairway'] = explode(',', $filterType['stairway']);
+            }
 
 	    $html = '<div class="catalog-dropdown mt-3">
 	                <div class="dropdown">
