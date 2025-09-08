@@ -900,7 +900,6 @@ class MibBaseController
 
             $html .= $this->getCatalogFilterHtml($filterType);
 
-        $html .= '</div>';
         //mib-stairway
 
         // Display total count returned by API
