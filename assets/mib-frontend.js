@@ -2229,15 +2229,23 @@ function formatSquareMeter(value) {
     const urlParams = new URLSearchParams(window.location.search);
     if ( urlParams.size>0) {
 
+        /*for (const [key, value] of urlParams) {
+            console.log(key, value);
+        }*/
+
         $('#mib-spinner').show();
 
-        
+        const fromUrl = (name) => [
+            ...urlParams.getAll(`${name}[]`),
+            ...urlParams.getAll(name),
+        ].filter(v => v !== null && v !== '');
 
         // Alapértelmezett változók
         let minPrice = null, maxPrice = null;
         let minFloor = null, maxFloor = null;
         let minRoom = null, maxRoom = null;
         let minSquare = null, maxSquare = null;
+        
 
         // Ellenőrzés és értékek beállítása
         if (urlParams.has('price_min') && urlParams.has('price_max')) {
@@ -2294,26 +2302,64 @@ function formatSquareMeter(value) {
 
                 var setMinSquare = parseInt(minSquareTextStr);
                 var setMaxSquare  = parseInt(maxSquareStr);
-
-                
             }
         }
 
+        // --- Egyéb paraméterek beállítása a UI-n (checkboxok bejelölése az URL alapján)
+        // Orientation
+        const urlOrientations = fromUrl('orientation');
+        if (urlOrientations.length) {
+            $('.catalog-orientation-checkbox').prop('checked', false);
+            urlOrientations.forEach(v => {
+              $(`.catalog-orientation-checkbox[value="${v}"]`).prop('checked', true);
+            });
+        }
+
+          // Availability
+        const urlAvailability = fromUrl('availability');
+        if (urlAvailability.length) {
+            $('.catalog-availability-checkbox').prop('checked', false);
+            urlAvailability.forEach(v => {
+              $(`.catalog-availability-checkbox[value="${v}"]`).prop('checked', true);
+            });
+        }
+
+          // Garden connection (1/0)
+        const urlGarden = fromUrl('garden_connection');
+        if (urlGarden.length) {
+            $('.catalog-gardenconnection-checkbox').prop('checked', urlGarden[0] === '1');
+        }
+
+          // Stairway
+        const urlStairway = fromUrl('stairway');
+        if (urlStairway.length) {
+            $('.catalog-stairway-checkbox').prop('checked', false);
+            urlStairway.forEach(v => {
+              $(`.catalog-stairway-checkbox[value="${v}"]`).prop('checked', true);
+            });
+        }
+
+          // District (select)
+        const districtValue = urlParams.get('district');
+        if (districtValue) {
+            //$('.district-select').val(districtValue).trigger('change');
+        }
+
         // (Opcionális) egyéb paraméterek lekérése
-        const selectAvailability = $('.catalog-availability-checkbox:checked').map(function() {
+        
+        const selectAvailability = $('.catalog-availability-checkbox:checked').map(function () {
             return this.value;
         }).get();
+
         const selectOritentation = $('.catalog-orientation-checkbox:checked').map(function() {
             return this.value;
         }).get();
         const selectGardenConnection = $('.catalog-gardenconnection-checkbox').is(':checked') ? 1 : 0;
+
         const selectStairway = $('.catalog-stairway-checkbox:checked').map(function() {
             return this.value;
         }).get();
-        const districtValue = urlParams.get('district');
-        if (districtValue) {
-            $('.district-select').val(districtValue);
-        }
+
 
         var wasAdvancedFiltersVisible = $('#advanced-filters').is(':visible');
 
@@ -2336,10 +2382,10 @@ function formatSquareMeter(value) {
                 slider_max_value: maxSquare, // terület max
                 price_slider_min_value: minPrice,
                 price_slider_max_value: maxPrice,
-                availability: selectAvailability,
-                typeOfBalcony: selectOritentation,
-                garden_connection: selectGardenConnection,
-                stairway: selectStairway,
+                availability: urlAvailability,
+                typeOfBalcony: urlOrientations,
+                garden_connection: urlGarden,
+                stairway: urlStairway,
                 district: districtValue,
                 page_type: page_type,
             },
@@ -2359,6 +2405,7 @@ function formatSquareMeter(value) {
                 }
 
                 $('#mib-spinner').hide();
+
                 selectAvailability.forEach(function(value) {
                     $('.catalog-availability-checkbox[value="' + value + '"]').prop('checked', true);
                 });
