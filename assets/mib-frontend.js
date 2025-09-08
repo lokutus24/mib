@@ -2307,6 +2307,13 @@ function formatSquareMeter(value) {
             return this.value;
         }).get();
         const selectGardenConnection = $('.catalog-gardenconnection-checkbox').is(':checked') ? 1 : 0;
+        const selectStairway = $('.catalog-stairway-checkbox:checked').map(function() {
+            return this.value;
+        }).get();
+        const districtValue = urlParams.get('district');
+        if (districtValue) {
+            $('.district-select').val(districtValue);
+        }
 
         var wasAdvancedFiltersVisible = $('#advanced-filters').is(':visible');
 
@@ -2332,6 +2339,8 @@ function formatSquareMeter(value) {
                 availability: selectAvailability,
                 typeOfBalcony: selectOritentation,
                 garden_connection: selectGardenConnection,
+                stairway: selectStairway,
+                district: districtValue,
                 page_type: page_type,
             },
             success: function(response) {
@@ -2360,6 +2369,12 @@ function formatSquareMeter(value) {
                     $('.catalog-gardenconnection-checkbox').prop('checked', true);
                 } else {
                     $('.catalog-gardenconnection-checkbox').prop('checked', false);
+                }
+                selectStairway.forEach(function(value) {
+                    $('.catalog-stairway-checkbox[value="' + value + '"]').prop('checked', true);
+                });
+                if (districtValue) {
+                    $('.district-select').val(districtValue);
                 }
 
                 const cleanUrl = window.location.origin + window.location.pathname;
