@@ -4,40 +4,12 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3f6d79772da1e339436d1c2894a13b2e",
-    "packages": [
-        {
-            "name": "dimsemenov/magnific-popup",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/dimsemenov/Magnific-Popup.git",
-                "reference": "45dd72ccd1a18f0626fb958f7c49e6313556d31f"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/dimsemenov/Magnific-Popup/zipball/45dd72ccd1a18f0626fb958f7c49e6313556d31f",
-                "reference": "45dd72ccd1a18f0626fb958f7c49e6313556d31f",
-                "shasum": ""
-            },
-            "default-branch": true,
-            "type": "library",
-            "notification-url": "https://packagist.org/downloads/",
-            "description": "Light and responsive lightbox script with focus on performance.",
-            "homepage": "http://dimsemenov.com/plugins/magnific-popup/",
-            "support": {
-                "issues": "https://github.com/dimsemenov/Magnific-Popup/issues",
-                "source": "https://github.com/dimsemenov/Magnific-Popup/tree/1.2.0"
-            },
-            "time": "2024-06-08T08:02:31+00:00"
-        }
-    ],
+    "content-hash": "26053d2d146dfd0e8e6af650605efc45",
+    "packages": [],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {
-        "dimsemenov/magnific-popup": 20
-    },
+    "stability-flags": {},
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {},
