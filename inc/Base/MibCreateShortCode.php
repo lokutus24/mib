@@ -33,22 +33,28 @@ class MibCreateShortCode extends MibBaseController
             return '<p>Hiányzó lakópark azonosító.</p>';
         }
 
-        $response = wp_remote_get('https://ugyfel.mibportal.hu:3000/residential_parks/get/' . $id);
-        if (is_wp_error($response)) {
-            return '<p>Nem sikerült betölteni a dokumentumokat.</p>';
+        $mibAuth = new MibAuthController();
+        $options = $mibAuth->getOptionDatas();
+
+        if (!empty($options)) {
+            $expired = $mibAuth->checkExpireToken($options['expiry']);
+            if ($expired) {
+                $mibAuth->loginToMib();
+            }
+        } else {
+            return '<p>Hiányzó konfiguráció.</p>';
         }
 
-        $data = json_decode(wp_remote_retrieve_body($response), true);
+        $data = $mibAuth->getResidentialDocuments($id);
         $docs = isset($data['documents']) ? $data['documents'] : [];
 
         if (empty($docs)) {
             return '<p>Nincsenek dokumentumok.</p>';
         }
 
-        $uid = uniqid('mib-doc-');
         $html = '<div class="mib-residential-documents">';
-        $html .= '<label for="' . $uid . '">Válasszon dokumentumot:</label>';
-        $html .= '<select id="' . $uid . '"><option value="">-- Válasszon dokumentumot --</option>';
+        $html .= '<label>Válasszon dokumentumot:</label>';
+        $html .= '<select class="mib-res-doc-select"><option value="">-- Válasszon dokumentumot --</option>';
 
         foreach ($docs as $doc) {
             $name = esc_html($doc['name'] ?? ($doc['title'] ?? 'Dokumentum'));
@@ -59,9 +65,8 @@ class MibCreateShortCode extends MibBaseController
         }
 
         $html .= '</select>';
-        $html .= '<button type="button" id="' . $uid . '-btn">Letöltés</button>';
+        $html .= '<button type="button" class="mib-res-doc-btn">Letöltés</button>';
         $html .= '</div>';
-        $html .= '<script>(function($){$(document).on("click","#' . $uid . '-btn",function(e){e.preventDefault();var u=$("#' . $uid . '").val();if(!u){alert("Kérjük, válasszon dokumentumot!");return;}window.open(u,"_blank");});})(jQuery);</script>';
 
         return $html;
     }
