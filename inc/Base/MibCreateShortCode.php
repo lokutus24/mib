@@ -15,12 +15,55 @@ class MibCreateShortCode extends MibBaseController
 
         //csak a szűrők jelennek meg.
         add_shortcode('mib_list_apartman_catalog_filters', array($this, 'mib_list_apartman_catalog_filters'));
+        add_shortcode('mib_residential_documents', array($this, 'mib_residential_documents'));
 
 
         add_action('init', array($this, 'custom_property_rewrite_rule'));
         add_action('init', array($this, 'register_dynamic_shortcodes'));
         add_filter('query_vars', array($this, 'add_custom_query_var'));
         add_action('template_redirect', array($this, 'redirect_old_apartment_url'));
+    }
+
+    public function mib_residential_documents($atts)
+    {
+        $atts = shortcode_atts(['id' => 0], $atts, 'mib_residential_documents');
+        $id = intval($atts['id']);
+
+        if (!$id) {
+            return '<p>Hiányzó lakópark azonosító.</p>';
+        }
+
+        $response = wp_remote_get('https://ugyfel.mibportal.hu:3000/residential_parks/get/' . $id);
+        if (is_wp_error($response)) {
+            return '<p>Nem sikerült betölteni a dokumentumokat.</p>';
+        }
+
+        $data = json_decode(wp_remote_retrieve_body($response), true);
+        $docs = isset($data['documents']) ? $data['documents'] : [];
+
+        if (empty($docs)) {
+            return '<p>Nincsenek dokumentumok.</p>';
+        }
+
+        $uid = uniqid('mib-doc-');
+        $html = '<div class="mib-residential-documents">';
+        $html .= '<label for="' . $uid . '">Válasszon dokumentumot:</label>';
+        $html .= '<select id="' . $uid . '"><option value="">-- Válasszon dokumentumot --</option>';
+
+        foreach ($docs as $doc) {
+            $name = esc_html($doc['name'] ?? ($doc['title'] ?? 'Dokumentum'));
+            $url = esc_url($doc['url'] ?? ($doc['file'] ?? ''));
+            if ($url) {
+                $html .= '<option value="' . $url . '">' . $name . '</option>';
+            }
+        }
+
+        $html .= '</select>';
+        $html .= '<button type="button" id="' . $uid . '-btn">Letöltés</button>';
+        $html .= '</div>';
+        $html .= '<script>(function($){$(document).on("click","#' . $uid . '-btn",function(e){e.preventDefault();var u=$("#' . $uid . '").val();if(!u){alert("Kérjük, válasszon dokumentumot!");return;}window.open(u,"_blank");});})(jQuery);</script>';
+
+        return $html;
     }
 
     public function custom_property_rewrite_rule()
