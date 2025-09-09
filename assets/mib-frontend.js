@@ -4058,6 +4058,16 @@ function formatSquareMeter(value) {
         checkIfAnyFilterIsActive();
     });
 
+    if ($.fn.magnificPopup) {
+        $('.mib-residential-gallery').each(function() {
+            $(this).magnificPopup({
+                delegate: 'a',
+                type: 'image',
+                gallery: { enabled: true }
+            });
+        });
+    }
+
     $(document).on('click', '.mib-res-doc-btn', function(e) {
         e.preventDefault();
         var u = $(this).closest('.mib-residential-documents').find('.mib-res-doc-select').val();

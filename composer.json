@@ -17,6 +17,8 @@
          "platform": {
              "php": "7.4"
          }
+    },
+    "require": {
+        "dimsemenov/magnific-popup": "dev-master"
     }
-
 }

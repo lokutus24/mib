@@ -16,6 +16,7 @@ class MibCreateShortCode extends MibBaseController
         //csak a szűrők jelennek meg.
         add_shortcode('mib_list_apartman_catalog_filters', array($this, 'mib_list_apartman_catalog_filters'));
         add_shortcode('mib_residential_documents', array($this, 'mib_residential_documents'));
+        add_shortcode('mib_residential_gallery', array($this, 'mib_residential_gallery'));
 
 
         add_action('init', array($this, 'custom_property_rewrite_rule'));
@@ -66,6 +67,48 @@ class MibCreateShortCode extends MibBaseController
 
         $html .= '</select>';
         $html .= '<button type="button" class="mib-res-doc-btn">Letöltés</button>';
+        $html .= '</div>';
+
+        return $html;
+    }
+
+    public function mib_residential_gallery($atts)
+    {
+        $atts = shortcode_atts(['id' => 0], $atts, 'mib_residential_gallery');
+        $id = intval($atts['id']);
+
+        if (!$id) {
+            return '<p>Hiányzó lakópark azonosító.</p>';
+        }
+
+        $mibAuth = new MibAuthController();
+        $options = $mibAuth->getOptionDatas();
+
+        if (!empty($options)) {
+            $expired = $mibAuth->checkExpireToken($options['expiry']);
+            if ($expired) {
+                $mibAuth->loginToMib();
+            }
+        } else {
+            return '<p>Hiányzó konfiguráció.</p>';
+        }
+
+        $data = $mibAuth->getResidentialDocuments($id);
+        $images = isset($data['images']) ? $data['images'] : [];
+
+        if (empty($images)) {
+            return '<p>Nincsenek képek.</p>';
+        }
+
+        $html = '<div class="mib-residential-gallery">';
+        foreach ($images as $img) {
+            $preview = esc_url($img['previewUrl'] ?? '');
+            $url = esc_url($img['url'] ?? $preview);
+            if ($preview) {
+                $name = esc_attr($img['name'] ?? '');
+                $html .= '<a href="' . $url . '"><img src="' . $preview . '" alt="' . $name . '"></a>';
+            }
+        }
         $html .= '</div>';
 
         return $html;

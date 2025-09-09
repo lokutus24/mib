@@ -160,17 +160,20 @@ class MibEnqueue extends MibBaseController
         wp_enqueue_script('nouislider-js', 'https://cdn.jsdelivr.net/npm/nouislider@15.7.0/dist/nouislider.min.js', array(), null, true);
         wp_enqueue_style('nouislider-css', 'https://cdn.jsdelivr.net/npm/nouislider@15.7.0/dist/nouislider.min.css');
         wp_enqueue_script('mib-frontend-script', plugin_dir_url(dirname(__FILE__, 3)).'mib/assets/mib-frontend.js', array('jquery', 'nouislider-js'), null, true);
-	    wp_localize_script('mib-frontend-script', 'ajaxurl', admin_url('admin-ajax.php'));
-
-	    
-	    wp_enqueue_style('bootstrap-css', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css');
-   	 	wp_enqueue_script('bootstrap-js', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js', array('jquery'), null, true);
-   	 	wp_enqueue_script('cookie-js', 'https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js', array('jquery'), null, true);
+            wp_localize_script('mib-frontend-script', 'ajaxurl', admin_url('admin-ajax.php'));
 
 
-   	 	wp_enqueue_style('dynamic-style', plugin_dir_url(dirname(__FILE__, 3)).'mib/assets/style.php');
+            wp_enqueue_style('bootstrap-css', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css');
+                wp_enqueue_script('bootstrap-js', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js', array('jquery'), null, true);
+                wp_enqueue_script('cookie-js', 'https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js', array('jquery'), null, true);
+
+        wp_enqueue_style('magnific-popup', plugin_dir_url(dirname(__FILE__, 3)).'mib/vendor/dimsemenov/magnific-popup/dist/magnific-popup.css');
+        wp_enqueue_script('magnific-popup', plugin_dir_url(dirname(__FILE__, 3)).'mib/vendor/dimsemenov/magnific-popup/dist/jquery.magnific-popup.min.js', array('jquery'), null, true);
+
+
+                wp_enqueue_style('dynamic-style', plugin_dir_url(dirname(__FILE__, 3)).'mib/assets/style.php');
         wp_enqueue_style(
-	        'font-awesome-mib',
+                'font-awesome-mib',
 	        'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css',
 	        [],
 	        '6.5.1'
