@@ -103,7 +103,8 @@ class MibCreateShortCode extends MibBaseController
         $html = '<div class="mib-residential-gallery">';
         foreach ($images as $img) {
             $preview = esc_url($img['previewUrl'] ?? '');
-            $url = esc_url($img['url'] ?? $preview);
+            $urlRaw = $img['url'] ?? '';
+            $url = filter_var($urlRaw, FILTER_VALIDATE_URL) ? esc_url($urlRaw) : $preview;
             if ($preview) {
                 $name = esc_attr($img['name'] ?? '');
                 $html .= '<a href="' . $url . '"><img src="' . $preview . '" alt="' . $name . '" decoding="async" crossorigin="anonymous"></a>';
