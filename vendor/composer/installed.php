@@ -3,7 +3,7 @@
         'name' => 'root/mib',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '29f11729089e094721ec6729a8f2881ad8155020',
+        'reference' => 'b37149631fc7338f470a1bde75543c2fb8471619',
         'type' => 'projekt',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -24,7 +24,7 @@
         'root/mib' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '29f11729089e094721ec6729a8f2881ad8155020',
+            'reference' => 'b37149631fc7338f470a1bde75543c2fb8471619',
             'type' => 'projekt',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

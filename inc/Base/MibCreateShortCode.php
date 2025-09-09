@@ -106,7 +106,7 @@ class MibCreateShortCode extends MibBaseController
             $url = esc_url($img['url'] ?? $preview);
             if ($preview) {
                 $name = esc_attr($img['name'] ?? '');
-                $html .= '<a href="' . $url . '"><img src="' . $preview . '" alt="' . $name . '"></a>';
+                $html .= '<a href="' . $url . '"><img src="' . $preview . '" alt="' . $name . '" decoding="async" crossorigin="anonymous"></a>';
             }
         }
         $html .= '</div>';
