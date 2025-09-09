@@ -1,5 +1,34 @@
 {
-    "packages": [],
+    "packages": [
+        {
+            "name": "dimsemenov/magnific-popup",
+            "version": "dev-master",
+            "version_normalized": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/dimsemenov/Magnific-Popup.git",
+                "reference": "45dd72ccd1a18f0626fb958f7c49e6313556d31f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/dimsemenov/Magnific-Popup/zipball/45dd72ccd1a18f0626fb958f7c49e6313556d31f",
+                "reference": "45dd72ccd1a18f0626fb958f7c49e6313556d31f",
+                "shasum": ""
+            },
+            "time": "2024-06-08T08:02:31+00:00",
+            "default-branch": true,
+            "type": "library",
+            "installation-source": "dist",
+            "notification-url": "https://packagist.org/downloads/",
+            "description": "Light and responsive lightbox script with focus on performance.",
+            "homepage": "http://dimsemenov.com/plugins/magnific-popup/",
+            "support": {
+                "issues": "https://github.com/dimsemenov/Magnific-Popup/issues",
+                "source": "https://github.com/dimsemenov/Magnific-Popup/tree/1.2.0"
+            },
+            "install-path": "../dimsemenov/magnific-popup"
+        }
+    ],
     "dev": true,
     "dev-package-names": []
 }

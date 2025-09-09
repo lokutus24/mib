@@ -1387,3 +1387,16 @@ width: 100% !important; /* Kis százalékos szélesség, hogy négy blokk elfér
 .mib-res-doc-btn:hover {
     background-color: #f3d89c; /* kicsit sötétebb hover */
 }
+
+.mib-residential-gallery {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.mib-residential-gallery img {
+    width: 100%;
+    height: auto;
+    display: block;
+    cursor: pointer;
+}
