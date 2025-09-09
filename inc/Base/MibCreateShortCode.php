@@ -15,12 +15,60 @@ class MibCreateShortCode extends MibBaseController
 
         //csak a szűrők jelennek meg.
         add_shortcode('mib_list_apartman_catalog_filters', array($this, 'mib_list_apartman_catalog_filters'));
+        add_shortcode('mib_residential_documents', array($this, 'mib_residential_documents'));
 
 
         add_action('init', array($this, 'custom_property_rewrite_rule'));
         add_action('init', array($this, 'register_dynamic_shortcodes'));
         add_filter('query_vars', array($this, 'add_custom_query_var'));
         add_action('template_redirect', array($this, 'redirect_old_apartment_url'));
+    }
+
+    public function mib_residential_documents($atts)
+    {
+        $atts = shortcode_atts(['id' => 0], $atts, 'mib_residential_documents');
+        $id = intval($atts['id']);
+
+        if (!$id) {
+            return '<p>Hiányzó lakópark azonosító.</p>';
+        }
+
+        $mibAuth = new MibAuthController();
+        $options = $mibAuth->getOptionDatas();
+
+        if (!empty($options)) {
+            $expired = $mibAuth->checkExpireToken($options['expiry']);
+            if ($expired) {
+                $mibAuth->loginToMib();
+            }
+        } else {
+            return '<p>Hiányzó konfiguráció.</p>';
+        }
+
+        $data = $mibAuth->getResidentialDocuments($id);
+        $docs = isset($data['documents']) ? $data['documents'] : [];
+
+        if (empty($docs)) {
+            return '<p>Nincsenek dokumentumok.</p>';
+        }
+
+        $html = '<div class="mib-residential-documents">';
+        $html .= '<label>Válasszon dokumentumot:</label>';
+        $html .= '<select class="mib-res-doc-select"><option value="">-- Válasszon dokumentumot --</option>';
+
+        foreach ($docs as $doc) {
+            $name = esc_html($doc['name'] ?? ($doc['title'] ?? 'Dokumentum'));
+            $url = esc_url($doc['url'] ?? ($doc['file'] ?? ''));
+            if ($url) {
+                $html .= '<option value="' . $url . '">' . $name . '</option>';
+            }
+        }
+
+        $html .= '</select>';
+        $html .= '<button type="button" class="mib-res-doc-btn">Letöltés</button>';
+        $html .= '</div>';
+
+        return $html;
     }
 
     public function custom_property_rewrite_rule()

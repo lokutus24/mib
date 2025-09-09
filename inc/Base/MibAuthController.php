@@ -184,10 +184,10 @@ class MibAuthController extends MibBaseController
 	    return ["data" => $all_data, "total" => $total_records];
 	}
 
-	public function getOneApartmentsById($id)
-	{
-	    $all_data = [];
-	    $total_records = 0;
+        public function getOneApartmentsById($id)
+        {
+            $all_data = [];
+            $total_records = 0;
 
 	    if (empty($this->mibOptions['token'])) {
 	        return ["data" => $all_data, "total" => $total_records];
@@ -218,6 +218,31 @@ class MibAuthController extends MibBaseController
 	        error_log('MIB getOneApartmentsById error: ' . $response->get_error_message());
 	    }
 
-	    return ["data" => $all_data, "total" => $total_records];
-	}
+            return ["data" => $all_data, "total" => $total_records];
+        }
+
+        public function getResidentialDocuments($id)
+        {
+            if (empty($this->mibOptions['token'])) {
+                return [];
+            }
+
+            $url = "https://ugyfel.mibportal.hu:3000/residential_parks/get/{$id}";
+            $response = wp_remote_get($url, [
+                'timeout'     => 10,
+                'redirection' => 10,
+                'httpversion' => '1.1',
+                'headers'     => ['Authorization' => "Bearer {$this->mibOptions['token']}"],
+            ]);
+
+            if (is_wp_error($response)) {
+                error_log('MIB getResidentialDocuments error: ' . $response->get_error_message());
+                return [];
+            }
+
+            $body = wp_remote_retrieve_body($response);
+            $json = json_decode($body, true);
+
+            return $json ?: [];
+        }
 }

@@ -4058,4 +4058,14 @@ function formatSquareMeter(value) {
         checkIfAnyFilterIsActive();
     });
 
+    $(document).on('click', '.mib-res-doc-btn', function(e) {
+        e.preventDefault();
+        var u = $(this).closest('.mib-residential-documents').find('.mib-res-doc-select').val();
+        if (!u) {
+            alert('Kérjük, válasszon dokumentumot!');
+            return;
+        }
+        window.open(u, '_blank');
+    });
+
 });
