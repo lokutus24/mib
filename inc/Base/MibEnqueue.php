@@ -167,10 +167,6 @@ class MibEnqueue extends MibBaseController
                 wp_enqueue_script('bootstrap-js', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js', array('jquery'), null, true);
                 wp_enqueue_script('cookie-js', 'https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js', array('jquery'), null, true);
 
-        wp_enqueue_style('magnific-popup', plugin_dir_url(dirname(__FILE__, 3)).'mib/vendor/dimsemenov/magnific-popup/dist/magnific-popup.css');
-        wp_enqueue_script('magnific-popup', plugin_dir_url(dirname(__FILE__, 3)).'mib/vendor/dimsemenov/magnific-popup/dist/jquery.magnific-popup.min.js', array('jquery'), null, true);
-
-
                 wp_enqueue_style('dynamic-style', plugin_dir_url(dirname(__FILE__, 3)).'mib/assets/style.php');
         wp_enqueue_style(
                 'font-awesome-mib',
