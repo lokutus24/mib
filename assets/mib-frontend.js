@@ -4070,10 +4070,13 @@ function formatSquareMeter(value) {
         mibIndex = index;
         var href = mibLinks.eq(mibIndex).attr('href');
         $mibImage.attr('src', href);
+        $mibImage.attr('decoding', 'async');
+        $mibImage.attr('crossorigin', 'anonymous');
         $mibOverlay.fadeIn(200);
     }
 
     $('.mib-residential-gallery').on('click', 'a', function(e) {
+        $mibOverlay.css('opacity', 5);
         e.preventDefault();
         mibLinks = $(this).closest('.mib-residential-gallery').find('a');
         mibShow(mibLinks.index(this));
