@@ -1347,3 +1347,43 @@ width: 100% !important; /* Kis százalékos szélesség, hogy négy blokk elfér
     border-color: #bbb;
     color: black;
 }
+.mib-residential-documents {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+    background-color: #a5a497; /* háttér (szürke a képen) */
+    padding: 40px 20px;
+}
+
+.mib-res-doc-select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    text-align: center;
+    padding: 12px 20px;
+    border-radius: 50px;
+    border: 1px solid #333;
+    background-color: #fff;
+    font-size: 18px;
+    font-family: sans-serif;
+    cursor: pointer;
+    min-width: 300px;
+}
+
+.mib-res-doc-btn {
+    padding: 12px 40px !important;
+    border-radius: 50px !important;
+    border: 1px solid #333 !important;
+    background-color: #f6dfb3 !important;
+    font-size: 18px !important;
+    font-weight: bold !important;
+    color: #333 !important;
+    cursor: pointer !important;
+    min-width: 300px !important;
+    text-transform: uppercase !important;
+}
+
+.mib-res-doc-btn:hover {
+    background-color: #f3d89c; /* kicsit sötétebb hover */
+}
