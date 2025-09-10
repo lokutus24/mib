@@ -1390,14 +1390,32 @@ width: 100% !important; /* Kis százalékos szélesség, hogy négy blokk elfér
 
 .mib-residential-gallery {
     display: grid;
-    grid-template-columns: repeat(auto-fit, 420px);
-    gap: 10px;
+    grid-template-columns: repeat(2, 1fr); /* Alapból 2 oszlop */
+    gap: 30px;
     justify-content: center;
 }
 
 .mib-residential-gallery img {
-    width: 420px;
-    height: 270px;
+max-height:300px;
+    width: 100%;      /* A kép szélessége kitölti az oszlopot */
+    height: auto;     /* Az arányok megőrzése */
+    display: block;   /* Eltünteti az esetleges inline margókat */
+    object-fit: cover; /* Ha vágni akarjuk a képet, akkor is szépen töltse ki */
+    border-radius: 8px; /* Opcionális: lekerekített sarkok */
+}
+
+/* Mobilon egy oszlop */
+@media (max-width: 768px) {
+    .mib-residential-gallery {
+     gap: 20px !important;
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .mib-residential-gallery img {
+        height: 190px !important;
+    }
+}
+.mib-residential-gallery img {
     object-fit: cover;
     display: block;
     cursor: pointer;
