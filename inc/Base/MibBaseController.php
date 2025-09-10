@@ -262,7 +262,7 @@ class MibBaseController
 
 			    if ($pricePerMeter <= 1500000 && $item->price < 100000000) {
 			        $otthonStart = true;
-			        $badgeUrl = 'https://placehold.co/80x80?text=OS';
+			        $badgeUrl = plugin_dir_url(dirname(__DIR__)) . 'assets/os.png';
 			    }
 			}
 
