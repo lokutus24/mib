@@ -291,7 +291,9 @@ class MibBaseController
 		        'alaprajz' => $alaprajz, // Frissített alaprajz
 		        'szintrajz' => $szintrajz, // Frissített szintrajz
 		        'notes' => ($item->residentialPark->notes) ? $item->residentialPark->notes : '',
-		        'logo' => ($item->residentialPark->logo) ? $item->residentialPark->logo : '',
+                    'logo' => (isset($this->filterOptionDatas['mib-dark_logo']) && $this->filterOptionDatas['mib-dark_logo'] == 1)
+                        ? (($item->residentialPark->darklogo) ? $item->residentialPark->darklogo : '')
+                        : (($item->residentialPark->lightlogo) ? $item->residentialPark->lightlogo : ''),
                         'address' => ($item->residentialPark->address) ? $item->residentialPark->address : '',
                         'otthonStart' => $otthonStart,
                         'otthonStartBadge' => $badgeUrl,
