@@ -75,6 +75,7 @@ class MibManagerCallbacks extends MibBaseController
 					'mib-filterslider_checked'	  => (isset($_POST['mib-filterslider_checked'] ) && $_POST['mib-filterslider_checked'] == 'on') ? true : false,
 					'mib-loadmore_checked'	  => (isset($_POST['mib-loadmore_checked'] ) && $_POST['mib-loadmore_checked'] == 'on') ? true : false,
 					'mib-display_logo'	  => (isset($_POST['mib-display_logo'] ) && $_POST['mib-display_logo'] == 'on') ? true : false,
+                                        'mib-dark_logo'        => (isset($_POST['mib-dark_logo'] ) && $_POST['mib-dark_logo'] == 'on') ? true : false,
 					'mib-display_address'	  => (isset($_POST['mib-display_address'] ) && $_POST['mib-display_address'] == 'on') ? true : false,
 					'mib-display_sort'	  => (isset($_POST['mib-display_sort'] ) && $_POST['mib-display_sort'] == 'on') ? true : false,
 					'mib-garden_connection'	  => (isset($_POST['mib-garden_connection'] ) && $_POST['mib-garden_connection'] == 'on') ? true : false,
@@ -114,6 +115,7 @@ class MibManagerCallbacks extends MibBaseController
 		$price_max = (isset($mib_filter_options['mib-filter-price-slider-max'])) ? $mib_filter_options['mib-filter-price-slider-max'] : 100000000;
 
 		$display_logo = (isset($mib_filter_options['mib-display_logo'])  && $mib_filter_options['mib-display_logo'] == 1) ? 'checked' : '';
+                $dark_logo = (isset($mib_filter_options['mib-dark_logo'])  && $mib_filter_options['mib-dark_logo'] == 1) ? 'checked' : '';
 		$display_address = (isset($mib_filter_options['mib-display_address'])  && $mib_filter_options['mib-display_address'] == 1) ? 'checked' : '';
 
 		$display_sort = (isset($mib_filter_options['mib-display_sort'])  && $mib_filter_options['mib-display_sort'] == 1) ? 'checked' : '';
@@ -185,9 +187,13 @@ class MibManagerCallbacks extends MibBaseController
 			Paginate helyett Load more: <input type="checkbox" name="mib-loadmore_checked" size="45" <?=$loadmore_checked;?>>
 		</div>
 
-		<div class="row" style="margin-bottom: 10px;">
-			Logó megjelenítés: <input type="checkbox" name="mib-display_logo" size="45" <?=$display_logo;?>>
-		</div>
+                <div class="row" style="margin-bottom: 10px;">
+                        Logó megjelenítés: <input type="checkbox" name="mib-display_logo" size="45" <?=$display_logo;?>>
+                </div>
+
+                <div class="row" style="margin-bottom: 10px;">
+                        Sötét logó: <input type="checkbox" name="mib-dark_logo" size="45" <?=$dark_logo;?>>
+                </div>
 
 		<div class="row" style="margin-bottom: 10px;">
 			Helység megjelenítés: <input type="checkbox" name="mib-display_address" size="45" <?=$display_address;?>>
