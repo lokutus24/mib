@@ -661,6 +661,15 @@ class MibBaseController
 		                        $html .= $this->getFilterAreaShortCodeByCatalog($filterType['ranges']['area']['min'], $filterType['ranges']['area']['max']);
 		                    }
 
+		                    $html .= '<div class="mb-2" id="parksfilter">';
+
+					            if (in_array('orientation_filters', $filterType['extras']) || in_array('available_only', $filterType['extras']) || in_array('garden_connection_filter', $filterType['extras']) || in_array('staircase_filter', $filterType['extras']) || in_array('otthon_start_filter', $filterType['extras']) || in_array('district_filter', $filterType['extras']) ) {
+								$html .= '<button type="button" class="btn btn-outline-secondary btn-sm" id="toggle-advanced-filters">';
+								$html .= '<i class="fas fa-sliders-h me-1"></i> További szűrők';
+								$html .= '</button>';
+
+								}
+							$html .= '</div>';
 		          
 
 	                	}
@@ -673,17 +682,7 @@ class MibBaseController
 	    	
 	    $html .= '<div class="custom-filter-container">';
 
-	    
-
-		$html .= '<div class="mb-2" id="parksfilter">';
-
-            if (in_array('orientation_filters', $filterType['extras']) || in_array('available_only', $filterType['extras']) || in_array('garden_connection_filter', $filterType['extras']) || in_array('staircase_filter', $filterType['extras']) || in_array('otthon_start_filter', $filterType['extras']) || in_array('district_filter', $filterType['extras']) ) {
-			$html .= '<button type="button" class="btn btn-outline-secondary btn-sm" id="toggle-advanced-filters">';
-			$html .= '<i class="fas fa-sliders-h me-1"></i> További szűrők';
-			$html .= '</button>';
-
-			}
-		$html .= '</div>';
+	   
 	   			
 
                 $html .= '<div id="advanced-filters" class="flex-wrap" style="display:none;">';
@@ -1516,55 +1515,59 @@ class MibBaseController
                 if (isset($this->filterOptionDatas['mib-filter-square-meter']) && $this->filterOptionDatas['mib-filter-square-meter'] == true) {
                     $html .= $this->squareFiltersByCatalog($filterType);
                 }
+
+                $html .= '<div class="custom-filter-container">';
+	            $showAdvanced = false;
+	            if (isset($this->filterOptionDatas['mib-filter-district']) && $this->filterOptionDatas['mib-filter-district'] == true) {
+	                $showAdvanced = true;
+	            }
+	            if (isset($this->filterOptionDatas['mib-filter-orientation']) && $this->filterOptionDatas['mib-filter-orientation'] == true) {
+	                $showAdvanced = true;
+	            }
+	            if (isset($this->filterOptionDatas['mib-filter-availability']) && $this->filterOptionDatas['mib-filter-availability'] == true && $this->filterOptionDatas['inactive_hide'] != 1) {
+	                $showAdvanced = true;
+	            }
+	            if (isset($this->filterOptionDatas['mib-garden_connection']) && $this->filterOptionDatas['mib-garden_connection'] == true) {
+	                $showAdvanced = true;
+	            }
+	            if (isset($this->filterOptionDatas['mib-stairway']) && $this->filterOptionDatas['mib-stairway'] == true) {
+	                $showAdvanced = true;
+	            }
+
+	            if ($showAdvanced) {
+	                $html .= '<div class="mb-2">';
+	                $html .= '<div class="mb-2" id="parksfilter">';
+	                $html .= '<button type="button" class="btn btn-outline-secondary btn-sm" id="toggle-advanced-filters">';
+	                $html .= '<i class="fas fa-sliders-h me-1"></i> További szűrők';
+	                $html .= '</button>';
+	                $html .= '</div>';
+	                $html .= '</div>';
+
+	                
+	            }
             }
             $html .= '</div>';
             $html .= '</div>';
 
-            $html .= '<div class="custom-filter-container">';
-            $showAdvanced = false;
-            if (isset($this->filterOptionDatas['mib-filter-district']) && $this->filterOptionDatas['mib-filter-district'] == true) {
-                $showAdvanced = true;
-            }
-            if (isset($this->filterOptionDatas['mib-filter-orientation']) && $this->filterOptionDatas['mib-filter-orientation'] == true) {
-                $showAdvanced = true;
-            }
-            if (isset($this->filterOptionDatas['mib-filter-availability']) && $this->filterOptionDatas['mib-filter-availability'] == true && $this->filterOptionDatas['inactive_hide'] != 1) {
-                $showAdvanced = true;
-            }
-            if (isset($this->filterOptionDatas['mib-garden_connection']) && $this->filterOptionDatas['mib-garden_connection'] == true) {
-                $showAdvanced = true;
-            }
-            if (isset($this->filterOptionDatas['mib-stairway']) && $this->filterOptionDatas['mib-stairway'] == true) {
-                $showAdvanced = true;
-            }
 
-            if ($showAdvanced) {
-                $html .= '<div class="mb-2">';
-                $html .= '<div class="mb-2" id="parksfilter">';
-                $html .= '<button type="button" class="btn btn-outline-secondary btn-sm" id="toggle-advanced-filters">';
-                $html .= '<i class="fas fa-sliders-h me-1"></i> További szűrők';
-                $html .= '</button>';
-                $html .= '</div>';
-                $html .= '</div>';
+            $html .= '<div id="advanced-filters" class="flex-wrap" style="display:none;">';
+	            if (isset($this->filterOptionDatas['mib-filter-floor']) && $this->filterOptionDatas['mib-filter-floor'] == true) {
+	                $html .= $this->getFilterFloorByCatalog($filterType);
+	            }
+	            if (isset($this->filterOptionDatas['mib-filter-orientation']) && $this->filterOptionDatas['mib-filter-orientation'] == true) {
+	                $html .= $this->getFilterOrientationByCatalog($filterType);
+	            }
+	            if (isset($this->filterOptionDatas['mib-filter-availability']) && $this->filterOptionDatas['mib-filter-availability'] == true && $this->filterOptionDatas['inactive_hide'] != 1) {
+	                $html .= $this->getFilterAvailabilityByCatalog($filterType);
+	            }
+	            if (isset($this->filterOptionDatas['mib-garden_connection']) && $this->filterOptionDatas['mib-garden_connection'] == true) {
+	                $html .= $this->getFilterGardenConnectionByCatalog($filterType);
+	            }
+	            if (isset($this->filterOptionDatas['mib-stairway']) && $this->filterOptionDatas['mib-stairway'] == true) {
+	                $html .= $this->getFilterStairwayByCatalog($filterType);
+	            }
+            $html .= '</div>';
 
-                $html .= '<div id="advanced-filters" class="flex-wrap" style="display:none;">';
-                if (isset($this->filterOptionDatas['mib-filter-floor']) && $this->filterOptionDatas['mib-filter-floor'] == true) {
-                    $html .= $this->getFilterFloorByCatalog($filterType);
-                }
-                if (isset($this->filterOptionDatas['mib-filter-orientation']) && $this->filterOptionDatas['mib-filter-orientation'] == true) {
-                    $html .= $this->getFilterOrientationByCatalog($filterType);
-                }
-                if (isset($this->filterOptionDatas['mib-filter-availability']) && $this->filterOptionDatas['mib-filter-availability'] == true && $this->filterOptionDatas['inactive_hide'] != 1) {
-                    $html .= $this->getFilterAvailabilityByCatalog($filterType);
-                }
-                if (isset($this->filterOptionDatas['mib-garden_connection']) && $this->filterOptionDatas['mib-garden_connection'] == true) {
-                    $html .= $this->getFilterGardenConnectionByCatalog($filterType);
-                }
-                if (isset($this->filterOptionDatas['mib-stairway']) && $this->filterOptionDatas['mib-stairway'] == true) {
-                    $html .= $this->getFilterStairwayByCatalog($filterType);
-                }
-                $html .= '</div>';
-            }
             $html .= '</div>';
 
 
