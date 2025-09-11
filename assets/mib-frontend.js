@@ -745,6 +745,10 @@ function formatSquareMeter(value) {
 
     $(document).on('change', '.orientation-checkbox', function(e) {
 
+        if (isDefaultCatalog) {
+            return;
+        }
+
         e.preventDefault();
         $('#mib-spinner').show();
         var table = $('#custom-list-table-container');
@@ -836,6 +840,10 @@ function formatSquareMeter(value) {
 
     $(document).on('change', '.availability-checkbox', function(e) {
 
+        if (isDefaultCatalog) {
+            return;
+        }
+
         e.preventDefault();
         $('#mib-spinner').show();
         var table = $('#custom-list-table-container');
@@ -925,6 +933,10 @@ function formatSquareMeter(value) {
     });
 
     $(document).on('change', '.district-select', function(e) {
+
+        if (isDefaultCatalog()) {
+            return;
+        }
 
         $('#mib-spinner').show();
 
@@ -1670,6 +1682,10 @@ function formatSquareMeter(value) {
     restoreViewMode();
 
     $(document).on('change', '.catalog-availability-checkbox', function(e) {
+
+        if (isDefaultCatalog) {
+            return;
+        }
         
         $('#mib-spinner').show();
 
@@ -1812,6 +1828,10 @@ function formatSquareMeter(value) {
     //catalog-gardenconnection-checkbox
     $(document).on('change', '.catalog-gardenconnection-checkbox', function(e) {
 
+        if (isDefaultCatalog) {
+            return;
+        }
+
         $('#mib-spinner').show();
 
         var shortcode = '';
@@ -1952,6 +1972,10 @@ function formatSquareMeter(value) {
 
     
     $(document).on('change', '.catalog-orientation-checkbox', function(e) {
+
+        if (isDefaultCatalog) {
+            return;
+        }
         
         $('#mib-spinner').show();
 
@@ -3455,6 +3479,10 @@ function formatSquareMeter(value) {
 
     
     $(document).on('change', '.catalog-stairway-checkbox', function (e) {
+
+        if (isDefaultCatalog) {
+            return;
+        }
         
         $('#mib-spinner').show();
 
@@ -4046,6 +4074,10 @@ function formatSquareMeter(value) {
 
     // Otthon start filter
     $(document).on('change', '.catalog-otthonstart-checkbox', function() {
+
+        if (isDefaultCatalog) {
+            return;
+        }
         const checked = $(this).is(':checked');
         $('[data-otthon-start]').each(function() {
             const match = Number($(this).data('otthon-start')) === 1;

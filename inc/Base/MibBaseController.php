@@ -396,7 +396,7 @@ class MibBaseController
                     $html .= '<div class="apartment-plan position-relative">';
                     $html .= '<img crossorigin="anonymous" src="' . esc_url($data['image']) . '" alt="Lakás alaprajz">';
                     if (!empty($data['otthonStartBadge'])) {
-                        $html .= '<img src="' . esc_url($data['otthonStartBadge']) . '" alt="Otthon Start" style="position:absolute;top:10px;right:10px;width:80px;" />';
+                        $html .= '<img id="osiamge" src="' . esc_url($data['otthonStartBadge']) . '" alt="Otthon Start"/>';
                     }
                     $html .= '</div>';
 
@@ -643,11 +643,9 @@ class MibBaseController
 	                		echo '';
 	                	}else{
 
-	                		// Kerület szűrő
-	                        if (in_array('district_filter', $filterType['extras'])) {
-	                            $html .= $this->getFilterDistrictByCatalog($filterType);
-	                        }
-
+	                		if (count($filterType['residential_park_ids'])>1) {
+					        	$html .= $this->getFilterResidentalParksShortCodeByCatalog($filterType['residential_park_ids']);
+					        }
 	                		if (in_array('price', $filterType['filters'])) {
 		                        $html .= $this->getFilterPriceShortCodeByCatalog($filterType['ranges']['price']['min'], $filterType['ranges']['price']['max']);
 		                    }
@@ -691,10 +689,11 @@ class MibBaseController
 
 						    $html .= $this->getFilterFloorShortCodeByCatalog($filterType['ranges']['floor']['min'], $filterType['ranges']['floor']['max']);
 						}
+						// Kerület szűrő
+                        if (in_array('district_filter', $filterType['extras'])) {
+                            $html .= $this->getFilterDistrictByCatalog($filterType);
+                        }
 
-                		if (count($filterType['residential_park_ids'])>1) {
-				        	$html .= $this->getFilterResidentalParksShortCodeByCatalog($filterType['residential_park_ids']);
-				        }
                         // Tájolás szűrő
                         if (in_array('orientation_filters', $filterType['extras']) ) {
                             $html .= $this->getFilterOrientationByCatalog($filterType);
@@ -802,7 +801,7 @@ class MibBaseController
                         $html .= '<div class="primary-color card-image-wrapper">';
                         $html .= '<img src="' . $data['image'] . '" class="card-img-top" alt="Lakás képe" crossorigin="anonymous">';
                         if (!empty($data['otthonStartBadge'])) {
-                            $html .= '<img src="' . esc_url($data['otthonStartBadge']) . '" alt="Otthon Start" style="position:absolute;top:10px;right:10px;width:60px;" />';
+                            $html .= '<img id="osiamge" src="' . esc_url($data['otthonStartBadge']) . '" alt="Otthon Start" />';
                         }
                         $html .= '</div>';
 
@@ -976,7 +975,7 @@ class MibBaseController
                         $html .= '<div class="primary-color card-image-wrapper">';
                         $html .= '<img src="' . $data['image'] . '" class="card-img-top" alt="Lakás képe" crossorigin="anonymous">';
                         if (!empty($data['otthonStartBadge'])) {
-                            $html .= '<img src="' . esc_url($data['otthonStartBadge']) . '" alt="Otthon Start" style="position:absolute;top:10px;right:10px;width:60px;" />';
+                            $html .= '<img id="osiamge" src="' . esc_url($data['otthonStartBadge']) . '" alt="Otthon Start" />';
                         }
                         $html .= '</div>';
 
@@ -1102,7 +1101,7 @@ class MibBaseController
                         $html .= '<div class="primary-color card-image-wrapper">';
                         $html .= '<img src="' . $data['image'] . '" class="card-img-top" alt="Lakás képe" crossorigin="anonymous">';
                         if (!empty($data['otthonStartBadge'])) {
-                            $html .= '<img src="' . esc_url($data['otthonStartBadge']) . '" alt="Otthon Start" style="position:absolute;top:10px;right:10px;width:60px;" />';
+                            $html .= '<img id="osiamge" src="' . esc_url($data['otthonStartBadge']) . '" alt="Otthon Start" />';
                         }
                         $html .= '</div>';
 
@@ -1503,9 +1502,7 @@ class MibBaseController
             $html = '<div class="custom-filter-container">';
             $html .= '<div class="d-flex">';
             if (!empty($this->filterOptionDatas)) {
-                if (isset($this->filterOptionDatas['mib-filter-district']) && $this->filterOptionDatas['mib-filter-district'] == true) {
-                    $html .= $this->getFilterDistrictByCatalog($filterType);
-                }
+                
                 if (isset($this->filterOptionDatas['mib-filter-price_range']) && $this->filterOptionDatas['mib-filter-price_range'] == true) {
                     $html .= $this->priceFilterPriceByCatalog($filterType);
                 }
@@ -1551,9 +1548,14 @@ class MibBaseController
 
 
             $html .= '<div id="advanced-filters" class="flex-wrap" style="display:none;">';
+
+
 	            if (isset($this->filterOptionDatas['mib-filter-floor']) && $this->filterOptionDatas['mib-filter-floor'] == true) {
 	                $html .= $this->getFilterFloorByCatalog($filterType);
 	            }
+	            if (isset($this->filterOptionDatas['mib-filter-district']) && $this->filterOptionDatas['mib-filter-district'] == true) {
+                    $html .= $this->getFilterDistrictByCatalog($filterType);
+                }
 	            if (isset($this->filterOptionDatas['mib-filter-orientation']) && $this->filterOptionDatas['mib-filter-orientation'] == true) {
 	                $html .= $this->getFilterOrientationByCatalog($filterType);
 	            }
@@ -1584,7 +1586,7 @@ class MibBaseController
 
             $html = '<div class="catalog-dropdown mt-3">'
                 . '<select id="district-select" class="form-select district-select">'
-                . '<option value="">Kerület</option>';
+                . '<option value="">Helyszín</option>';
 
             foreach ($this->districtNames as $key => $value) {
                 $selectedAttr = ($selected === $key) ? ' selected' : '';
@@ -1704,7 +1706,7 @@ class MibBaseController
 
             $html = '<div class="mb-2">'
                 . '<select id="district-select" class="form-select district-select">'
-                . '<option value="">Kerület</option>';
+                . '<option value="">Helyszín</option>';
 
             foreach ($this->districtNames as $key => $value) {
                 $selectedAttr = ($selected === $key) ? ' selected' : '';
