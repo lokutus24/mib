@@ -1200,6 +1200,15 @@ class MibBaseController
             'garden_connection'=> 'garden_connection',
             'stairway'         => 'stairway',
             'otthonStart'      => 'otthon_start',
+            // slider params
+            'price_min'        => 'price-slider-min',
+            'price_max'        => 'price-slider-max',
+            'floor_min'        => 'floor_min',
+            'floor_max'        => 'floor_max',
+            'room_min'         => 'room_min',
+            'room_max'         => 'room_max',
+            'area_min'         => 'square-meter-slider-min',
+            'area_max'         => 'square-meter-slider-max',
         ];
 
         foreach ($map as $queryKey => $filterKey) {
@@ -1327,8 +1336,8 @@ class MibBaseController
 	    $priceFrom = $this->filterOptionDatas['mib-filter-price-slider-min'] ?? -1;
 	    $priceTo = $this->filterOptionDatas['mib-filter-price-slider-max'] ?? 10;
 
-	    $selectedMin = $filterType['floor_min'] ?? $priceFrom;
-	    $selectedMax = $filterType['floor_max'] ?? $priceTo;
+            $selectedMin = $filterType['price-slider-min'] ?? $priceFrom;
+            $selectedMax = $filterType['price-slider-max'] ?? $priceTo;
 
 	    $html = '<div class="custom-slider-container">
 	        <label class="custom-slider-label">Ár</label>
