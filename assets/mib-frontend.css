@@ -1430,7 +1430,7 @@ max-height:300px;
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.9);
-    display: flex;                /* <-- kell a flex */
+    /*display: flex;*/
     justify-content: center;      /* vízszintesen középre */
     align-items: center;          /* függőlegesen középre */
     z-index: 9999;

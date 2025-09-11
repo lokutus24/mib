@@ -1428,6 +1428,22 @@ class MibBaseController
         return $html;
     }
 
+    private function getFilterResidentalParksForJustFilters() {
+
+        // Alapértelmezett értékek
+        $html = '<select class="form-select select-residential-park" id="select-residential-park" aria-label="Lakópark kiválasztása">';
+        $html .= '<option value="" selected>Lakópark kiválasztása</option>';
+
+        foreach ($this->parkNames as $id => $parkName) {
+            $name = $parkName;
+            $html .= '<option value="'.$id.'">'.$name.'</option>';
+        }
+
+        $html .= '</select>';
+
+        return $html;
+    }
+
 
 	private function getFilterResidentalParkShortCodeByCatalog() {
 
@@ -1511,6 +1527,8 @@ class MibBaseController
             $html = '<div class="custom-filter-container">';
             $html .= '<div class="d-flex">';
             if (!empty($this->filterOptionDatas)) {
+
+		        $html .= $this->getFilterResidentalParksForJustFilters();
                 
                 if (isset($this->filterOptionDatas['mib-filter-price_range']) && $this->filterOptionDatas['mib-filter-price_range'] == true) {
                     $html .= $this->priceFilterPriceByCatalog($filterType);
