@@ -1415,6 +1415,10 @@ max-height:300px;
         height: 190px !important;
     }
 }
+
+.mib-residential-gallery a:nth-child(n+5) {
+    display: none;
+}
 .mib-residential-gallery img {
     object-fit: cover;
     display: block;
