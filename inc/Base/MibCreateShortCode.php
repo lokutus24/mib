@@ -101,9 +101,6 @@ class MibCreateShortCode extends MibBaseController
             return '<p>Nincsenek képek.</p>';
         }
 
-        // Limit the gallery to the first 4 images even if more are available
-        $images = array_slice($images, 0, 4);
-
         $html = '<div class="mib-residential-gallery">';
         foreach ($images as $img) {
             $preview = esc_url($img['previewUrl'] ?? '');
