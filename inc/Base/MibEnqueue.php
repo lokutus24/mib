@@ -854,21 +854,23 @@ class MibEnqueue extends MibBaseController
 		    $args = array_merge($args, ['sortType' => $sortType]);
 		}
 
-		if ( isset($params['residental_park_id']) && !empty($params['residental_park_id']) ) {
-	
-		    $args = array_merge($args, ['residentialParkId' => $params['residental_park_id'] ]);
-		}else{
+            if ( isset($params['residental_park_id']) && !empty($params['residental_park_id']) ) {
 
+                $args = array_merge($args, ['residentialParkId' => $params['residental_park_id'] ]);
+            }else{
 
-			if (!empty($this->filterType['residential_park_ids'])) {
+                    if (!empty($this->filterType['residential_park_ids'])) {
 
-				$args = array_merge($args, ['residentialParkId' => implode(',', $this->filterType['residential_park_ids']) ]);
-			}else{
-				$args = array_merge($args, ['residentialParkId' => $this->residentialParkId ]);
-			}
-		}
+                            $args = array_merge($args, ['residentialParkId' => implode(',', $this->filterType['residential_park_ids']) ]);
+                    }elseif (!empty($this->filterOptionDatas['residential_park_ids'])) {
+                            $args = array_merge($args, ['residentialParkId' => implode(',', $this->filterOptionDatas['residential_park_ids']) ]);
+                    }else{
+                            $args = array_merge($args, ['residentialParkId' => $this->residentialParkId ]);
+                    }
+            }
 
-		//Shortcode
+            //Shortcode
+
 		
 
                 if (!empty($this->filterType['apartment_skus'])) {
@@ -951,14 +953,17 @@ class MibEnqueue extends MibBaseController
        		    $args = array_merge($args, ['sortType' => $sortType]);
        		}
 
-		if (!empty($this->filterType['residential_park_ids'])) {
+            if (!empty($this->filterType['residential_park_ids'])) {
 
-			$args = array_merge($args, ['residentialParkId' => implode(',', $this->filterType['residential_park_ids']) ]);
-		}else{
-			$args = array_merge($args, ['residentialParkId' => $this->residentialParkId ]);
-		}
+                    $args = array_merge($args, ['residentialParkId' => implode(',', $this->filterType['residential_park_ids']) ]);
+            }elseif (!empty($this->filterOptionDatas['residential_park_ids'])) {
+                    $args = array_merge($args, ['residentialParkId' => implode(',', $this->filterOptionDatas['residential_park_ids']) ]);
+            }else{
+                    $args = array_merge($args, ['residentialParkId' => $this->residentialParkId ]);
+            }
 
                 if (!empty($this->filterType['apartment_skus'])) {
+
 
                         $args = array_merge($args, ['name' => implode(',', $this->filterType['apartment_skus']) ]);
                 }
