@@ -1390,7 +1390,7 @@ width: 100% !important; /* Kis százalékos szélesség, hogy négy blokk elfér
 
 .mib-residential-gallery {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* Alapból 2 oszlop */
+    grid-template-columns: repeat(4, 1fr); /* Alapból 4 oszlop */
     gap: 30px;
     justify-content: center;
 }
