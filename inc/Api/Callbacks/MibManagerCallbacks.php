@@ -448,6 +448,7 @@ class MibManagerCallbacks extends MibBaseController
                         'orientation_filters' => 'Tájolás szűrés',
                         'district_filter' => 'Kerület szűrés',
                         'display_logo' => 'Logo megjelenítés',
+                        'dark_logo' => 'Sötét logó',
                         'display_address' => 'Helység megjelenítés',
                         'garden_connection_filter' => 'Kertkapcsolat szűrés',
                                         'staircase_filter' => 'Lépcsőház szűrés',
