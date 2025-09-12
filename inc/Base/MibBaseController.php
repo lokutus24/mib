@@ -1431,22 +1431,31 @@ class MibBaseController
         return $html;
     }
 
-    private function getFilterResidentalParksForJustFilters() {
+    private function getFilterResidentalParksForJustFilters()
+	{
+	    // Alapértelmezett értékek
+	    $html = '<select class="form-select select-residential-park" id="select-residential-park" aria-label="Lakópark kiválasztása">';
+	    $html .= '<option value="" selected>Lakópark kiválasztása</option>';
 
-        // Alapértelmezett értékek
-        $html = '<select class="form-select select-residential-park" id="select-residential-park" aria-label="Lakópark kiválasztása">';
-        $html .= '<option value="" selected>Lakópark kiválasztása</option>';
+	    // Csak azok az ID-k jelenjenek meg, amik benne vannak a filterOptionDatas['residential_park_ids']-ben
+	    if (!empty($this->filterOptionDatas['residential_park_ids'])) {
+	        $parkIds = array_intersect(
+	            $this->filterOptionDatas['residential_park_ids'],
+	            array_keys($this->parkNames) // csak létező lakóparkok
+	        );
+	    } else {
+	        $parkIds = [];
+	    }
 
-        $parkIds = !empty($this->filterOptionDatas['residential_park_ids']) ? $this->filterOptionDatas['residential_park_ids'] : array_keys($this->parkNames);
-        foreach ($parkIds as $id) {
-            $name = $this->parkNames[$id] ?? $id;
-            $html .= '<option value="'.$id.'">'.$name.'</option>';
-        }
+	    foreach ($parkIds as $id) {
+	        $name = $this->parkNames[$id] ?? $id;
+	        $html .= '<option value="'.$id.'">'.$name.'</option>';
+	    }
 
-        $html .= '</select>';
+	    $html .= '</select>';
 
-        return $html;
-    }
+	    return $html;
+	}
 
 
 	private function getFilterResidentalParkShortCodeByCatalog() {
