@@ -456,9 +456,10 @@ class MibManagerCallbacks extends MibBaseController
                         'dark_logo' => 'Sötét logó',
                         'display_address' => 'Helység megjelenítés',
                         'garden_connection_filter' => 'Kertkapcsolat szűrés',
-                                        'staircase_filter' => 'Lépcsőház szűrés',
-                                        'sort_filter' => 'Rendezés',
+                        'staircase_filter' => 'Lépcsőház szűrés',
+                        'sort_filter' => 'Rendezés',
                         'gallery_first_image' => 'Lakás galéria első képének megjelenítése',
+                        'carousel_display' => 'Carousel megjelenítés',
                     ];
 	            echo "<hr><strong>További beállítások:</strong><br>";
 	            foreach ($extra_options as $key => $label) {
