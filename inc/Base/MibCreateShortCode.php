@@ -108,10 +108,10 @@ class MibCreateShortCode extends MibBaseController
         foreach ($images as $img) {
             $preview = esc_url($img['previewUrl'] ?? '');
             $urlRaw = $img['url'] ?? '';
-            $url = filter_var($urlRaw, FILTER_VALIDATE_URL) ? esc_url($urlRaw) : $preview;
+            $full = filter_var($urlRaw, FILTER_VALIDATE_URL) ? esc_url($urlRaw) : $preview;
             if ($preview) {
                 $name = esc_attr($img['name'] ?? '');
-                $html .= '<a href="' . $preview . '"><img src="' . $preview . '" alt="' . $name . '" decoding="async" crossorigin="anonymous"></a>';
+                $html .= '<a href="' . $full . '"><img src="' . $preview . '" alt="' . $name . '" decoding="async" crossorigin="anonymous"></a>';
             }
         }
         $html .= '</div>';
