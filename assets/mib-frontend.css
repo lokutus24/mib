@@ -1420,6 +1420,20 @@ width: 100% !important; /* Kis százalékos szélesség, hogy négy blokk elfér
     }
 }
 
+
+.mib-residential-gallery a:nth-child(n+5) {
+    display: none;
+}
+.mib-residential-gallery img {
+    width: 100%;
+    height: auto;
+    max-height: 300px;
+    display: block;
+    object-fit: cover;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
 .mib-gallery-overlay {
     display: none; /* alapból rejtve */
     opacity: 0;
