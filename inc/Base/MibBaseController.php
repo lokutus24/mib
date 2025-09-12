@@ -1492,36 +1492,39 @@ class MibBaseController
 	    return $html;
 	}
 
-        private function getFilterOrientationByCatalog($filterType) {
-            // Erkély típusok konvertálása tömbbé, ha szükséges
-            if (isset($filterType['typeOfBalcony']) && !is_array($filterType['typeOfBalcony'])) {
-                $filterType['typeOfBalcony'] = explode(',', $filterType['typeOfBalcony']);
-            }
+    	private function getFilterOrientationByCatalog($filterType) {
+		    // Erkély típusok konvertálása tömbbé, ha szükséges
+		    if (isset($filterType['typeOfBalcony']) && !is_array($filterType['typeOfBalcony'])) {
+		        $filterType['typeOfBalcony'] = explode(',', $filterType['typeOfBalcony']);
+		    }
 
-            $html = '<div class="catalog-dropdown mt-3">
-                        <div class="dropdown">
-                            <button class="btn btn-dark dropdown-toggle" type="button" id="orientationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                Erkély típusa
-                            </button>
-                            <ul class="third-color mt-1 p-2 dropdown-menu" aria-labelledby="orientationDropdown">';
+		    $html = '<div class="catalog-dropdown">
+		                <fieldset>
+		                    <legend class="form-label mb-1">Erkély típusa</legend>
+		                    <div class="dropdown">
+		                        <button class="btn btn-dark dropdown-toggle" type="button" id="orientationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+		                            Válassz típust
+		                        </button>
+		                        <ul class="third-color mt-1 p-2 dropdown-menu" aria-labelledby="orientationDropdown">';
 
-            // Erkély típusok listája
-            foreach ($this->balconyTypes as $key => $value) {
-                $orientationChecked = (isset($filterType['typeOfBalcony']) && in_array($value, (array)$filterType['typeOfBalcony'])) ? 'checked' : '';
+		    // Erkély típusok listája
+		    foreach ($this->balconyTypes as $key => $value) {
+		        $orientationChecked = (isset($filterType['typeOfBalcony']) && in_array($value, (array)$filterType['typeOfBalcony'])) ? 'checked' : '';
 
-                $html .= '<li>
-                            <label class="dropdown-item">
-                                <input type="checkbox" class="catalog-orientation-checkbox form-check-input" name="typeOfBalcony[]" value="' . $value . '" ' . $orientationChecked . '> ' . $key . '
-                            </label>
-                          </li>';
-            }
+		        $html .= '<li>
+		                    <label class="dropdown-item">
+		                        <input type="checkbox" class="catalog-orientation-checkbox form-check-input" name="typeOfBalcony[]" value="' . $value . '" ' . $orientationChecked . '> ' . esc_html($key) . '
+		                    </label>
+		                  </li>';
+		    }
 
-            $html .=   '</ul>
-                        </div>
-                    </div>';
+		    $html .=       '</ul>
+		                    </div>
+		                </fieldset>
+		            </div>';
 
-            return $html;
-        }
+		    return $html;
+		}
 
         private function getCatalogFilterHtml($filterType = [], $includeSearchButton = false){
             $html = '<div class="custom-filter-container">';
@@ -1608,22 +1611,23 @@ class MibBaseController
             return $html;
         }
 
-        private function getFilterDistrictByCatalog($filterType) {
-            $selected = $filterType['district'] ?? '';
+    private function getFilterDistrictByCatalog($filterType) {
+	    $selected = $filterType['district'] ?? '';
 
-            $html = '<div class="catalog-dropdown mt-3">'
-                . '<select id="district-select" class="form-select district-select">'
-                . '<option value="">Helyszín</option>';
+	    $html = '<div class="catalog-dropdown">'
+	        . '<label for="district-select" class="form-label">Helyszín</label>'
+	        . '<select id="district-select" class="form-select district-select">'
+	        . '<option value="">Válassz helyszínt</option>';
 
-            foreach ($this->districtNames as $key => $value) {
-                $selectedAttr = ($selected === $key) ? ' selected' : '';
-                $html .= '<option value="' . esc_attr($key) . '"' . $selectedAttr . '>' . esc_html($value) . '</option>';
-            }
+	    foreach ($this->districtNames as $key => $value) {
+	        $selectedAttr = ($selected === $key) ? ' selected' : '';
+	        $html .= '<option value="' . esc_attr($key) . '"' . $selectedAttr . '>' . esc_html($value) . '</option>';
+	    }
 
-            $html .= '</select></div>';
+	    $html .= '</select></div>';
 
-            return $html;
-        }
+	    return $html;
+	}
 
 
     private function getFilterFloor($filterType) {
@@ -1698,153 +1702,164 @@ class MibBaseController
 	}
 
         private function getFilterOrientation($filterType) {
-            // Erkély típusok konvertálása tömbbé, ha szükséges
-            if (isset($filterType['typeOfBalcony']) && !is_array($filterType['typeOfBalcony'])) {
-                $filterType['typeOfBalcony'] = explode(',', $filterType['typeOfBalcony']);
-            }
+		    // Erkély típusok konvertálása tömbbé, ha szükséges
+		    if (isset($filterType['typeOfBalcony']) && !is_array($filterType['typeOfBalcony'])) {
+		        $filterType['typeOfBalcony'] = explode(',', $filterType['typeOfBalcony']);
+		    }
 
-            $html = '<div class="mb-2">
-                        <div class="dropdown">
-                            <button class="btn btn-dark dropdown-toggle primary-color" type="button" id="orientationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                Erkély típusa
-                            </button>
-                            <ul class="primary-color mt-1 dropdown-menu" aria-labelledby="orientationDropdown">';
+		    $html = '<div class="mb-2">
+		                <fieldset>
+		                    <legend class="form-label mb-1">Erkély típusa</legend>
+		                    <div class="dropdown">
+		                        <button class="btn btn-dark dropdown-toggle primary-color" type="button" id="orientationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+		                            Válassz típust
+		                        </button>
+		                        <ul class="primary-color mt-1 dropdown-menu" aria-labelledby="orientationDropdown">';
 
-            // Erkély típusok listája
-            foreach ($this->balconyTypes as $key => $value) {
-                $orientationChecked = (isset($filterType['typeOfBalcony']) && in_array($value, (array)$filterType['typeOfBalcony'])) ? 'checked' : '';
+		    // Erkély típusok listája
+		    foreach ($this->balconyTypes as $key => $value) {
+		        $orientationChecked = (isset($filterType['typeOfBalcony']) && in_array($value, (array)$filterType['typeOfBalcony'])) ? 'checked' : '';
 
-                $html .= '<li>
-                            <label class="dropdown-item">
-                                <input type="checkbox" class="orientation-checkbox" name="typeOfBalcony[]" value="' . $value . '" ' . $orientationChecked . '> ' . $key . '
-                            </label>
-                          </li>';
-            }
+		        $html .= '<li>
+		                    <label class="dropdown-item">
+		                        <input type="checkbox" class="orientation-checkbox" name="typeOfBalcony[]" value="' . esc_attr($value) . '" ' . $orientationChecked . '> ' . esc_html($key) . '
+		                    </label>
+		                  </li>';
+		    }
 
-	    $html .=   '</ul>
-	                </div>
-	            </div>';
+		    $html .=       '</ul>
+		                    </div>
+		                </fieldset>
+		            </div>';
 
-            return $html;
-        }
+		    return $html;
+		}
 
         private function getFilterDistrict($filterType) {
-            $selected = $filterType['district'] ?? '';
+		    $selected = $filterType['district'] ?? '';
 
-            $html = '<div class="mb-2">'
-                . '<select id="district-select" class="form-select district-select">'
-                . '<option value="">Helyszín</option>';
+		    $html = '<div class="mb-2">'
+		        . '<label for="district-select" class="form-label">Helyszín</label>'
+		        . '<select id="district-select" class="form-select district-select">'
+		        . '<option value="">Válassz helyszínt</option>';
 
-            foreach ($this->districtNames as $key => $value) {
-                $selectedAttr = ($selected === $key) ? ' selected' : '';
-                $html .= '<option value="' . esc_attr($key) . '"' . $selectedAttr . '>' . esc_html($value) . '</option>';
-            }
+		    foreach ($this->districtNames as $key => $value) {
+		        $selectedAttr = ($selected === $key) ? ' selected' : '';
+		        $html .= '<option value="' . esc_attr($key) . '"' . $selectedAttr . '>' . esc_html($value) . '</option>';
+		    }
 
-            $html .= '</select></div>';
+		    $html .= '</select></div>';
 
-            return $html;
-        }
+		    return $html;
+		}
 
         private function getFilterAvailability($filterType) {
+		    if (isset($filterType['status']) && !is_array($filterType['status'])) {
+		        $filterType['status'] = explode(',', $filterType['status']);
+		    }
 
-	    if (isset($filterType['status']) && !is_array($filterType['status'])) {
-	        $filterType['status'] = explode(',', $filterType['status']);
-	    }
+		    $html = '<div class="mb-2">
+		                <fieldset>
+		                    <legend class="form-label mb-1">Státusz</legend>
+		                    <div class="dropdown">
+		                        <button class="btn btn-dark dropdown-toggle primary-color" type="button" id="availabilityDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+		                            Válassz státuszt
+		                        </button>
+		                        <ul class="primary-color mt-1 dropdown-menu" aria-labelledby="availabilityDropdown">';
 
-	    $html = '<div class="mb-2">
-	                <div class="dropdown">
-	                    <button class="btn btn-dark dropdown-toggle primary-color" type="button" id="availabilityDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-	                        Státusz
-	                    </button>
-	                    <ul class="primary-color mt-1 dropdown-menu" aria-labelledby="availabilityDropdown">';
+		    // elérhetőség
+		    foreach ($this->availability as $key => $value) {
+		        $availabilityChecked = (isset($filterType['status']) && in_array($value, (array)$filterType['status'])) ? 'checked' : '';
 
-	    // elérhetőség
-	    foreach ($this->availability as $key => $value) {
-	        $availabilityChecked = (isset($filterType['status']) && in_array($value, (array)$filterType['status'])) ? 'checked' : '';
+		        $html .= '<li>
+		                    <label class="dropdown-item">
+		                        <input type="checkbox" class="availability-checkbox" name="availability[]" value="' . esc_attr($value) . '" ' . $availabilityChecked . '> ' . esc_html($key) . '
+		                    </label>
+		                  </li>';
+		    }
 
-	        $html .= '<li>
-	                    <label class="dropdown-item">
-	                        <input type="checkbox" class="availability-checkbox" name="availability[]" value="' . $value . '" ' . $availabilityChecked . '> ' . $key . '
-	                    </label>
-	                  </li>';
-	    }
+		    $html .=       '</ul>
+		                    </div>
+		                </fieldset>
+		            </div>';
 
-	    $html .=   '</ul>
-	                </div>
-	            </div>';
+		    return $html;
+		}
 
-	    return $html;
-	}
-
-	private function getFavoriteOption()
-	{
+		private function getFavoriteOption()
+		{
 
 
-	    return $html;
-	}
+		    return $html;
+		}
 
         private function getFilterAvailabilityByCatalog($filterType = [])
-        {
-            if (isset($filterType['status']) && !is_array($filterType['status'])) {
-                $filterType['status'] = explode(',', $filterType['status']);
-            }
+		{
+		    if (isset($filterType['status']) && !is_array($filterType['status'])) {
+		        $filterType['status'] = explode(',', $filterType['status']);
+		    }
 
-	    $html = '<div class="catalog-dropdown mt-3">
-	                <div class="dropdown">
-	                    <button class="btn btn-dark dropdown-toggle" type="button" id="availabilityDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-	                        Státusz
-	                    </button>
-	                    <ul class="third-color mt-1 p-2 dropdown-menu" aria-labelledby="availabilityDropdown">';
+		    $html = '<div class="catalog-dropdown">
+		                <fieldset>
+		                    <legend class="form-label mb-1">Státusz</legend>
+		                    <div class="dropdown">
+		                        <button class="btn btn-dark dropdown-toggle" type="button" id="availabilityDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+		                            Válassz státuszt
+		                        </button>
+		                        <ul class="third-color mt-1 p-2 dropdown-menu" aria-labelledby="availabilityDropdown">';
 
-	    // elérhetőség
-	    foreach ($this->availability as $key => $value) {
-	        $availabilityChecked = (isset($filterType['status']) && in_array($value, (array)$filterType['status'])) ? 'checked' : '';
+		    // elérhetőség
+		    foreach ($this->availability as $key => $value) {
+		        $availabilityChecked = (isset($filterType['status']) && in_array($value, (array)$filterType['status'])) ? 'checked' : '';
 
-	        $html .= '<li>
-	                    <label class="dropdown-item">
-	                        <input type="checkbox" class="catalog-availability-checkbox form-check-input" name="availability[]" value="' . $value . '" ' . $availabilityChecked . '> ' . $key . '
-	                    </label>
-	                  </li>';
-	    }
+		        $html .= '<li>
+		                    <label class="dropdown-item">
+		                        <input type="checkbox" class="catalog-availability-checkbox form-check-input" name="availability[]" value="' . esc_attr($value) . '" ' . $availabilityChecked . '> ' . esc_html($key) . '
+		                    </label>
+		                  </li>';
+		    }
 
-	    $html .=   '</ul>
-	                </div>
-	            </div>';
+		    $html .=       '</ul>
+		                    </div>
+		                </fieldset>
+		            </div>';
 
-	    return $html;
-	}
+		    return $html;
+		}
 
 
         private function getFilterGardenConnectionByCatalog($filterType = [])
-        {
-            if (isset($filterType['garden_connection']) && !is_array($filterType['garden_connection'])) {
-                $filterType['garden_connection'] = explode(',', $filterType['garden_connection']);
-            }
+		{
+		    if (isset($filterType['garden_connection']) && !is_array($filterType['garden_connection'])) {
+		        $filterType['garden_connection'] = explode(',', $filterType['garden_connection']);
+		    }
 
-	    $html = '<div class="catalog-dropdown mt-3">
-	                <div class="dropdown">
-	                    <button class="btn btn-dark dropdown-toggle" type="button" id="gardenConnectionDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-	                        Kert kapcsolat
-	                    </button>
-	                    <ul class="third-color mt-1 p-2 dropdown-menu" aria-labelledby="availabilityDropdown">';
+		    $html = '<div class="catalog-dropdown">
+		                <fieldset>
+		                    <legend class="form-label mb-1">Kertkapcsolat</legend>
+		                    <div class="dropdown">
+		                        <button class="btn btn-dark dropdown-toggle" type="button" id="gardenConnectionDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+		                            Válassz kertkapcsolat típust
+		                        </button>
+		                        <ul class="third-color mt-1 p-2 dropdown-menu" aria-labelledby="gardenConnectionDropdown">';
 
-	    foreach ($this->gardenConnection as $key => $value) {
+		    foreach ($this->gardenConnection as $key => $value) {
+		        $availabilityChecked = (isset($filterType['garden_connection']) && in_array($value, (array)$filterType['garden_connection'])) ? 'checked' : '';
 
-	        $availabilityChecked = (isset($filterType['garden_connection']) && in_array($value, (array)$filterType['garden_connection'])) ? 'checked' : '';
+		        $html .= '<li>
+		                    <label class="dropdown-item">
+		                        <input type="checkbox" class="catalog-gardenconnection-checkbox form-check-input" name="garden_connection[]" value="' . esc_attr($value) . '" ' . $availabilityChecked . '> ' . esc_html($key) . '
+		                    </label>
+		                  </li>';
+		    }
 
-	        $html .= '<li>
-	                    <label class="dropdown-item">
-	                        <input type="checkbox" class="catalog-gardenconnection-checkbox form-check-input" name="garden_connection[]" value="' . $value . '" ' . $availabilityChecked . '> ' . $key . '
-	                    </label>
-	                  </li>';
-	    }
+		    $html .=       '</ul>
+		                    </div>
+		                </fieldset>
+		            </div>';
 
-	    $html .=   '</ul>
-	                </div>
-	            </div>';
-
-            return $html;
-        }
+		    return $html;
+		}
 
         private function getFilterOtthonStartByCatalog($filterType = [])
         {
@@ -1852,7 +1867,7 @@ class MibBaseController
                 $filterType['otthon_start'] = explode(',', $filterType['otthon_start']);
             }
 
-            $html = '<div class="catalog-dropdown mt-3">
+            $html = '<div class="catalog-dropdown">
                         <div class="dropdown">
                             <button class="btn btn-dark dropdown-toggle" type="button" id="otthonStartDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                                 Otthon start feltételeinek megfelelő?
@@ -1879,35 +1894,37 @@ class MibBaseController
 
 
         private function getFilterStairwayByCatalog($filterType = [])
-        {
-            if (isset($filterType['stairway']) && !is_array($filterType['stairway'])) {
-                $filterType['stairway'] = explode(',', $filterType['stairway']);
-            }
+		{
+		    if (isset($filterType['stairway']) && !is_array($filterType['stairway'])) {
+		        $filterType['stairway'] = explode(',', $filterType['stairway']);
+		    }
 
-	    $html = '<div class="catalog-dropdown mt-3">
-	                <div class="dropdown">
-	                    <button class="btn btn-dark dropdown-toggle" type="button" id="stairWayDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-	                        Lépcsőház
-	                    </button>
-	                    <ul class="third-color mt-1 p-2 dropdown-menu" aria-labelledby="availabilityDropdown">';
+		    $html = '<div class="catalog-dropdown">
+		                <fieldset>
+		                    <legend class="form-label mb-1">Lépcsőház</legend>
+		                    <div class="dropdown">
+		                        <button class="btn btn-dark dropdown-toggle" type="button" id="stairWayDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+		                            Válassz lépcsőház típust
+		                        </button>
+		                        <ul class="third-color mt-1 p-2 dropdown-menu" aria-labelledby="stairWayDropdown">';
 
-	    foreach ($this->stairWay as $key => $value) {
+		    foreach ($this->stairWay as $key => $value) {
+		        $availabilityChecked = (isset($filterType['stairway']) && in_array($value, (array)$filterType['stairway'])) ? 'checked' : '';
 
-	        $availabilityChecked = (isset($filterType['stairway']) && in_array($value, (array)$filterType['stairway'])) ? 'checked' : '';
+		        $html .= '<li>
+		                    <label class="dropdown-item">
+		                        <input type="checkbox" class="catalog-stairway-checkbox form-check-input" name="stairway[]" value="' . esc_attr($value) . '" ' . $availabilityChecked . '> ' . esc_html($key) . '
+		                    </label>
+		                  </li>';
+		    }
 
-	        $html .= '<li>
-	                    <label class="dropdown-item">
-	                        <input type="checkbox" class="catalog-stairway-checkbox form-check-input" name="stairway[]" value="' . $value . '" ' . $availabilityChecked . '> ' . $key . '
-	                    </label>
-	                  </li>';
-	    }
+		    $html .=       '</ul>
+		                    </div>
+		                </fieldset>
+		            </div>';
 
-	    $html .=   '</ul>
-	                </div>
-	            </div>';
-
-	    return $html;
-	}
+		    return $html;
+		}
 
 
 

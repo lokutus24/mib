@@ -2501,8 +2501,8 @@ jQuery(document).ready(function($) {
 
                 $('.select-residential-park').val(selectedParkId);
 
-                //const cleanUrl = window.location.origin + window.location.pathname;
-                //window.history.replaceState({}, document.title, cleanUrl);
+                const cleanUrl = window.location.origin + window.location.pathname;
+                window.history.replaceState({}, document.title, cleanUrl);
 
 
             },
