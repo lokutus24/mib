@@ -1074,9 +1074,9 @@ class MibBaseController
 	    return $html;
 	}
 
-	public function getMoreCards($datas, $totalItems, $currentPage)
-	{
-	    $html = '';
+    public function getMoreCards($datas, $totalItems, $currentPage)
+    {
+        $html = '';
 
 	   
 	    if (!empty($datas)) {
@@ -1190,8 +1190,41 @@ class MibBaseController
 
 	    $html .= '</div>';
 
-	    return $html;
-	}
+        return $html;
+    }
+
+    public function getCarouselHtml($datas)
+    {
+        $html = '<div class="mib-property-carousel swiper">';
+        $html .= '<div class="swiper-wrapper">';
+
+        if (!empty($datas)) {
+            foreach ($datas as $data) {
+                $html .= '<div class="swiper-slide">';
+                $html .= '<div class="card h-100">';
+                $html .= '<div class="primary-color card-image-wrapper">';
+                $html .= '<img src="' . $data['image'] . '" class="card-img-top" alt="Lakás képe" crossorigin="anonymous">';
+                $html .= '</div>';
+                $html .= '<div class="card-body d-flex flex-column">';
+                $html .= '<h5 class="card-title">' . esc_html($data['rawname']) . '</h5>';
+                $html .= '<p class="card-text mb-4">' . esc_html($data['price']) . '</p>';
+                $html .= '<a href="' . $data['url'] . '" class="mt-auto btn btn-primary">' . __('Megnézem', 'mib') . '</a>';
+                $html .= '</div>';
+                $html .= '</div>';
+                $html .= '</div>';
+            }
+        } else {
+            $html .= '<div class="swiper-slide"><p>' . __('Nem található ingatlan', 'mib') . '</p></div>';
+        }
+
+        $html .= '</div>';
+        $html .= '<div class="swiper-button-prev"></div>';
+        $html .= '<div class="swiper-button-next"></div>';
+        $html .= '<div class="swiper-pagination"></div>';
+        $html .= '</div>';
+
+        return $html;
+    }
 
     public function getFilters(){
         $filters = [];
