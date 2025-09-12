@@ -80,6 +80,7 @@ class MibManagerCallbacks extends MibBaseController
 					'mib-display_sort'	  => (isset($_POST['mib-display_sort'] ) && $_POST['mib-display_sort'] == 'on') ? true : false,
 					'mib-garden_connection'	  => (isset($_POST['mib-garden_connection'] ) && $_POST['mib-garden_connection'] == 'on') ? true : false,
 					'mib-stairway'	  => (isset($_POST['mib-stairway'] ) && $_POST['mib-stairway'] == 'on') ? true : false,
+                                        'residential_park_ids' => isset($_POST['residential_park_ids']) ? array_filter(array_map('intval', explode(',', $_POST['residential_park_ids']))) : [],
 				]
 			);
 			update_option('mib_filter_options', $datas);
@@ -123,10 +124,14 @@ class MibManagerCallbacks extends MibBaseController
 		$garden_connection = (isset($mib_filter_options['mib-garden_connection'])  && $mib_filter_options['mib-garden_connection'] == 1) ? 'checked' : '';
 
 		$stairway = (isset($mib_filter_options['mib-stairway'])  && $mib_filter_options['mib-stairway'] == 1) ? 'checked' : '';
+                $residential_park_ids = isset($mib_filter_options['residential_park_ids']) ? implode(',', $mib_filter_options['residential_park_ids']) : '';
 
 		?>
 
 
+                <div class='row' style='margin-bottom: 10px;'>
+                        Lakópark ID-k: <input type='text' name='residential_park_ids' size='45' value='<?=$residential_park_ids;?>' placeholder='pl. 7,9,10'>
+                </div>
 		<div class="row" style="margin-bottom: 10px;">
 			Emeletek: <input type="checkbox" name="mib-filter-floor" size="45" <?=$floor_checked;?> >
 		</div>

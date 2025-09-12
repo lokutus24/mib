@@ -1437,8 +1437,9 @@ class MibBaseController
         $html = '<select class="form-select select-residential-park" id="select-residential-park" aria-label="Lakópark kiválasztása">';
         $html .= '<option value="" selected>Lakópark kiválasztása</option>';
 
-        foreach ($this->parkNames as $id => $parkName) {
-            $name = $parkName;
+        $parkIds = !empty($this->filterOptionDatas['residential_park_ids']) ? $this->filterOptionDatas['residential_park_ids'] : array_keys($this->parkNames);
+        foreach ($parkIds as $id) {
+            $name = $this->parkNames[$id] ?? $id;
             $html .= '<option value="'.$id.'">'.$name.'</option>';
         }
 
