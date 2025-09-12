@@ -17,7 +17,6 @@ class MibCreateShortCode extends MibBaseController
         add_shortcode('mib_list_apartman_catalog_filters', array($this, 'mib_list_apartman_catalog_filters'));
         add_shortcode('mib_residential_documents', array($this, 'mib_residential_documents'));
         add_shortcode('mib_residential_gallery', array($this, 'mib_residential_gallery'));
-        add_shortcode('mib_property_carousel', array($this, 'mib_property_carousel'));
 
 
         add_action('init', array($this, 'custom_property_rewrite_rule'));
@@ -146,7 +145,11 @@ class MibCreateShortCode extends MibBaseController
 
                 list($datas, $total) = $this->getDatas(false, 0, $config['number_of_apartment']);
 
-                $html = $this->getCardHtmlShortCode($datas, $total, 1, $config, $shortcode_name, $this->numberOfApartmens);
+                if (!empty($config['extras']) && in_array('carousel_display', $config['extras'])) {
+                    $html = $this->getCarouselHtml($datas);
+                } else {
+                    $html = $this->getCardHtmlShortCode($datas, $total, 1, $config, $shortcode_name, $this->numberOfApartmens);
+                }
 
                 return $html;
 
@@ -242,13 +245,6 @@ class MibCreateShortCode extends MibBaseController
     {
         list($datas, $total) = $this->getDatas(false, 0, 9);
         $html = $this->getCardHtml($datas, $total, 1, []);
-        return $html;
-    }
-
-    public function mib_property_carousel($atts)
-    {
-        list($datas, $total) = $this->getDatas(false, 0, 12);
-        $html = $this->getCarouselHtml($datas);
         return $html;
     }
 
