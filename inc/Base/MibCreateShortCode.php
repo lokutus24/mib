@@ -146,7 +146,7 @@ class MibCreateShortCode extends MibBaseController
                 list($datas, $total) = $this->getDatas(false, 0, $config['number_of_apartment']);
 
                 if (!empty($config['extras']) && in_array('carousel_display', $config['extras'])) {
-                    $html = $this->getCarouselHtml($datas);
+                    $html = $this->getCarouselHtml($datas, $shortcode_name, $config['number_of_apartment']);
                 } else {
                     $html = $this->getCardHtmlShortCode($datas, $total, 1, $config, $shortcode_name, $this->numberOfApartmens);
                 }
