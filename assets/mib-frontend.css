@@ -1499,3 +1499,8 @@ width: 100% !important; /* Kis százalékos szélesség, hogy négy blokk elfér
 .catalog-dropdown fieldset {
     padding: 0;
 }
+
+.mib-property-carousel .swiper-slide {
+    /*width: 100% !important;
+    max-width: 100%;*/ 
+}

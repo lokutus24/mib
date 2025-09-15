@@ -1216,7 +1216,7 @@ class MibBaseController
                 }
 
                 $html .= '<div class="swiper-slide">';
-                $html .= '<div class="card-wrapper col-md-4 mb-3" data-id="' . esc_attr($data['id']) . '" data-otthon-start="' . ($data['otthonStart'] ? 1 : 0) . '">';
+                $html .= '<div class="card-wrapper" data-id="' . esc_attr($data['id']) . '" data-otthon-start="' . ($data['otthonStart'] ? 1 : 0) . '">';
                 $html .= '<div class="card h-100 position-relative">';
 
                 $html .= '<div class="primary-color card-image-wrapper">';

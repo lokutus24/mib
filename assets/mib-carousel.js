@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
     carousels.forEach(function (carousel) {
         new Swiper(carousel, {
             slidesPerView: 1,
+            slidesPerGroup: 1, // mobilon 1-et lapoz
             spaceBetween: 20,
             navigation: {
                 nextEl: carousel.querySelector('.swiper-button-next'),
@@ -15,7 +16,8 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             breakpoints: {
                 768: {
-                    slidesPerView: 4
+                    slidesPerView: 4,
+                    slidesPerGroup: 4 // asztalon 4-et lapoz egyszerre
                 }
             }
         });
