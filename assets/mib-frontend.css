@@ -1506,6 +1506,7 @@ width: 100% !important; /* Kis százalékos szélesség, hogy négy blokk elfér
 
 .mib-property-carousel .swiper-button-prev,
 .mib-property-carousel .swiper-button-next {
+  position: absolute;
   top: 50%;
   transform: translateY(-50%);
   width: 40px;   /* opcionális */
@@ -1513,17 +1514,16 @@ width: 100% !important; /* Kis százalékos szélesség, hogy négy blokk elfér
 }
 
 .mib-property-carousel .swiper-button-prev {
-  position: fixed;
-  top: 450px;
-  left: 590px;
+  left: -50px;
 }
 
 .mib-property-carousel .swiper-button-next {
-    position: fixed;
-    top: 450px;
-    right: 611px;
+    right: -50px;
 }
+
 .mib-property-carousel .swiper-pagination-bullets{
-    position: fixed;
-    top: 800px;
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
 }
