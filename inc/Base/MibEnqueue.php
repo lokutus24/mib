@@ -1048,8 +1048,12 @@ class MibEnqueue extends MibBaseController
 		$mib = new MibAuthController();
 		$datas = $mib->getApartmentsForFrontEnd($perPage, $_POST['page'], $args);
 
-		$table_data = $this->setDataToTable($datas);
-		$html = $this->getMoreCards($table_data, $datas['total'], $_POST['page']);
+                $table_data = $this->setDataToTable($datas);
+                if (isset($_POST['page_type']) && $_POST['page_type'] === 'carousel') {
+                    $html = $this->getCarouselSlidesHtml($table_data);
+                } else {
+                    $html = $this->getMoreCards($table_data, $datas['total'], $_POST['page']);
+                }
 
 		wp_send_json_success([
 			'html' 		 => $html,
@@ -1060,12 +1064,11 @@ class MibEnqueue extends MibBaseController
 	        'price_slider_max' => $price_slider_max,
 	        'floor_slider_min' => $floor_slider_min,
 	        'floor_slider_max' => $floor_slider_max,
-	        'room_slider_min' => $room_slider_min,
-        	'room_slider_max' => $room_slider_max,
-        	'garden_connection' => $garden_connection,
-	        'orientation_filter' => ( (isset($_POST['apartman_number']) && !empty($this->filterType) && in_array('orientation_filters', $this->filterType['extras'])) ) ? 1 : null,
-	        'available_only' => ( (isset($_POST['apartman_number']) && !empty($this->filterType) && in_array('available_only', $this->filterType['extras'])) ) ? 1 : null
-	    ]);
+                'room_slider_min' => $room_slider_min,
+                'room_slider_max' => $room_slider_max,
+                'orientation_filter' => ( (isset($_POST['apartman_number']) && !empty($this->filterType) && in_array('orientation_filters', $this->filterType['extras'])) ) ? 1 : null,
+                'available_only' => ( (isset($_POST['apartman_number']) && !empty($this->filterType) && in_array('available_only', $this->filterType['extras'])) ) ? 1 : null
+            ]);
 
 	    wp_die();
 		
