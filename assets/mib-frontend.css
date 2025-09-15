@@ -1500,7 +1500,30 @@ width: 100% !important; /* Kis százalékos szélesség, hogy négy blokk elfér
     padding: 0;
 }
 
-.mib-property-carousel .swiper-slide {
-    /*width: 100% !important;
-    max-width: 100%;*/ 
+.mib-property-carousel {
+  position: relative;
+}
+
+.mib-property-carousel .swiper-button-prev,
+.mib-property-carousel .swiper-button-next {
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;   /* opcionális */
+  height: 40px;  /* opcionális */
+}
+
+.mib-property-carousel .swiper-button-prev {
+  position: fixed;
+  top: 450px;
+  left: 590px;
+}
+
+.mib-property-carousel .swiper-button-next {
+    position: fixed;
+    top: 450px;
+    right: 611px;
+}
+.mib-property-carousel .swiper-pagination-bullets{
+    position: fixed;
+    top: 800px;
 }
