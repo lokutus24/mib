@@ -1194,98 +1194,120 @@ class MibBaseController
     }
 
     public function getCarouselHtml($datas, $shortcodeName = '', $apartman_number = 12)
-    {
-        $html = '<div class="mib-property-carousel swiper" data-shortcode="' . esc_attr($shortcodeName) . '" data-apartman_number="' . esc_attr($apartman_number) . '" data-page="1">';
-        $html .= '<div class="swiper-wrapper">';
+	{
+	    // Külső wrapper: ebbe kerül a Swiper és KÍVÜLRE a nyilak/pagination
+	    $html  = '<div class="mib-carousel-outer" data-shortcode="' . esc_attr($shortcodeName) . '" data-apartman_number="' . esc_attr($apartman_number) . '" data-page="1">';
 
-        if (!empty($datas)) {
-            foreach ($datas as $data) {
+	    // Belső Swiper konténer
+	    $html .= '  <div class="mib-property-carousel swiper">';
+	    $html .= '    <div class="swiper-wrapper">';
 
-                $logo = '';
-                if (isset($this->filterOptionDatas['mib-display_logo']) && $this->filterOptionDatas['mib-display_logo'] == 1 && !empty($data['logo'])) {
-                    $logo = '<img src="'.$data['logo'].'" crossorigin="anonymous">';
-                } elseif (isset($this->selectedShortcodeOption['extras']) && in_array('display_logo', $this->selectedShortcodeOption['extras']) && !empty($data['logo'])) {
-                    $logo = '<img src="'.$data['logo'].'" crossorigin="anonymous">';
-                }
+	    if (!empty($datas)) {
+	        foreach ($datas as $data) {
 
-                $address = '';
-                if (isset($this->filterOptionDatas['mib-display_address']) && $this->filterOptionDatas['mib-display_address'] == 1) {
-                    $address = $data['address'];
-                } elseif (isset($this->selectedShortcodeOption['extras']) && in_array('display_address', $this->selectedShortcodeOption['extras'])) {
-                    $address = $data['address'];
-                }
+	            $logo = '';
+	            if (isset($this->filterOptionDatas['mib-display_logo']) && $this->filterOptionDatas['mib-display_logo'] == 1 && !empty($data['logo'])) {
+	                $logo = '<img src="' . esc_url($data['logo']) . '" crossorigin="anonymous" alt="Park logó">';
+	            } elseif (isset($this->selectedShortcodeOption['extras']) && in_array('display_logo', $this->selectedShortcodeOption['extras']) && !empty($data['logo'])) {
+	                $logo = '<img src="' . esc_url($data['logo']) . '" crossorigin="anonymous" alt="Park logó">';
+	            }
 
-                $html .= '<div class="swiper-slide">';
-                $html .= '<div class="card-wrapper" data-id="' . esc_attr($data['id']) . '" data-otthon-start="' . ($data['otthonStart'] ? 1 : 0) . '">';
-                $html .= '<div class="card h-100 position-relative">';
+	            $address = '';
+	            if (isset($this->filterOptionDatas['mib-display_address']) && $this->filterOptionDatas['mib-display_address'] == 1) {
+	                $address = isset($data['address']) ? $data['address'] : '';
+	            } elseif (isset($this->selectedShortcodeOption['extras']) && in_array('display_address', $this->selectedShortcodeOption['extras'])) {
+	                $address = isset($data['address']) ? $data['address'] : '';
+	            }
 
-                $html .= '<div class="primary-color card-image-wrapper">';
-                $html .= '<img src="' . $data['image'] . '" class="card-img-top" alt="Lakás képe" crossorigin="anonymous">';
-                if (!empty($data['otthonStartBadge'])) {
-                    $html .= '<img id="osiamge" src="' . esc_url($data['otthonStartBadge']) . '" alt="Otthon Start" />';
-                }
-                $html .= '</div>';
+	            $html .= '      <div class="swiper-slide">';
+	            $html .= '        <div class="card-wrapper" data-id="' . esc_attr($data['id']) . '" data-otthon-start="' . (!empty($data['otthonStart']) ? 1 : 0) . '">';
+	            $html .= '          <div class="card h-100 position-relative">';
 
-                $html .= '<div id="apartment-card-body" class="secondary-color card-body d-flex flex-column justify-content-between text-white">';
+	            // Kép blokk
+	            $html .= '            <div class="primary-color card-image-wrapper">';
+	            $html .= '              <img src="' . esc_url($data['image']) . '" class="card-img-top" alt="Lakás képe" crossorigin="anonymous">';
+	            if (!empty($data['otthonStartBadge'])) {
+	                $html .= '              <img id="osiamge" src="' . esc_url($data['otthonStartBadge']) . '" alt="Otthon Start">';
+	            }
+	            $html .= '            </div>';
 
-                $html .= '<div class="mb-3">';
-                $html .= '<div class="d-flex justify-content-between">';
-                if (!empty($logo)) {
-                    $html .= '<div><div class="park-logo">'.$logo.'</div><strong>'.$address.'</strong></div>';
-                }
-                $html .= '<div>';
-                $html .= '<small class="third-text-color '.$data['statusclass'].' d-block">'.$data['statusrow'].'</small>';
-                $html .= '<strong class="fs-5">' . esc_html($data['rawname']) . '</strong>';
-                $html .= '</div>';
-                $html .= '</div>';
-                $html .= '<hr>';
-                $html .= '</div>';
+	            // Card body
+	            $html .= '            <div id="apartment-card-body" class="secondary-color card-body d-flex flex-column justify-content-between text-white">';
 
-                $html .= '<div class="mb-3">';
-                $html .= '<div class="d-flex justify-content-between">';
-                $html .= '<div><small class="d-block text-muted">Szobák</small><strong class="fs-5">' . esc_html($data['numberOfRooms']) . '</strong></div>';
-                $html .= '<div><small class="d-block text-muted">Méret (m2)</small><strong class="fs-5">' . esc_html($data['salesFloorArea']) . '</strong></div>';
-                $html .= '<div class="text-end"><small class="d-block text-muted">Emelet</small><strong class="fs-5">' . esc_html($data['floor']) . '</strong></div>';
-                $html .= '</div>';
-                $html .= '<hr>';
-                $html .= '</div>';
+	            // Felső rész (logó + cím / státusz + név)
+	            $html .= '              <div class="mb-3">';
+	            $html .= '                <div class="d-flex justify-content-between">';
+	            if (!empty($logo)) {
+	                $html .= '                  <div><div class="park-logo">' . $logo . '</div><strong>' . esc_html($address) . '</strong></div>';
+	            } else {
+	                // Ha nincs logó, csak az esetleges cím (ha van)
+	                if (!empty($address)) {
+	                    $html .= '                  <div><strong>' . esc_html($address) . '</strong></div>';
+	                } else {
+	                    $html .= '                  <div></div>';
+	                }
+	            }
+	            $html .= '                  <div>';
+	            $html .= '                    <small class="third-text-color ' . esc_attr($data['statusclass']) . ' d-block">' . esc_html($data['statusrow']) . '</small>';
+	            $html .= '                    <strong class="fs-5">' . esc_html($data['rawname']) . '</strong>';
+	            $html .= '                  </div>';
+	            $html .= '                </div>';
+	            $html .= '                <hr>';
+	            $html .= '              </div>';
 
-                $html .= '<div class="list-view-price-container mt-2 mt-md-0">';
-                $html .= '<strong class="fs-4 text-success third-text-color">' . esc_html($data['price']) . '</strong>';
-                $html .= '</div>';
+	            // Középső metrikák
+	            $html .= '              <div class="mb-3">';
+	            $html .= '                <div class="d-flex justify-content-between">';
+	            $html .= '                  <div><small class="d-block text-muted">Szobák</small><strong class="fs-5">' . esc_html($data['numberOfRooms']) . '</strong></div>';
+	            $html .= '                  <div><small class="d-block text-muted">Méret (m²)</small><strong class="fs-5">' . esc_html($data['salesFloorArea']) . '</strong></div>';
+	            $html .= '                  <div class="text-end"><small class="d-block text-muted">Emelet</small><strong class="fs-5">' . esc_html($data['floor']) . '</strong></div>';
+	            $html .= '                </div>';
+	            $html .= '                <hr>';
+	            $html .= '              </div>';
 
-                $html .= '<div class="card-divider list-view-only"></div>';
+	            // Ár
+	            $html .= '              <div class="list-view-price-container mt-2 mt-md-0">';
+	            $html .= '                <strong class="fs-4 text-success third-text-color">' . esc_html($data['price']) . '</strong>';
+	            $html .= '              </div>';
 
-                $html .= '<div class="list-view-button-wrapper d-flex align-items-center button-row">';
-                if ($data['statusrow'] == 'Elérhető') {
-                    $html .= '<i class="fa fa-regular fa-heart favorite-icon" aria-hidden="true" data-id="' . esc_attr($data['id']) . '"></i>';
-                    $html .= '<a id="cardhref" href="' . $data['url'] . '" class="flex-grow-1">';
-                    $html .= '<button class="primary-color btn btn-light w-100 d-flex align-items-center justify-content-center gap-2 rounded-pill">';
-                    $html .= 'Tudj meg többet <i class="fa fa-arrow-right" aria-hidden="true"></i>';
-                    $html .= '</button>';
-                    $html .= '</a>';
-                } else {
-                    $html .= '<div style="margin-bottom: 80px;"></div>';
-                }
-                $html .= '</div>';
+	            $html .= '              <div class="card-divider list-view-only"></div>';
 
-                $html .= '</div>';
-                $html .= '</div>';
-                $html .= '</div>';
-                $html .= '</div>';
-            }
-        } else {
-            $html .= '<div class="swiper-slide"><p><b> Nem található ingatlan </b></p></div>';
-        }
+	            // Gomb sor
+	            $html .= '              <div class="list-view-button-wrapper d-flex align-items-center button-row">';
+	            if (isset($data['statusrow']) && $data['statusrow'] === 'Elérhető') {
+	                $html .= '                <i class="fa fa-regular fa-heart favorite-icon" aria-hidden="true" data-id="' . esc_attr($data['id']) . '"></i>';
+	                $html .= '                <a id="cardhref" href="' . esc_url($data['url']) . '" class="flex-grow-1">';
+	                $html .= '                  <button class="primary-color btn btn-light w-100 d-flex align-items-center justify-content-center gap-2 rounded-pill" type="button">';
+	                $html .= '                    Tudj meg többet <i class="fa fa-arrow-right" aria-hidden="true"></i>';
+	                $html .= '                  </button>';
+	                $html .= '                </a>';
+	            } else {
+	                // Ha nem elérhető, kis függőleges hely kitöltés
+	                $html .= '                <div style="margin-bottom: 80px;"></div>';
+	            }
+	            $html .= '              </div>'; // .button-row
 
-        $html .= '</div>';
-        $html .= '<div class="swiper-button-prev"></div>';
-        $html .= '<div class="swiper-button-next"></div>';
-        $html .= '<div class="swiper-pagination"></div>';
-        $html .= '</div>';
+	            $html .= '            </div>'; // .card-body
+	            $html .= '          </div>';   // .card
+	            $html .= '        </div>';     // .card-wrapper
+	            $html .= '      </div>';       // .swiper-slide
+	        }
+	    } else {
+	        $html .= '      <div class="swiper-slide"><p><strong>Nem található ingatlan</strong></p></div>';
+	    }
 
-        return $html;
-    }
+	    $html .= '    </div>'; // .swiper-wrapper
+	    $html .= '  </div>';   // .mib-property-carousel.swiper
+
+	    // NYILAK + PAGINATION a KÜLSŐ WRAPPERBEN (nem a .swiper-ben!)
+	    $html .= '  <div class="swiper-button-prev"></div>';
+	    $html .= '  <div class="swiper-button-next"></div>';
+	    $html .= '  <div class="swiper-pagination"></div>';
+
+	    $html .= '</div>'; // .mib-carousel-outer
+
+	    return $html;
+	}
 
     public function getCarouselSlidesHtml($datas)
     {
