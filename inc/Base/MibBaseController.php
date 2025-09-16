@@ -266,16 +266,25 @@ class MibBaseController
 			    }
 			}
 
-		    $table_data[] = array(
-		        'id' => $item->id,
-		        'rawname' => $item->name,
-		        'name' => ($item->status == 'Sold') 
-				    ? '<a id="mibhre">' . esc_html($item->name) . '</a>' 
-				    : '<a id="mibhre" href="' . home_url('/lakas/' . $projectSlug . '/' . sanitize_title($item->name) . '/') . '">' . $item->name . '</a>',
-				'url' => home_url('/lakas/' . $projectSlug . '/' . sanitize_title($item->name) . '/'),
-		        'numberOfRooms' => $item->numberOfRooms,
-		        'price' => ($item->status == 'Available' || $item->status == 'Reserved') ? (!is_null($item->price) ? number_format($item->price, 0) . ' Ft' : '') : '',
-		        'salesFloorArea' => $item->salesFloorArea . ' m²',
+                    $priceDisplay = '';
+                    $supportedPriceDisplay = '';
+
+                    if (($item->status == 'Available' || $item->status == 'Reserved') && !is_null($item->price)) {
+                        $priceDisplay = number_format($item->price, 0) . ' Ft';
+                        $supportedPriceDisplay = number_format($item->price / 1.05, 0) . ' Ft';
+                    }
+
+                    $table_data[] = array(
+                        'id' => $item->id,
+                        'rawname' => $item->name,
+                        'name' => ($item->status == 'Sold')
+                                    ? '<a id="mibhre">' . esc_html($item->name) . '</a>'
+                                    : '<a id="mibhre" href="' . home_url('/lakas/' . $projectSlug . '/' . sanitize_title($item->name) . '/') . '">' . $item->name . '</a>',
+                                'url' => home_url('/lakas/' . $projectSlug . '/' . sanitize_title($item->name) . '/'),
+                        'numberOfRooms' => $item->numberOfRooms,
+                        'price' => $priceDisplay,
+                        'supportedPrice' => $supportedPriceDisplay,
+                        'salesFloorArea' => $item->salesFloorArea . ' m²',
 		        'floor' => ($item->floor == 0) ? 'földszint' : $item->floor,
 		        'balcony' => $item->balconyFloorArea . ' m²',
 		        'orientation' => array_search($item->orientation, $this->orientation), // Tájolás formázása
@@ -850,12 +859,19 @@ class MibBaseController
 				    $html .= '</div>';
 
 					// Ár
-					$html .= '<div class="list-view-price-container mt-2 mt-md-0" style="display: flex; align-items: center; gap: 10px;">';
-						$html .= '<strong class="fs-4 text-success third-text-color">' . esc_html($data['price']) . '</strong>';
-					$html .= '</div>';
+                                        $html .= '<div class="list-view-price-container mt-2 mt-md-0" style="display: flex; align-items: center; gap: 10px;">';
+                                                $html .= '<strong class="fs-4 text-success third-text-color">' . esc_html($data['price']) . '</strong>';
+                                        $html .= '</div>';
 
-					// Függőleges elválasztó (gomb elé, csak lista nézetben)
-					$html .= '<div class="card-divider list-view-only"></div>';
+                                        if (!empty($filterType['extras']) && in_array('display_supported_price', $filterType['extras']) && !empty($data['supportedPrice'])) {
+                                            $html .= '<div class="mib-supported-price">';
+                                            $html .= '<span class="mib-supported-price-label">' . esc_html__('Támogatással elérhető ár:', 'mib') . '</span>';
+                                            $html .= '<span class="mib-supported-price-value">' . esc_html($data['supportedPrice']) . '</span>';
+                                            $html .= '</div>';
+                                        }
+
+                                        // Függőleges elválasztó (gomb elé, csak lista nézetben)
+                                        $html .= '<div class="card-divider list-view-only"></div>';
 
 					// Gomb
 					if ($data['statusrow'] == 'Elérhető') {
@@ -1266,11 +1282,18 @@ class MibBaseController
 	            $html .= '              </div>';
 
 	            // Ár
-	            $html .= '              <div class="list-view-price-container mt-2 mt-md-0">';
-	            $html .= '                <strong class="fs-4 text-success third-text-color">' . esc_html($data['price']) . '</strong>';
-	            $html .= '              </div>';
+                    $html .= '              <div class="list-view-price-container mt-2 mt-md-0">';
+                    $html .= '                <strong class="fs-4 text-success third-text-color">' . esc_html($data['price']) . '</strong>';
+                    $html .= '              </div>';
 
-	            $html .= '              <div class="card-divider list-view-only"></div>';
+                    if (!empty($this->selectedShortcodeOption['extras']) && in_array('display_supported_price', $this->selectedShortcodeOption['extras']) && !empty($data['supportedPrice'])) {
+                        $html .= '              <div class="mib-supported-price">';
+                        $html .= '                <span class="mib-supported-price-label">' . esc_html__('Támogatással elérhető ár:', 'mib') . '</span>';
+                        $html .= '                <span class="mib-supported-price-value">' . esc_html($data['supportedPrice']) . '</span>';
+                        $html .= '              </div>';
+                    }
+
+                    $html .= '              <div class="card-divider list-view-only"></div>';
 
 	            // Gomb sor
 	            $html .= '              <div class="list-view-button-wrapper d-flex align-items-center button-row">';
@@ -1367,6 +1390,13 @@ class MibBaseController
                 $html .= '<div class="list-view-price-container mt-2 mt-md-0">';
                 $html .= '<strong class="fs-4 text-success third-text-color">' . esc_html($data['price']) . '</strong>';
                 $html .= '</div>';
+
+                if (!empty($this->selectedShortcodeOption['extras']) && in_array('display_supported_price', $this->selectedShortcodeOption['extras']) && !empty($data['supportedPrice'])) {
+                    $html .= '<div class="mib-supported-price">';
+                    $html .= '<span class="mib-supported-price-label">' . esc_html__('Támogatással elérhető ár:', 'mib') . '</span>';
+                    $html .= '<span class="mib-supported-price-value">' . esc_html($data['supportedPrice']) . '</span>';
+                    $html .= '</div>';
+                }
 
                 $html .= '<div class="card-divider list-view-only"></div>';
 

@@ -455,6 +455,7 @@ class MibManagerCallbacks extends MibBaseController
                         'display_logo' => 'Logo megjelenítés',
                         'dark_logo' => 'Sötét logó',
                         'display_address' => 'Helység megjelenítés',
+                        'display_supported_price' => 'Támogatással elérhető ár megjelenítése',
                         'garden_connection_filter' => 'Kertkapcsolat szűrés',
                         'staircase_filter' => 'Lépcsőház szűrés',
                         'sort_filter' => 'Rendezés',
