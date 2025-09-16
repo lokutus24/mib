@@ -155,6 +155,7 @@ class MibBaseController
         $this->pluginUrl = plugin_dir_url(dirname(__FILE__, 2));
         $this->pluginName = plugin_basename(dirname(__FILE__, 3)) . "/mib.php";
         $this->filterOptionDatas = maybe_unserialize(get_option('mib_filter_options'));
+        $this->filterOptionCrossSellDatas = maybe_unserialize(get_option('mib_cross_sell_options'));
 
         // Adminon beállított residentialParkId
         $this->mibOptions = maybe_unserialize(get_option('mib_options'));
