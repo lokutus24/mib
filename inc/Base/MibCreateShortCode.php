@@ -325,50 +325,114 @@ class MibCreateShortCode extends MibBaseController
         $mibAuth = new MibAuthController();
         $options = $mibAuth->getOptionDatas();
 
-        if (!empty($options)) {
-            $expired = $mibAuth->checkExpireToken($options['expiry']);
+        if (empty($options) || empty($datas['data'])) {
+            return $all_datas;
+        }
 
-            if ($expired) {
-                $mibAuth->loginToMib();
-                $options = $mibAuth->getOptionDatas();
+        $expired = $mibAuth->checkExpireToken($options['expiry']);
+
+        if ($expired) {
+            $mibAuth->loginToMib();
+            $options = $mibAuth->getOptionDatas();
+        }
+
+        $currentApartment = $datas['data'][0];
+        $filters = [];
+
+        if (!empty($this->filterOptionCrossSellDatas['mib-cross-floor']) && isset($currentApartment->floor)) {
+            $filters['floor'] = $currentApartment->floor;
+        }
+
+        if (!empty($this->filterOptionCrossSellDatas['mib-cross-room']) && isset($currentApartment->numberOfRooms)) {
+            $filters['numberOfRooms'] = $currentApartment->numberOfRooms;
+        }
+
+        if (!empty($this->filterOptionCrossSellDatas['mib-cross-orientation']) && !empty($currentApartment->orientation)) {
+            $filters['orientation'] = $currentApartment->orientation;
+        }
+
+        if (!empty($this->filterOptionCrossSellDatas['mib-cross-square-meter']) && isset($currentApartment->bruttoFloorArea)) {
+            $filters['bruttoFloorArea'] = $currentApartment->bruttoFloorArea;
+        }
+
+        if (!empty($this->filterOptionCrossSellDatas['mib-cross-price']) && isset($currentApartment->price)) {
+            $filters['price'] = $currentApartment->price;
+        }
+
+        if (empty($filters)) {
+            return $all_datas;
+        }
+
+        $residentialParkId = null;
+        if (isset($currentApartment->residentialParkId)) {
+            $residentialParkId = $currentApartment->residentialParkId;
+        } elseif (isset($currentApartment->residentialPark) && isset($currentApartment->residentialPark->id)) {
+            $residentialParkId = $currentApartment->residentialPark->id;
+        } elseif (!empty($this->residentialParkId)) {
+            $residentialParkId = $this->residentialParkId;
+        }
+
+        if (!empty($residentialParkId)) {
+            $filters['residentialParkId'] = $residentialParkId;
+        }
+
+        if (isset($currentApartment->type) && !empty($currentApartment->type)) {
+            $filters['type'] = $currentApartment->type;
+        }
+
+        $recommend_data = $mibAuth->getApartmentsForFrontEnd(6, 1, $filters);
+
+        if (empty($recommend_data['data'])) {
+            return $all_datas;
+        }
+
+        foreach ($recommend_data['data'] as $data) {
+            $apartman = $mibAuth->getOneApartment($data->id);
+
+            if (empty($apartman['data'])) {
+                continue;
             }
 
-            $arg = [];
+            $recommendedApartment = $apartman['data'][0];
 
-            if (isset($this->filterOptionCrossSellDatas['mib-cross-floor']) && $this->filterOptionCrossSellDatas['mib-cross-floor'] == 1) {
-                $arg['floor'] = $datas['data'][0]->bruttoFloorArea;
+            if ($recommendedApartment->id == $currentApartment->id) {
+                continue;
             }
 
-            if (isset($this->filterOptionCrossSellDatas['mib-cross-room']) && $this->filterOptionCrossSellDatas['mib-cross-room'] == 1) {
-                $arg['numberOfRooms'] = $datas['data'][0]->numberOfRooms;
-            }
+            $image = '';
+            if (!empty($recommendedApartment->apartmentsImages) && is_array($recommendedApartment->apartmentsImages)) {
+                $filteredPngDocuments = array_values(array_filter(
+                    $recommendedApartment->apartmentsImages,
+                    function ($doc) {
+                        return isset($doc->extension, $doc->src) && $doc->extension === 'png';
+                    }
+                ));
 
-            if (isset($this->filterOptionCrossSellDatas['mib-cross-orientation']) && $this->filterOptionCrossSellDatas['mib-cross-orientation'] == 1) {
-                $arg['orientation'] = $datas['data'][0]->orientation;
-            }
-
-            if (!empty($arg) && !empty($datas['data'])) {
-                $recommend_data = $mibAuth->getApartmentsForFrontEnd(6, 1, $arg);
-
-                if (!empty($recommend_data['data'])) {
-                    foreach ($recommend_data['data'] as $index => $data) {
-                        $apartman = $mibAuth->getOneApartment($data->id);
-
-                        if (!empty($apartman['data']) && ($apartman['data'][0]->id != $datas['data'][0]->id)) {
-                            $filteredPngDocuments = array_values(array_filter($datas['data'][0]->apartmentsImages, fn($doc) => $doc->extension === 'png'));
-
-                            $all_datas[] = [
-                                "image" => $filteredPngDocuments[0]->src,
-                                "name" => $apartman['data'][0]->name,
-                                "price" => number_format($datas['data'][0]->price, 0) . ' Ft',
-                                'id' => $apartman['data'][0]->id
-                            ];
+                if (!empty($filteredPngDocuments)) {
+                    $image = $filteredPngDocuments[0]->src;
+                } else {
+                    foreach ($recommendedApartment->apartmentsImages as $doc) {
+                        if (!empty($doc->src)) {
+                            $image = $doc->src;
+                            break;
                         }
                     }
                 }
             }
 
-            return $all_datas;
+            $price = '';
+            if (isset($recommendedApartment->price) && $recommendedApartment->price !== null) {
+                $price = number_format((float)$recommendedApartment->price, 0, ',', ' ') . ' Ft';
+            }
+
+            $all_datas[] = [
+                "image" => $image,
+                "name" => $recommendedApartment->name ?? '',
+                "price" => $price,
+                'id' => $recommendedApartment->id
+            ];
         }
+
+        return $all_datas;
     }
 }
