@@ -1100,6 +1100,23 @@ width: 100% !important; /* Kis százalékos szélesség, hogy négy blokk elfér
     text-align: center;
 }
 
+.mib-supported-price {
+    margin-top: 4px;
+    font-size: 0.95rem;
+    text-align: center;
+    color: #ffffff;
+}
+
+.mib-supported-price .mib-supported-price-label {
+    font-weight: 500;
+    margin-right: 4px;
+}
+
+.mib-supported-price .mib-supported-price-value {
+    font-weight: 600;
+    color: #3ecf8e;
+}
+
 .card.list-view .list-view-price-container {
     position: absolute;
     bottom: 0.6rem;
