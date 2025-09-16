@@ -190,7 +190,7 @@ class MibBaseController
         foreach ($datas['data'] as $item) {
 
                 // Lekérjük az adatokat a get_attachments_by_meta_values függvényből
-                $attachments = $this->get_attachments_by_meta_values($item->name, $this->residentialParkId);
+            $attachments = $this->get_attachments_by_meta_values($item->name, $this->residentialParkId);
 
             $image = '';
             $szintrajz = '';
@@ -200,7 +200,6 @@ class MibBaseController
                 !empty($this->selectedShortcodeOption['extras']) &&
                 in_array('gallery_first_image', $this->selectedShortcodeOption['extras'])
             );
-
 
             if (isset($item->apartmentsImages) && !empty($item->apartmentsImages) && empty($attachments) ) {
 
@@ -267,25 +266,25 @@ class MibBaseController
 			    }
 			}
 
-                    $priceDisplay = '';
-                    $supportedPriceDisplay = '';
+            $priceDisplay = '';
+            $supportedPriceDisplay = '';
 
-                    if (($item->status == 'Available' || $item->status == 'Reserved') && !is_null($item->price)) {
-                        $priceDisplay = number_format($item->price, 0) . ' Ft';
-                        $supportedPriceDisplay = number_format($item->price / 1.05, 0) . ' Ft';
-                    }
+            if (($item->status == 'Available' || $item->status == 'Reserved') && !is_null($item->price)) {
+                $priceDisplay = number_format($item->price, 0) . ' Ft';
+                $supportedPriceDisplay = number_format($item->price / 1.05, 0) . ' Ft';
+            }
 
-                    $table_data[] = array(
-                        'id' => $item->id,
-                        'rawname' => $item->name,
-                        'name' => ($item->status == 'Sold')
-                                    ? '<a id="mibhre">' . esc_html($item->name) . '</a>'
-                                    : '<a id="mibhre" href="' . home_url('/lakas/' . $projectSlug . '/' . sanitize_title($item->name) . '/') . '">' . $item->name . '</a>',
-                                'url' => home_url('/lakas/' . $projectSlug . '/' . sanitize_title($item->name) . '/'),
-                        'numberOfRooms' => $item->numberOfRooms,
-                        'price' => $priceDisplay,
-                        'supportedPrice' => $supportedPriceDisplay,
-                        'salesFloorArea' => $item->salesFloorArea . ' m²',
+            $table_data[] = array(
+                'id' => $item->id,
+                'rawname' => $item->name,
+                'name' => ($item->status == 'Sold')
+                            ? '<a id="mibhre">' . esc_html($item->name) . '</a>'
+                            : '<a id="mibhre" href="' . home_url('/lakas/' . $projectSlug . '/' . sanitize_title($item->name) . '/') . '">' . $item->name . '</a>',
+                        'url' => home_url('/lakas/' . $projectSlug . '/' . sanitize_title($item->name) . '/'),
+                'numberOfRooms' => $item->numberOfRooms,
+                'price' => $priceDisplay,
+                'supportedPrice' => $supportedPriceDisplay,
+                'salesFloorArea' => $item->salesFloorArea . ' m²',
 		        'floor' => ($item->floor == 0) ? 'földszint' : $item->floor,
 		        'balcony' => $item->balconyFloorArea . ' m²',
 		        'orientation' => array_search($item->orientation, $this->orientation), // Tájolás formázása
@@ -301,23 +300,23 @@ class MibBaseController
 		        'alaprajz' => $alaprajz, // Frissített alaprajz
 		        'szintrajz' => $szintrajz, // Frissített szintrajz
 		        'notes' => ($item->residentialPark->notes) ? $item->residentialPark->notes : '',
-                    'logo' => (
-                        (isset($this->filterOptionDatas['mib-dark_logo']) && $this->filterOptionDatas['mib-dark_logo'] == 1) ||
-                        (!empty($this->selectedShortcodeOption['extras']) && in_array('dark_logo', $this->selectedShortcodeOption['extras']))
-                    )
-                        ? (($item->residentialPark->darklogo) ? $item->residentialPark->darklogo : '')
-                        : (($item->residentialPark->lightlogo) ? $item->residentialPark->lightlogo : ''),
-                        'address' => ($item->residentialPark->address) ? $item->residentialPark->address : '',
-                        'otthonStart' => $otthonStart,
-                        'otthonStartBadge' => $badgeUrl,
+                'logo' => (
+                    (isset($this->filterOptionDatas['mib-dark_logo']) && $this->filterOptionDatas['mib-dark_logo'] == 1) ||
+                    (!empty($this->selectedShortcodeOption['extras']) && in_array('dark_logo', $this->selectedShortcodeOption['extras']))
+                )
+                    ? (($item->residentialPark->darklogo) ? $item->residentialPark->darklogo : '')
+                    : (($item->residentialPark->lightlogo) ? $item->residentialPark->lightlogo : ''),
+                    'address' => ($item->residentialPark->address) ? $item->residentialPark->address : '',
+                    'otthonStart' => $otthonStart,
+                    'otthonStartBadge' => $badgeUrl,
                 'rooms' => isset($item->rooms) && is_array($item->rooms) ? array_map(function($room){
                             return [
                                 'category_name' => $room->category_name ?? '',
                                 'floorArea' => $room->floorArea ?? ''
                             ];
                 }, $item->rooms) : [],
-                    );
-                }
+            );
+        }
 
         return $table_data;
 	}
@@ -639,7 +638,6 @@ class MibBaseController
 
     public function getCardHtmlShortCode($datas, $totalItems, $currentPage, $filterType = [], $shortcodeName = '', $apartman_number = 9){
 
-    	//print_r($filterType);
 	    $html = '<div id="custom-card-container" class="row shortcode-card" data-shortcode="'.$shortcodeName.'" data-apartman_number="'.$apartman_number.'">';
 
 	    $html .= '<div id="mib-spinner" class="mib-spinner spinner-border text-dark m-3" role="status">

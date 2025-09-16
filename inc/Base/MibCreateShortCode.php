@@ -268,10 +268,13 @@ class MibCreateShortCode extends MibBaseController
             }
 
             if ($single) {
+
                 $all_data = $mibAuth->getOneApartmentsById($id);
 
                 if (!empty($all_data)) {
+
                     $recommendDatas = $this->getRecommendedDatas($all_data);
+
                 }
             } else {
 
@@ -337,6 +340,7 @@ class MibCreateShortCode extends MibBaseController
         }
 
         $currentApartment = $datas['data'][0];
+
         $filters = [];
 
         if (!empty($this->filterOptionCrossSellDatas['mib-cross-floor']) && isset($currentApartment->floor)) {
@@ -382,11 +386,14 @@ class MibCreateShortCode extends MibBaseController
 
         $recommend_data = $mibAuth->getApartmentsForFrontEnd(6, 1, $filters);
 
+
+
         if (empty($recommend_data['data'])) {
             return $all_datas;
         }
 
         foreach ($recommend_data['data'] as $data) {
+
             $apartman = $mibAuth->getOneApartment($data->id);
 
             if (empty($apartman['data'])) {
@@ -431,6 +438,7 @@ class MibCreateShortCode extends MibBaseController
                 "price" => $price,
                 'id' => $recommendedApartment->id
             ];
+
         }
 
         return $all_datas;

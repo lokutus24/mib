@@ -160,7 +160,7 @@ class MibAuthController extends MibBaseController
 	    }
 
 	    $parkId = $this->mibOptions['mib-residential-park-id'];
-	    $url = "https://ugyfel.mibportal.hu:3000/apartments/{$parkId}/{$id}";
+	    $url = "https://ugyfel.mibportal.hu:3000/apartments/{$id}";
 
 	    $response = wp_remote_get($url, [
 	        'timeout'     => 10,
