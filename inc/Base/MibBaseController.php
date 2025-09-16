@@ -195,11 +195,13 @@ class MibBaseController
             $image = '';
             $szintrajz = '';
             $alaprajz = '';
+            $main_image = '';
 
             $useGalleryImage = (
                 !empty($this->selectedShortcodeOption['extras']) &&
                 in_array('gallery_first_image', $this->selectedShortcodeOption['extras'])
             );
+
 
             if (isset($item->apartmentsImages) && !empty($item->apartmentsImages) && empty($attachments) ) {
 
@@ -218,6 +220,10 @@ class MibBaseController
 
                     if (isset($img->category) && $img->category === 'Synopsis' && isset($img->src)) {
                         $szintrajz = '<a href="'.$img->src.'" target="_blank" rel="noopener">Szintrajz megtekintése</a>';
+                    }
+
+                    if (isset($img->category) && $img->category === 'Main image' && isset($img->src)) {
+                        $main_image = $img->src;
                     }
                    
                 }
@@ -299,6 +305,7 @@ class MibBaseController
 		        'image' => $image, // Frissített kép
 		        'alaprajz' => $alaprajz, // Frissített alaprajz
 		        'szintrajz' => $szintrajz, // Frissített szintrajz
+		        'main_image' => $main_image,
 		        'notes' => ($item->residentialPark->notes) ? $item->residentialPark->notes : '',
                 'logo' => (
                     (isset($this->filterOptionDatas['mib-dark_logo']) && $this->filterOptionDatas['mib-dark_logo'] == 1) ||
@@ -310,10 +317,10 @@ class MibBaseController
                     'otthonStart' => $otthonStart,
                     'otthonStartBadge' => $badgeUrl,
                 'rooms' => isset($item->rooms) && is_array($item->rooms) ? array_map(function($room){
-                            return [
-                                'category_name' => $room->category_name ?? '',
-                                'floorArea' => $room->floorArea ?? ''
-                            ];
+                    return [
+                        'category_name' => $room->category_name ?? '',
+                        'floorArea' => $room->floorArea ?? ''
+                    ];
                 }, $item->rooms) : [],
             );
         }
@@ -406,7 +413,7 @@ class MibBaseController
 
 	            // Bal oldal: alaprajz
                     $html .= '<div class="apartment-plan position-relative">';
-                    $html .= '<img crossorigin="anonymous" src="' . esc_url($data['image']) . '" alt="Lakás alaprajz">';
+                    $html .= '<img crossorigin="anonymous" src="' . esc_url($data['main_image']) . '" alt="Lakás alaprajz">';
                     if (!empty($data['otthonStartBadge'])) {
                         $html .= '<img id="osiamge" src="' . esc_url($data['otthonStartBadge']) . '" alt="Otthon Start"/>';
                     }
@@ -456,10 +463,13 @@ class MibBaseController
 	        // Letöltések és infók
 	        $html .= '<div class="apartment-downloads">';
 	        $html .= '<div class="downloads-column">';
-	        $html .= '<h4>Letölthető dokumentumok</h4>';
+
 	        if (!empty($data['alaprajz'])) {
+	        	$html .= '<h4>Alaprajz</h4>';
 	            $html .= '<div class="apartment-plan-documents">' . $data['alaprajz'] . '</div>';
 	        }
+	        $html .= '<h4>Letölthető dokumentumok</h4>';
+	        
 	        if (!empty($data['szintrajz'])) {
 	            $html .= '<div class="apartment-plan-documents">' . $data['szintrajz'] . '</div>';
 	        }
