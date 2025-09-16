@@ -638,7 +638,31 @@ class MibBaseController
 
     public function getCardHtmlShortCode($datas, $totalItems, $currentPage, $filterType = [], $shortcodeName = '', $apartman_number = 9){
 
-	    $html = '<div id="custom-card-container" class="row shortcode-card" data-shortcode="'.$shortcodeName.'" data-apartman_number="'.$apartman_number.'">';
+            $extras = (isset($filterType['extras']) && is_array($filterType['extras'])) ? $filterType['extras'] : [];
+            $infiniteScrollEnabled = in_array('infinite_scroll', $extras);
+            $loadMoreEnabled = in_array('load_more', $extras) || $infiniteScrollEnabled;
+            $itemsPerPage = (is_numeric($apartman_number) && (int) $apartman_number > 0)
+                ? (int) $apartman_number
+                : (int) $this->numberOfApartmens;
+            $totalPages = ($itemsPerPage > 0) ? (int) ceil($totalItems / $itemsPerPage) : 0;
+
+            $containerAttributes = [
+                'id="custom-card-container"',
+                'class="row shortcode-card"',
+                'data-shortcode="' . esc_attr($shortcodeName) . '"',
+                'data-apartman_number="' . esc_attr($apartman_number) . '"'
+            ];
+
+            if ($infiniteScrollEnabled) {
+                $containerAttributes[] = 'data-infinite-scroll="1"';
+            }
+
+            if ($totalPages > 0) {
+                $containerAttributes[] = 'data-total-pages="' . $totalPages . '"';
+                $containerAttributes[] = 'data-current-page="' . (int) $currentPage . '"';
+            }
+
+            $html = '<div ' . implode(' ', $containerAttributes) . '>';
 
 	    $html .= '<div id="mib-spinner" class="mib-spinner spinner-border text-dark m-3" role="status">
 	              <span class="visually-hidden">Töltés...</span>
@@ -903,14 +927,16 @@ class MibBaseController
 		    $html .= '<div class="col-12"><p><b> Nem található ingatlan </b></p></div>';
 		}
 
-		if (!empty($filterType) && in_array('load_more', $filterType['extras'])) {
-
-			$html .= $this->getLoadMoreButton( $currentPage, $totalItems, $apartman_number);
-
-		}else{
-
-			$html .= $this->getPaginate( $currentPage, $totalItems, $apartman_number);
-		}
+                if ($loadMoreEnabled) {
+                    if ($infiniteScrollEnabled && $totalPages > $currentPage) {
+                        $html .= '<div class="mib-infinite-scroll-sentinel" data-loading="0"></div>';
+                        $html .= $this->getLoadMoreButton($currentPage, $totalItems, $itemsPerPage, true);
+                    } elseif (!$infiniteScrollEnabled) {
+                        $html .= $this->getLoadMoreButton($currentPage, $totalItems, $itemsPerPage);
+                    }
+                } else {
+                        $html .= $this->getPaginate($currentPage, $totalItems, $itemsPerPage);
+                }
 
 	    $html .= '</div>';
 
@@ -2220,22 +2246,32 @@ class MibBaseController
 	}
 	
 
-	public function getLoadMoreButton($currentPage = 1, $totalItems = 750, $itemsPerPage = 50) {
-	    $html = '';
+        public function getLoadMoreButton($currentPage = 1, $totalItems = 750, $itemsPerPage = 50, $hidden = false) {
+            $html = '';
 
-	    // Védekezés: ha nem szám, vagy 0, állítsuk 1-re
-	    $itemsPerPage = (is_numeric($itemsPerPage) && $itemsPerPage > 0) ? (int)$itemsPerPage : 1;
+            // Védekezés: ha nem szám, vagy 0, állítsuk 1-re
+            $itemsPerPage = (is_numeric($itemsPerPage) && $itemsPerPage > 0) ? (int)$itemsPerPage : 1;
 
-	    $totalPages = ceil($totalItems / $itemsPerPage);
+            $totalPages = ceil($totalItems / $itemsPerPage);
 
-	    if ($currentPage < $totalPages) {
-	        $nextPage = $currentPage + 1;
-	        $html .= '<div class="load-more-container">';
-	        $html .= '<button id="load-more-button" class="btn btn-primary" data-page="' . $nextPage . '">Még több ingatlan</button>';
-	        $html .= '</div>';
-	    }
+            if ($currentPage < $totalPages) {
+                $nextPage = $currentPage + 1;
+                $containerAttributes = 'class="load-more-container"';
+                if ($hidden) {
+                    $containerAttributes .= ' style="display:none;" data-auto-load="1"';
+                }
 
-	    return $html;
-	}
+                $buttonAttributes = 'id="load-more-button" class="btn btn-primary" data-page="' . $nextPage . '"';
+                if ($hidden) {
+                    $buttonAttributes .= ' data-auto-load="1"';
+                }
+
+                $html .= '<div ' . $containerAttributes . '>';
+                $html .= '<button ' . $buttonAttributes . '>Még több ingatlan</button>';
+                $html .= '</div>';
+            }
+
+            return $html;
+        }
 
 }
