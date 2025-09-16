@@ -1508,174 +1508,295 @@ jQuery(document).ready(function($) {
         }, 500); // 500 ms-os késleltetés
     });
     
-    $(document).on('click', '#load-more-button', function(e) {
+    
+    let loadMoreRequestInProgress = false;
+    let infiniteObserver = null;
 
-        var shortcode = '';
-        var apartman_number = '';
-        if ($('#custom-card-container').hasClass('shortcode-card')) {
-            shortcode = $('#custom-card-container').data('shortcode');
-            apartman_number = $('#custom-card-container').data('apartman_number');
+    function triggerLoadMore(autoTriggered = false) {
+        const loadMoreButton = $('#load-more-button');
+        if (!loadMoreButton.length) {
+            return;
         }
 
-        e.preventDefault();
+        const requestedPage = parseInt(loadMoreButton.attr('data-page'), 10);
+        if (!requestedPage || isNaN(requestedPage)) {
+            return;
+        }
 
-        nextPage = parseInt($('#load-more-button').attr('data-page'));
+        if (loadMoreRequestInProgress) {
+            return;
+        }
 
-        $('#load-more-button').html('<span class="loading-spinner"></span> Betöltés...');
-        $('#load-more-button').prop('disabled', true);
+        const cardContainer = $('#custom-card-container');
+        const sentinel = $('.mib-infinite-scroll-sentinel');
 
-        var table = $('#custom-list-table-container');
+        if (autoTriggered && sentinel.length && sentinel.attr('data-loading') === '1') {
+            return;
+        }
 
-        var cardContainer = $('#custom-card-container');
-        
-        // Safe floor slider values
-        var floorSliderVals = $("#custom-floor-slider").slider("option", "values") || [0,0];
-        var minFloor = floorSliderVals[0];
-        var maxFloor = floorSliderVals[1];
+        let shortcode = '';
+        let apartman_number = '';
+        if (cardContainer.hasClass('shortcode-card')) {
+            shortcode = cardContainer.data('shortcode');
+            apartman_number = cardContainer.data('apartman_number');
+        }
 
-        var priceSliderVals = $("#custom-price-slider").slider("option", "values") || [0,0];
-        var minPrice = priceSliderVals[0];
-        var maxPrice = priceSliderVals[1];
+        const floorSliderVals = $("#custom-floor-slider").slider("option", "values") || [0, 0];
+        const minFloor = floorSliderVals[0];
+        const maxFloor = floorSliderVals[1];
 
-        var roomSliderVals = $("#custom-room-slider").slider("option", "values") || [0,0];
-        var minRoom = roomSliderVals[0];
-        var maxRoom = roomSliderVals[1];
+        const priceSliderVals = $("#custom-price-slider").slider("option", "values") || [0, 0];
+        const minPrice = priceSliderVals[0];
+        const maxPrice = priceSliderVals[1];
 
-        var squareSliderVals = $("#custom-square-slider").slider("option", "values") || [0,0];
-        var minSquare = squareSliderVals[0];
-        var maxSquare = squareSliderVals[1];
+        const roomSliderVals = $("#custom-room-slider").slider("option", "values") || [0, 0];
+        const minRoom = roomSliderVals[0];
+        const maxRoom = roomSliderVals[1];
 
-        var selectAvailability = $('.catalog-availability-checkbox:checked').map(function() {
+        const squareSliderVals = $("#custom-square-slider").slider("option", "values") || [0, 0];
+        const minSquare = squareSliderVals[0];
+        const maxSquare = squareSliderVals[1];
+
+        const selectAvailability = $('.catalog-availability-checkbox:checked').map(function() {
             return this.value;
         }).get();
 
-        var selectOritentation = $('.catalog-orientation-checkbox:checked').map(function() {
+        const selectOritentation = $('.catalog-orientation-checkbox:checked').map(function() {
             return this.value;
         }).get();
 
-        var selectStairway = $('.catalog-stairway-checkbox:checked').map(function() {
+        const selectStairway = $('.catalog-stairway-checkbox:checked').map(function() {
             return this.value;
         }).get();
 
-        var selectGardenConnection = $('.catalog-gardenconnection-checkbox').is(':checked') ? 1 : 0;
+        const selectGardenConnection = $('.catalog-gardenconnection-checkbox').is(':checked') ? 1 : 0;
 
-        var wasAdvancedFiltersVisible = $('#advanced-filters').is(':visible');
+        const wasAdvancedFiltersVisible = $('#advanced-filters').is(':visible');
 
-        var sortParts = $('#mib-sort-select').val() ? $('#mib-sort-select').val().split('|') : [];
-        var sort = sortParts[0] || '';
-        var sortType = sortParts[1] || 'ASC';
+        const sortParts = $('#mib-sort-select').val() ? $('#mib-sort-select').val().split('|') : [];
+        const sort = sortParts[0] || '';
+        const sortType = sortParts[1] || 'ASC';
 
-        var selectedParkId = $('.select-residential-park').val();
+        const selectedParkId = $('.select-residential-park').val();
+
+        loadMoreRequestInProgress = true;
+
+        if (!autoTriggered) {
+            loadMoreButton.html('<span class="loading-spinner"></span> Betöltés...');
+        }
+
+        loadMoreButton.prop('disabled', true);
+        loadMoreButton.data('loading', true);
+
+        if (sentinel.length) {
+            sentinel.attr('data-loading', '1');
+        }
 
         $.ajax({
-            url: ajaxurl, // WordPress AJAX URL-je
+            url: ajaxurl,
             type: 'POST',
             data: {
                 action: 'load_more_items',
-                page: nextPage,
+                page: requestedPage,
                 floor_slider_min_value: minFloor,
                 floor_slider_max_value: maxFloor,
                 room_slider_min_value: minRoom,
                 room_slider_max_value: maxRoom,
                 price_slider_min_value: minPrice,
                 price_slider_max_value: maxPrice,
-                slider_min_value:minSquare,//terület
-                slider_max_value:maxSquare,//terület
+                slider_min_value: minSquare,
+                slider_max_value: maxSquare,
                 availability: selectAvailability,
                 typeOfBalcony: selectOritentation,
                 garden_connection: selectGardenConnection,
-                stairway:selectStairway,
+                stairway: selectStairway,
                 sort: sort,
                 sortType: sortType,
-                page_type: (cardContainer.length == 1) ? 'card' : 'table',
-                shortcode:shortcode,
+                page_type: (cardContainer.length === 1) ? 'card' : 'table',
+                shortcode: shortcode,
                 apartman_number: apartman_number,
-                residental_park_id:selectedParkId
+                residental_park_id: selectedParkId
             },
             success: function(response) {
+                if (response && response.data) {
+                    const hasMore = !!response.data.has_more;
 
-                $('#load-more-button').prop('disabled', false);
+                    if (response.data.count > 0) {
+                        const isListView = $('#list-view').hasClass('active');
+                        let htmlToInsert = response.data.html;
 
-                if (response && response.data.count > 0) {
-                    $('#load-more-button').html('Még több ingatlan');
+                        if (isListView) {
+                            htmlToInsert = htmlToInsert
+                                .replace(/col-md-4/g, 'col-md-12')
+                                .replace(/card h-100 position-relative/g, 'card h-100 position-relative list-view');
+                        }
 
-                    const isListView = $('#list-view').hasClass('active');
-                    let htmlToInsert = response.data.html;
+                        const targetSelector = isListView
+                            ? '#custom-card-container .col-md-12.mb-3:last'
+                            : '#custom-card-container .col-md-4.mb-3:last';
 
-                    if (isListView) {
-                        // Osztálycsere rács → lista nézet
-                        htmlToInsert = htmlToInsert
-                            .replace(/col-md-4/g, 'col-md-12')
-                            .replace(/card h-100 position-relative/g, 'card h-100 position-relative list-view');
+                        $(targetSelector).after(htmlToInsert);
+
+                        if (hasMore) {
+                            $('#load-more-button').attr('data-page', requestedPage + 1);
+                        } else {
+                            $('#load-more-button').closest('.load-more-container').remove();
+                            $('.mib-infinite-scroll-sentinel').remove();
+                            if (infiniteObserver) {
+                                infiniteObserver.disconnect();
+                            }
+                        }
+                    } else {
+                        $('#load-more-button').closest('.load-more-container').remove();
+                        $('.mib-infinite-scroll-sentinel').remove();
+                        if (infiniteObserver) {
+                            infiniteObserver.disconnect();
+                        }
                     }
 
-                    const targetSelector = isListView 
-                        ? '#custom-card-container .col-md-12.mb-3:last' 
-                        : '#custom-card-container .col-md-4.mb-3:last';
+                    if (wasAdvancedFiltersVisible) {
+                        $('#advanced-filters').css('display', 'flex');
+                        $('#toggle-advanced-filters').html('<i class="fas fa-times me-1"></i> Szűrők bezárása');
+                    }
 
-                    $(targetSelector).after(htmlToInsert);
+                    if (response.data.room_slider_min != null) {
+                        initializeRoomSlider(minRoom, maxRoom, response.data.room_slider_min, response.data.room_slider_max);
+                    } else {
+                        $("#custom-room-slider").parent().remove();
+                    }
 
-                    const actualPage = parseInt($('#load-more-button').attr('data-page'));
-                    $('#load-more-button').attr('data-page', actualPage + 1);
+                    if (response.data.floor_slider_min != null) {
+                        initializeFloorSlider(minFloor, maxFloor, response.data.floor_slider_min, response.data.floor_slider_max);
+                    } else {
+                        $("#custom-floor-slider").parent().remove();
+                    }
+
+                    if (response.data.price_slider_min != null) {
+                        initializeCatalogPriceSlider(minPrice, maxPrice, response.data.price_slider_min, response.data.price_slider_max);
+                    } else {
+                        $("#custom-price-slider").parent().remove();
+                    }
+
+                    if (response.data.slider_min != null) {
+                        initializeCatalogSquareSlider(minSquare, maxSquare, response.data.slider_min, response.data.slider_max);
+                    } else {
+                        $("#custom-square-slider").parent().remove();
+                    }
+
+                    selectOritentation.forEach(function(value) {
+                        $('.catalog-orientation-checkbox[value="' + value + '"]').prop('checked', true);
+                    });
+                    if (selectGardenConnection === 1) {
+                        $('.catalog-gardenconnection-checkbox').prop('checked', true);
+                    } else {
+                        $('.catalog-gardenconnection-checkbox').prop('checked', false);
+                    }
+
+                    selectAvailability.forEach(function(value) {
+                        $('.catalog-availability-checkbox[value="' + value + '"]').prop('checked', true);
+                    });
+
+                    selectStairway.forEach(function(value) {
+                        $('.catalog-stairway-checkbox[value="' + value + '"]').prop('checked', true);
+                    });
+
+                    $('.select-residential-park').val(selectedParkId);
+
+                    checkFavorites();
                 } else {
-                    $('#load-more-button').hide();
+                    $('#load-more-button').closest('.load-more-container').remove();
+                    $('.mib-infinite-scroll-sentinel').remove();
+                    if (infiniteObserver) {
+                        infiniteObserver.disconnect();
+                    }
                 }
-
-                if (wasAdvancedFiltersVisible) {
-                    $('#advanced-filters').css('display', 'flex');
-                    $('#toggle-advanced-filters').html('<i class="fas fa-times me-1"></i> Szűrők bezárása');
-                }
-
-                if (response.data.room_slider_min != null) {
-                    initializeRoomSlider(minRoom, maxRoom, response.data.room_slider_min, response.data.room_slider_max);
-                }else{
-                    $("#custom-room-slider").parent().remove();
-                }
-
-                if (response.data.floor_slider_min != null) {
-                    initializeFloorSlider(minFloor, maxFloor, response.data.floor_slider_min, response.data.floor_slider_max);
-                }else{
-                    $("#custom-floor-slider").parent().remove();
-                }
-
-                if (response.data.price_slider_min != null) {
-                    initializeCatalogPriceSlider(minPrice, maxPrice, response.data.price_slider_min, response.data.price_slider_max);
-                }else{
-                    $("#custom-price-slider").parent().remove();
-                }
-                
-                if (response.data.slider_min != null) {
-                    initializeCatalogSquareSlider(minSquare, maxSquare, response.data.slider_min, response.data.slider_max);
-                }else{
-                    $("#custom-square-slider").parent().remove();
-                }
-
-                selectOritentation.forEach(function(value) {
-                    $('.catalog-orientation-checkbox[value="' + value + '"]').prop('checked', true);
-                });
-                if (selectGardenConnection == 1) {
-                    $('.catalog-gardenconnection-checkbox').prop('checked', true);
-                } else {
-                    $('.catalog-gardenconnection-checkbox').prop('checked', false);
-                }
-
-                selectAvailability.forEach(function(value) {
-                    $('.catalog-availability-checkbox[value="' + value + '"]').prop('checked', true);
-                });
-
-                selectStairway.forEach(function(value) {
-                    $('.catalog-stairway-checkbox[value="' + value + '"]').prop('checked', true);
-                });
-
-                $('.select-residential-park').val(selectedParkId);
-
-                checkFavorites();
-            }, 
-            error: function(error){
+            },
+            error: function(error) {
                 console.log(error);
+            },
+            complete: function() {
+                loadMoreRequestInProgress = false;
+
+                const button = $('#load-more-button');
+                if (button.length) {
+                    button.prop('disabled', false);
+                    if (!autoTriggered) {
+                        button.html('Még több ingatlan');
+                    }
+                    button.data('loading', false);
+                }
+
+                const sentinelEl = $('.mib-infinite-scroll-sentinel');
+                if (sentinelEl.length) {
+                    sentinelEl.attr('data-loading', '0');
+                }
+
+                initializeInfiniteScroll();
             }
         });
+    }
+
+    $(document).on('click', '#load-more-button', function(e) {
+        e.preventDefault();
+        triggerLoadMore(false);
     });
+
+    function initializeInfiniteScroll() {
+        const container = $('#custom-card-container');
+        const loadMoreButton = $('#load-more-button');
+        const loadMoreWrapper = loadMoreButton.closest('.load-more-container');
+        const sentinel = container.find('.mib-infinite-scroll-sentinel').get(0);
+        const autoScrollEnabled = container.length && container.data('infiniteScroll');
+
+        if (!autoScrollEnabled || !sentinel) {
+            if (infiniteObserver) {
+                infiniteObserver.disconnect();
+                infiniteObserver = null;
+            }
+            if (loadMoreWrapper.length) {
+                loadMoreWrapper.show();
+            }
+            return;
+        }
+
+        if (!('IntersectionObserver' in window)) {
+            if (loadMoreWrapper.length) {
+                loadMoreWrapper.show();
+            }
+            return;
+        }
+
+        if (loadMoreWrapper.length) {
+            loadMoreWrapper.hide();
+        }
+
+        if (infiniteObserver) {
+            infiniteObserver.disconnect();
+        }
+
+        infiniteObserver = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    const sentinelEl = $(entry.target);
+                    if (sentinelEl.attr('data-loading') === '1') {
+                        return;
+                    }
+                    if (!$('#load-more-button').length) {
+                        infiniteObserver.disconnect();
+                        return;
+                    }
+                    triggerLoadMore(true);
+                }
+            });
+        }, { root: null, rootMargin: '200px 0px', threshold: 0 });
+
+        const sentinelEl = $(sentinel);
+        if (!sentinelEl.attr('data-loading')) {
+            sentinelEl.attr('data-loading', '0');
+        }
+        infiniteObserver.observe(sentinel);
+    }
+
 
     /** Catalog new **/
 
@@ -3682,7 +3803,9 @@ jQuery(document).ready(function($) {
 
 
     function restoreViewMode() {
-        
+
+        initializeInfiniteScroll();
+
         const currentView = sessionStorage.getItem('currentView');
         const isMobile = window.innerWidth < 768;
 

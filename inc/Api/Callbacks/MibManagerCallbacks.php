@@ -443,11 +443,12 @@ class MibManagerCallbacks extends MibBaseController
 	            }
 
 	            // Extra opciók
-	            $extra_options = [
-	            	'favorites_filter' => 'Kedvencek szűrése',
-	                'reset_filters' => 'Szűrők törlése',
-	                'use_number_inputs' => 'Slider helyett szám inputok',
-	                'load_more' => 'Paginate helyett Load more',
+                    $extra_options = [
+                        'favorites_filter' => 'Kedvencek szűrése',
+                        'reset_filters' => 'Szűrők törlése',
+                        'use_number_inputs' => 'Slider helyett szám inputok',
+                        'load_more' => 'Paginate helyett Load more',
+                        'infinite_scroll' => 'Végtelen görgetés',
 	                'available_only' => 'Elérhetőség',
                         'hide_unavailable' => 'Nem elérhetők elrejtése alapbeállítás',
                         'orientation_filters' => 'Tájolás szűrés',

@@ -223,9 +223,14 @@ class MibEnqueue extends MibBaseController
 
 	    $perPage = ($_POST['page_type'] == 'card') ? ((isset($_POST['apartman_number']) && !empty($_POST['apartman_number']) ) ? $_POST['apartman_number'] : $this->numberOfApartmens) : 50;
 
-		list($args, $page) = $this->getArgumentumsByCatalog($_POST);
+                list($args, $page) = $this->getArgumentumsByCatalog($_POST);
 
-		list($slider_min, $slider_max, $price_slider_min, $price_slider_max, $floor_slider_min, $floor_slider_max, $room_slider_min, $room_slider_max) = $this->getBaseSliderDatas();
+                $currentPage = isset($_POST['page']) ? (int) $_POST['page'] : 1;
+                if ($currentPage <= 0) {
+                    $currentPage = 1;
+                }
+
+                list($slider_min, $slider_max, $price_slider_min, $price_slider_max, $floor_slider_min, $floor_slider_max, $room_slider_min, $room_slider_max) = $this->getBaseSliderDatas();
 		$html = $this->getTable($args, $page, $perPage, $_POST['page_type']);
 
 		wp_send_json_success([
@@ -1039,25 +1044,36 @@ class MibEnqueue extends MibBaseController
 
 		//print_r($_POST);
 
-	    $perPage = (isset($_POST['apartman_number']) && !empty($_POST['apartman_number'])) ? $_POST['apartman_number'] : $this->numberOfApartmens;
+            $perPage = (isset($_POST['apartman_number']) && !empty($_POST['apartman_number'])) ? (int) $_POST['apartman_number'] : (int) $this->numberOfApartmens;
+            if ($perPage <= 0) {
+                $perPage = (int) $this->numberOfApartmens;
+            }
 
-		list($args, $page) = $this->getArgumentumsByCatalog($_POST);
+                list($args, $page) = $this->getArgumentumsByCatalog($_POST);
 
-		list($slider_min, $slider_max, $price_slider_min, $price_slider_max, $floor_slider_min, $floor_slider_max, $room_slider_min, $room_slider_max) = $this->getBaseSliderDatas();
+                $currentPage = isset($_POST['page']) ? (int) $_POST['page'] : 1;
+                if ($currentPage <= 0) {
+                    $currentPage = 1;
+                }
 
-		$mib = new MibAuthController();
-		$datas = $mib->getApartmentsForFrontEnd($perPage, $_POST['page'], $args);
+                list($slider_min, $slider_max, $price_slider_min, $price_slider_max, $floor_slider_min, $floor_slider_max, $room_slider_min, $room_slider_max) = $this->getBaseSliderDatas();
+
+                $mib = new MibAuthController();
+                $datas = $mib->getApartmentsForFrontEnd($perPage, $currentPage, $args);
 
                 $table_data = $this->setDataToTable($datas);
                 if (isset($_POST['page_type']) && $_POST['page_type'] === 'carousel') {
                     $html = $this->getCarouselSlidesHtml($table_data);
                 } else {
-                    $html = $this->getMoreCards($table_data, $datas['total'], $_POST['page']);
+                    $html = $this->getMoreCards($table_data, $datas['total'], $currentPage);
                 }
+
+		$hasMore = ($currentPage * $perPage) < (int) $datas['total'];
 
 		wp_send_json_success([
 			'html' 		 => $html,
 			'count'		 => count($table_data),
+			'has_more'        => $hasMore,
 			'slider_min' => $slider_min,
 	        'slider_max' => $slider_max,
 	        'price_slider_min' => $price_slider_min,

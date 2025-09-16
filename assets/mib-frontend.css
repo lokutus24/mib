@@ -1517,6 +1517,11 @@ width: 100% !important; /* Kis százalékos szélesség, hogy négy blokk elfér
     padding: 0;
 }
 
+.mib-infinite-scroll-sentinel {
+    width: 100%;
+    height: 1px;
+}
+
 
 /* Bal/jobb kilógás asztalin */
 .mib-carousel-outer .swiper-button-prev { left: -50px; }
