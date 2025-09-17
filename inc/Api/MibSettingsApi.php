@@ -42,18 +42,18 @@ class MibSettingsApi
 		return $this;
 	}
 
-	public function setSubPagesTitle(string $title = ''){
+        public function setSubPagesTitle(?string $title = null){
 
-		if (empty($this->adminPages)) {
+                if (empty($this->adminPages)) {
 
-		}else{
+                }else{
 
-		}
+                }
 
-		return $this; 
-		
+                return $this;
 
-	}
+
+        }
 	public function addSubPages(array $pages){
 
 		$this->adminSubPages = $pages;

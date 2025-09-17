@@ -160,7 +160,11 @@ class MibEnqueue extends MibBaseController
         wp_enqueue_script('nouislider-js', 'https://cdn.jsdelivr.net/npm/nouislider@15.7.0/dist/nouislider.min.js', array(), null, true);
         wp_enqueue_style('nouislider-css', 'https://cdn.jsdelivr.net/npm/nouislider@15.7.0/dist/nouislider.min.css');
         wp_enqueue_script('mib-frontend-script', plugin_dir_url(dirname(__FILE__, 3)).'mib/assets/mib-frontend.js', array('jquery', 'nouislider-js'), null, true);
-            wp_localize_script('mib-frontend-script', 'ajaxurl', admin_url('admin-ajax.php'));
+        wp_add_inline_script(
+            'mib-frontend-script',
+            'var ajaxurl = ' . wp_json_encode(admin_url('admin-ajax.php')) . ';',
+            'before'
+        );
 
         // Swiper carousel for property shortcode
         wp_enqueue_style('swiper-css', 'https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css');

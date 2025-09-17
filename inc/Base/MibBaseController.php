@@ -2479,6 +2479,80 @@ class MibBaseController
         return null;
     }
 
+    private function parseParkIds($parkIds): array
+    {
+        if ($parkIds instanceof \Traversable) {
+            $parkIds = iterator_to_array($parkIds, false);
+        }
+
+        if (is_string($parkIds)) {
+            $decoded = json_decode($parkIds, true);
+
+            if (json_last_error() === JSON_ERROR_NONE) {
+                $parkIds = $decoded;
+            }
+        }
+
+        if (!is_array($parkIds)) {
+            $parkIds = [$parkIds];
+        }
+
+        $queue = $parkIds;
+        $ids = [];
+
+        while (!empty($queue)) {
+            $value = array_shift($queue);
+
+            if ($value instanceof \Traversable) {
+                foreach ($value as $item) {
+                    $queue[] = $item;
+                }
+
+                continue;
+            }
+
+            if (is_array($value)) {
+                foreach ($value as $item) {
+                    $queue[] = $item;
+                }
+
+                continue;
+            }
+
+            if (is_string($value)) {
+                $value = trim($value);
+
+                if ($value === '') {
+                    continue;
+                }
+
+                if (preg_match('/[\s,]+/', $value)) {
+                    $parts = preg_split('/[\s,]+/', $value, -1, PREG_SPLIT_NO_EMPTY);
+
+                    foreach ($parts as $part) {
+                        $queue[] = $part;
+                    }
+
+                    continue;
+                }
+
+                if (!is_numeric($value)) {
+                    continue;
+                }
+            }
+
+            if (is_numeric($value)) {
+                $ids[] = (int) $value;
+            }
+        }
+
+        $ids = array_values(array_unique(array_filter($ids, static function ($value) {
+            return $value > 0;
+        })));
+
+        return $ids;
+    }
+
     private function getDistrictOptionsForFilters($filterType = []): array
     {
         $parkIds = [];
