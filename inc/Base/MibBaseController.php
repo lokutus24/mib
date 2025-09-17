@@ -274,10 +274,19 @@ class MibBaseController
 
             $priceDisplay = '';
             $supportedPriceDisplay = '';
+            $discountPriceDisplay = '';
+            $basePriceRaw = null;
+            $discountPriceRaw = null;
 
             if (($item->status == 'Available' || $item->status == 'Reserved') && !is_null($item->price)) {
                 $priceDisplay = number_format($item->price, 0) . ' Ft';
                 $supportedPriceDisplay = number_format($item->price / 1.05, 0) . ' Ft';
+                $basePriceRaw = (int) $item->price;
+
+                if (isset($item->discountPrice) && $item->discountPrice !== null && $item->discountPrice !== '' && is_numeric($item->discountPrice) && (float) $item->discountPrice > 0) {
+                    $discountPriceDisplay = number_format($item->discountPrice, 0) . ' Ft';
+                    $discountPriceRaw = (int) $item->discountPrice;
+                }
             }
 
             $table_data[] = array(
@@ -288,7 +297,11 @@ class MibBaseController
                             : '<a id="mibhre" href="' . home_url('/lakas/' . $projectSlug . '/' . sanitize_title($item->name) . '/') . '">' . $item->name . '</a>',
                         'url' => home_url('/lakas/' . $projectSlug . '/' . sanitize_title($item->name) . '/'),
                 'numberOfRooms' => $item->numberOfRooms,
-                'price' => $priceDisplay,
+                'price' => !empty($discountPriceDisplay) ? $discountPriceDisplay : $priceDisplay,
+                'originalPrice' => !empty($discountPriceDisplay) ? $priceDisplay : '',
+                'discountPrice' => $discountPriceDisplay,
+                'basePriceRaw' => $basePriceRaw,
+                'discountPriceRaw' => $discountPriceRaw,
                 'supportedPrice' => $supportedPriceDisplay,
                 'salesFloorArea' => $item->salesFloorArea . ' m²',
 		        'floor' => ($item->floor == 0) ? 'földszint' : $item->floor,
@@ -387,8 +400,28 @@ class MibBaseController
 	    if (!empty($data)) {
 	        $data = $data[0];
 
-	        $cleanPrice = preg_replace('/[^0-9]/', '', $data['price']);
-	        $formattedPrice = number_format((int)$cleanPrice, 0, ',', ' ') . ' Ft';
+                $formattedPrice = '';
+                $formattedOriginalPrice = '';
+
+                $newPriceRaw = !empty($data['discountPriceRaw']) ? $data['discountPriceRaw'] : ($data['basePriceRaw'] ?? null);
+
+                if (!empty($newPriceRaw)) {
+                    $formattedPrice = number_format((int) $newPriceRaw, 0, ',', ' ') . ' Ft';
+                } elseif (!empty($data['price'])) {
+                    $cleanPrice = preg_replace('/[^0-9]/', '', $data['price']);
+                    if (!empty($cleanPrice)) {
+                        $formattedPrice = number_format((int) $cleanPrice, 0, ',', ' ') . ' Ft';
+                    }
+                }
+
+                if (!empty($data['discountPriceRaw']) && !empty($data['basePriceRaw'])) {
+                    $formattedOriginalPrice = number_format((int) $data['basePriceRaw'], 0, ',', ' ') . ' Ft';
+                } elseif (!empty($data['originalPrice'])) {
+                    $cleanOriginal = preg_replace('/[^0-9]/', '', $data['originalPrice']);
+                    if (!empty($cleanOriginal)) {
+                        $formattedOriginalPrice = number_format((int) $cleanOriginal, 0, ',', ' ') . ' Ft';
+                    }
+                }
 
 	        $separationLabels = [
 	            'separate' => 'Különálló',
@@ -453,7 +486,14 @@ class MibBaseController
 
 	                $html .= '<hr class="apartment-divider">';
 
-	                $html .= '<div class="apartment-price third-text-color">' . $formattedPrice . '</div>';
+                        $html .= '<div class="apartment-price third-text-color">';
+                        if (!empty($formattedOriginalPrice)) {
+                            $html .= '<span class="mib-old-price">' . esc_html($formattedOriginalPrice) . '</span>';
+                        }
+                        if (!empty($formattedPrice)) {
+                            $html .= '<span class="mib-new-price">' . esc_html($formattedPrice) . '</span>';
+                        }
+                        $html .= '</div>';
 	                $html .= '</div>'; // .apartment-info-box
 
 	            $html .= '</div>'; // .apartment-details
@@ -512,7 +552,12 @@ class MibBaseController
 		        $html .= '<a href="/lakas/?id='.$apartment['id'].'">';
 		        $html .= '<img crossorigin="anonymous" src="' . $apartment['image'] . '" alt="' . esc_attr($apartment['name']) . '" class="recommended-image">';
 		        $html .= '<h3 class="recommended-title">' . esc_html($apartment['name']) . '</h3>';
-		        $html .= '<p class="recommended-price">Ár: ' . esc_html($apartment['price']) . '</p>';
+                        $priceHtml = 'Ár: ';
+                        if (!empty($apartment['originalPrice'])) {
+                            $priceHtml .= '<span class="mib-old-price">' . esc_html($apartment['originalPrice']) . '</span>';
+                        }
+                        $priceHtml .= '<span class="mib-new-price">' . esc_html($apartment['price']) . '</span>';
+                        $html .= '<p class="recommended-price">' . $priceHtml . '</p>';
 		        $html .= '</div>';
 		        $html .= '</a>';
 		    }
@@ -893,7 +938,10 @@ class MibBaseController
 
 					// Ár
                                         $html .= '<div class="list-view-price-container mt-2 mt-md-0" style="display: flex; align-items: center; gap: 10px;">';
-                                                $html .= '<strong class="fs-4 text-success third-text-color">' . esc_html($data['price']) . '</strong>';
+                                                if (!empty($data['originalPrice'])) {
+                                                    $html .= '<span class="mib-old-price">' . esc_html($data['originalPrice']) . '</span>';
+                                                }
+                                                $html .= '<strong class="fs-4 text-success third-text-color mib-new-price">' . esc_html($data['price']) . '</strong>';
                                         $html .= '</div>';
 
                                         if (!empty($filterType['extras']) && in_array('display_supported_price', $filterType['extras']) && !empty($data['supportedPrice'])) {
@@ -1074,9 +1122,12 @@ class MibBaseController
 				    $html .= '</div>';
 
 				    // Ár
-					$html .= '<div class="list-view-price-container mt-2 mt-md-0" style="display: flex; align-items: center; gap: 10px;">';
-						$html .= '<strong class="fs-4 text-success third-text-color">' . esc_html($data['price']) . '</strong>';
-					$html .= '</div>';
+                                    $html .= '<div class="list-view-price-container mt-2 mt-md-0" style="display: flex; align-items: center; gap: 10px;">';
+                                                if (!empty($data['originalPrice'])) {
+                                                    $html .= '<span class="mib-old-price">' . esc_html($data['originalPrice']) . '</span>';
+                                                }
+                                                $html .= '<strong class="fs-4 text-success third-text-color mib-new-price">' . esc_html($data['price']) . '</strong>';
+                                        $html .= '</div>';
 
 					// Függőleges elválasztó (gomb elé, csak lista nézetben)
 					$html .= '<div class="card-divider list-view-only"></div>';
@@ -1200,9 +1251,12 @@ class MibBaseController
 				    $html .= '</div>';
 
 				    // Ár
-				    $html .= '<div class="list-view-price-container mt-2 mt-md-0">';
-						$html .= '<strong class="fs-4 text-success third-text-color">' . esc_html($data['price']) . '</strong>';
-					$html .= '</div>';
+                                    $html .= '<div class="list-view-price-container mt-2 mt-md-0">';
+                                                if (!empty($data['originalPrice'])) {
+                                                    $html .= '<span class="mib-old-price">' . esc_html($data['originalPrice']) . '</span>';
+                                                }
+                                                $html .= '<strong class="fs-4 text-success third-text-color mib-new-price">' . esc_html($data['price']) . '</strong>';
+                                        $html .= '</div>';
 
 					// Függőleges elválasztó (gomb elé, csak lista nézetben)
 					$html .= '<div class="card-divider list-view-only"></div>';
@@ -1318,7 +1372,10 @@ class MibBaseController
 
 	            // Ár
                     $html .= '              <div class="list-view-price-container mt-2 mt-md-0">';
-                    $html .= '                <strong class="fs-4 text-success third-text-color">' . esc_html($data['price']) . '</strong>';
+                    if (!empty($data['originalPrice'])) {
+                        $html .= '                <span class="mib-old-price">' . esc_html($data['originalPrice']) . '</span>';
+                    }
+                    $html .= '                <strong class="fs-4 text-success third-text-color mib-new-price">' . esc_html($data['price']) . '</strong>';
                     $html .= '              </div>';
 
                     if (!empty($this->selectedShortcodeOption['extras']) && in_array('display_supported_price', $this->selectedShortcodeOption['extras']) && !empty($data['supportedPrice'])) {
@@ -1423,7 +1480,10 @@ class MibBaseController
                 $html .= '</div>';
 
                 $html .= '<div class="list-view-price-container mt-2 mt-md-0">';
-                $html .= '<strong class="fs-4 text-success third-text-color">' . esc_html($data['price']) . '</strong>';
+                if (!empty($data['originalPrice'])) {
+                    $html .= '<span class="mib-old-price">' . esc_html($data['originalPrice']) . '</span>';
+                }
+                $html .= '<strong class="fs-4 text-success third-text-color mib-new-price">' . esc_html($data['price']) . '</strong>';
                 $html .= '</div>';
 
                 if (!empty($this->selectedShortcodeOption['extras']) && in_array('display_supported_price', $this->selectedShortcodeOption['extras']) && !empty($data['supportedPrice'])) {
