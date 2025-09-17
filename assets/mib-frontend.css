@@ -1100,6 +1100,37 @@ width: 100% !important; /* Kis százalékos szélesség, hogy négy blokk elfér
     text-align: center;
 }
 
+.mib-old-price {
+    font-size: 0.85rem;
+    text-decoration: line-through;
+    color: #b5b5b5;
+}
+
+.mib-new-price {
+    font-weight: 700;
+}
+
+.list-view-price-container .mib-old-price,
+.apartment-price .mib-old-price {
+    display: block;
+    margin-bottom: 4px;
+}
+
+.list-view-price-container .mib-new-price,
+.apartment-price .mib-new-price {
+    display: block;
+}
+
+.recommended-price .mib-old-price,
+.recommended-price .mib-new-price {
+    display: inline-block;
+}
+
+.recommended-price .mib-old-price {
+    margin-right: 0.5rem;
+    color: #6c757d;
+}
+
 .mib-supported-price {
     margin-top: 4px;
     font-size: 0.95rem;
