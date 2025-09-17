@@ -2479,122 +2479,103 @@ class MibBaseController
         return null;
     }
 
-    private function getDistrictOptionsForFilters($filterType = []): array
-    {
-        $parkIds = [];
+private function getDistrictOptionsForFilters($filterType = []): array
+{
+    $parkIds = [];
 
-        if (!empty($filterType['residential_park_ids'])) {
-            $parkIds = $filterType['residential_park_ids'];
-        } elseif (!empty($filterType['residentialParkId'])) {
-            $parkIds = $filterType['residentialParkId'];
-        } elseif (!empty($this->selectedShortcodeOption['residential_park_ids'])) {
-            $parkIds = $this->selectedShortcodeOption['residential_park_ids'];
-        } elseif (!empty($this->filterOptionDatas['residential_park_ids'])) {
-            $parkIds = $this->filterOptionDatas['residential_park_ids'];
-        } elseif (!empty($this->residentialParkId)) {
-            $parkIds = $this->residentialParkId;
+    if (!empty($filterType['residentialParkId'])) {
+        $parkIds = $this->parseParkIds($filterType['residentialParkId']);
+    } elseif (!empty($filterType['residential_park_ids'])) {
+        $parkIds = $this->parseParkIds($filterType['residential_park_ids']);
+    } elseif (!empty(($filterTypeProperty['residential_park_ids'] ?? null))) {
+        $parkIds = $this->parseParkIds($filterTypeProperty['residential_park_ids']);
+    } elseif (!empty($this->selectedShortcodeOption['residential_park_ids'])) {
+        $parkIds = $this->parseParkIds($this->selectedShortcodeOption['residential_park_ids']);
+    } elseif (!empty($this->filterOptionDatas['residential_park_ids'])) {
+        $parkIds = $this->parseParkIds($this->filterOptionDatas['residential_park_ids']);
+    } elseif (!empty($this->residentialParkId)) {
+        $parkIds = $this->parseParkIds($this->residentialParkId);
+    }
+
+    if (!is_array($parkIds)) {
+        $parkIds = array_map('trim', explode(',', (string) $parkIds));
+    }
+
+    $parkIds = array_values(array_unique(array_filter(array_map('intval', $parkIds))));
+
+    if (empty($parkIds)) {
+        return $this->districtNames;
+    }
+
+    $options = [];
+
+    foreach ($parkIds as $parkId) {
+        if (empty($this->parkDistricts[$parkId])) {
+            continue;
         }
 
-        if (!is_array($parkIds)) {
-            $parkIds = array_map('trim', explode(',', (string) $parkIds));
+        $codes = $this->parkDistricts[$parkId];
+
+        if (!is_array($codes)) {
+            $codes = [$codes];
         }
 
-        $parkIds = array_values(array_unique(array_filter(array_map('intval', $parkIds))));
+        foreach ($codes as $code) {
+            $resolved = $this->resolveDistrictCode($code);
 
-        if (empty($parkIds)) {
-            return $this->districtNames;
-        }
-
-        $knownParkIds = array_keys($this->parkDistricts);
-        $missingParkIds = array_diff($parkIds, $knownParkIds);
-
-        if (!empty($missingParkIds)) {
-            $updatedDistricts = $this->fetchParkDistrictsFromApi($missingParkIds, $this->parkDistricts);
-
-            if (!empty($updatedDistricts)) {
-                $this->parkDistricts = $updatedDistricts;
-
-                if (is_array($this->mibOptions)) {
-                    $this->mibOptions['park_districts'] = $this->parkDistricts;
-
-                    if (function_exists('update_option')) {
-                        update_option('mib_options', $this->mibOptions);
-                    }
-                }
+            if ($resolved !== null && isset($this->districtNames[$resolved])) {
+                $options[$resolved] = $this->districtNames[$resolved];
             }
         }
+    }
 
-        $options = [];
+    return !empty($options) ? $options : $this->districtNames;
+}
 
-        foreach ($parkIds as $parkId) {
-            if (empty($this->parkDistricts[$parkId])) {
+protected function sanitizeParkDistricts($districts): array
+{
+    if (!is_array($districts)) {
+        return [];
+    }
+
+    $sanitized = [];
+
+    foreach ($districts as $parkId => $values) {
+        $parkId = (int) $parkId;
+        if ($parkId <= 0) {
+            continue;
+        }
+
+        if (is_array($values) && array_key_exists('codes', $values) && is_array($values['codes'])) {
+            $values = $values['codes'];
+        } elseif (!is_array($values)) {
+            $values = [$values];
+        }
+
+        $codes = [];
+
+        foreach ($values as $value) {
+            if (is_array($value)) {
+                foreach ($value as $nested) {
+                    $code = $this->resolveDistrictCode($nested);
+                    if ($code !== null) {
+                        $codes[$code] = true;
+                    }
+                }
                 continue;
             }
 
-            $codes = $this->parkDistricts[$parkId];
+            $code = $this->resolveDistrictCode($value);
 
-            if (!is_array($codes)) {
-                $codes = [$codes];
-            }
-
-            foreach ($codes as $code) {
-                $resolved = $this->resolveDistrictCode($code);
-
-                if ($resolved !== null && isset($this->districtNames[$resolved])) {
-                    $options[$resolved] = $this->districtNames[$resolved];
-                }
+            if ($code !== null) {
+                $codes[$code] = true;
             }
         }
 
-        return !empty($options) ? $options : $this->districtNames;
+        if (!empty($codes)) {
+            $sanitized[$parkId] = array_keys($codes);
+        }
     }
 
-    protected function sanitizeParkDistricts($districts): array
-    {
-        if (!is_array($districts)) {
-            return [];
-        }
-
-        $sanitized = [];
-
-        foreach ($districts as $parkId => $values) {
-            $parkId = (int) $parkId;
-            if ($parkId <= 0) {
-                continue;
-            }
-
-            if (is_array($values) && array_key_exists('codes', $values) && is_array($values['codes'])) {
-                $values = $values['codes'];
-            } elseif (!is_array($values)) {
-                $values = [$values];
-            }
-
-            $codes = [];
-
-            foreach ($values as $value) {
-                if (is_array($value)) {
-                    foreach ($value as $nested) {
-                        $code = $this->resolveDistrictCode($nested);
-                        if ($code !== null) {
-                            $codes[$code] = true;
-                        }
-                    }
-                    continue;
-                }
-
-                $code = $this->resolveDistrictCode($value);
-
-                if ($code !== null) {
-                    $codes[$code] = true;
-                }
-            }
-
-            if (!empty($codes)) {
-                $sanitized[$parkId] = array_keys($codes);
-            }
-        }
-
-        return $sanitized;
-    }
-
+    return $sanitized;
 }
