@@ -98,6 +98,10 @@ class MibBaseController
         44 => 'Vác Dunakert',
     ];
 
+    private $parkDistrictName = [
+        12 => 'Balatonlelle'
+    ];
+
     private $districtNames = [
         'I' => 'I. kerület',
         'II' => 'II. kerület',
@@ -925,7 +929,7 @@ class MibBaseController
 
 				            $html .= '<div>';
 				                $html .= '<small class="third-text-color '.$data['statusclass'].' d-block">'.$data['statusrow'].'</small>';
-				                $html .= '<strong class="fs-5">' . esc_html($data['rawname']) . '</strong>';
+				                $html .= '<strong class="fs-5 apartman-id">' . esc_html($data['rawname']) . '</strong>';
 				            $html .= '</div>';
 				        $html .= '</div>';
 				        $html .= '<hr>';
@@ -1110,7 +1114,7 @@ class MibBaseController
 				        	
 				            $html .= '<div>';
 				                $html .= '<small class="third-text-color '.$data['statusclass'].' d-block">'.$data['statusrow'].'</small>';
-				                $html .= '<strong class="fs-5">' . esc_html($data['rawname']) . '</strong>';
+				                $html .= '<strong class="fs-5 apartman-id">' . esc_html($data['rawname']) . '</strong>';
 				            $html .= '</div>';
 				        $html .= '</div>';
 				        $html .= '<hr>';
@@ -1239,7 +1243,7 @@ class MibBaseController
 				        	
 				            $html .= '<div>';
 				                $html .= '<small class="third-text-color '.$data['statusclass'].' d-block">'.$data['statusrow'].'</small>';
-				                $html .= '<strong class="fs-5">' . esc_html($data['rawname']) . '</strong>';
+				                $html .= '<strong class="fs-5 apartman-id">' . esc_html($data['rawname']) . '</strong>';
 				            $html .= '</div>';
 				        $html .= '</div>';
 				        $html .= '<hr>';
@@ -1368,7 +1372,7 @@ class MibBaseController
 	            }
 	            $html .= '                  <div>';
 	            $html .= '                    <small class="third-text-color ' . esc_attr($data['statusclass']) . ' d-block">' . esc_html($data['statusrow']) . '</small>';
-	            $html .= '                    <strong class="fs-5">' . esc_html($data['rawname']) . '</strong>';
+	            $html .= '                    <strong class="fs-5 apartman-id">' . esc_html($data['rawname']) . '</strong>';
 	            $html .= '                  </div>';
 	            $html .= '                </div>';
 	            $html .= '                <hr>';
@@ -1478,7 +1482,7 @@ class MibBaseController
                 }
                 $html .= '<div>';
                 $html .= '<small class="third-text-color '.$data['statusclass'].' d-block">'.$data['statusrow'].'</small>';
-                $html .= '<strong class="fs-5">' . esc_html($data['rawname']) . '</strong>';
+                $html .= '<strong class="fs-5 apartman-id">' . esc_html($data['rawname']) . '</strong>';
                 $html .= '</div>';
                 $html .= '</div>';
                 $html .= '<hr>';
@@ -1976,15 +1980,15 @@ class MibBaseController
 
 
             foreach ($districtOptions as $key => $value) {
-
                 $nameLabel = '';
-                if (in_array($key, [12])) {
-                    $nameLabel = 'Balaton';
+                if ($value == 0) {
+                    $nameLabel = $this->parkDistrictName[$key];
+                    $key = 0;
                 }else{
                     $nameLabel = 'Budapest '.esc_html($value);
                 }
-                $selectedAttr = ($selected === $key) ? ' selected' : '';
-                $html .= '<option value="' . esc_attr($key) . '"' . $selectedAttr . '>'.$nameLabel.'</option>';
+                $selectedAttr = ($selected === $key && !empty($key)) ? ' selected' : '';
+                $html .= '<option value="' . $key . '"' . $selectedAttr . '>'.$nameLabel.'</option>';
             }
 
             $html .= '</select></div>';
@@ -2396,17 +2400,15 @@ class MibBaseController
 
             if (is_wp_error($response)) {
                 error_log('MIB fetchParkDistrictsFromApi error (' . $parkId . '): ' . $response->get_error_message());
+                // akkor is mentsünk üreset
+                $districts[$parkId] = [];
                 continue;
             }
 
             $body = wp_remote_retrieve_body($response);
             $json = json_decode($body, true);
 
-            if (!is_array($json) || empty($json['district'])) {
-                continue;
-            }
-
-            $rawValues = $json['district'];
+            $rawValues = (!empty($json['district'])) ? $json['district'] : [];
 
             if (!is_array($rawValues)) {
                 $rawValues = [$rawValues];
@@ -2432,9 +2434,8 @@ class MibBaseController
                 }
             }
 
-            if (!empty($codes)) {
-                $districts[$parkId] = array_keys($codes);
-            }
+            // mindig mentsük el – ha nincs kód, akkor üres tömbként
+            $districts[$parkId] = array_keys($codes);
         }
 
         return $districts;
@@ -2595,6 +2596,8 @@ class MibBaseController
 
         foreach ($parkIds as $parkId) {
             if (empty($this->parkDistricts[$parkId])) {
+                // ha nincs hozzárendelt körzet → akkor is adjunk vissza egy default értéket
+                $options[$parkId] = 0;
                 continue;
             }
 

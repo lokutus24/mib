@@ -858,11 +858,15 @@ class MibEnqueue extends MibBaseController
 		} 
 		if ( !empty($params['district'] ) ) {
 			$args = array_merge($args, ['district' => sanitize_text_field($params['district'])]);
+		}elseif($params['district'] == 0){
+			$args = array_merge($args, ['district' => '']);
 		}
 		// Sorting parameters
 		if ( !empty($params['sort']) ) {
+
 		    $args = array_merge($args, ['sort' => sanitize_text_field($params['sort'])]);
 		}
+
 		if ( !empty($params['sortType']) ) {
 		    $sortType = strtoupper($params['sortType']) === 'DESC' ? 'DESC' : 'ASC';
 		    $args = array_merge($args, ['sortType' => $sortType]);
@@ -1101,6 +1105,9 @@ class MibEnqueue extends MibBaseController
         $perPage = ($_POST['page_type'] == 'card') ? ((isset($_POST['apartman_number']) && !empty($_POST['apartman_number']) ) ? $_POST['apartman_number'] : $this->numberOfApartmens) : 50;
 
 		list($args, $page) = $this->getArgumentumsByCatalog($_POST);
+
+		print_r($args);
+		die();
 
         list($slider_min, $slider_max, $price_slider_min, $price_slider_max, $floor_slider_min, $floor_slider_max, $room_slider_min, $room_slider_max, $garden_connection) = $this->getBaseSliderDatas();
 		$html = $this->getTable($args, $page, $perPage, $_POST['page_type']);

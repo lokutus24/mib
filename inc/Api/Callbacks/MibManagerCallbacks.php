@@ -254,12 +254,13 @@ class MibManagerCallbacks extends MibBaseController
                                 $parkIds = array_keys($this->getParkNameMap());
                                 $districts = $this->fetchParkDistrictsFromApi($parkIds, $existingDistricts);
 
+
                                 $this->mibOptions['park_districts'] = $districts;
                                 if (function_exists('current_time')) {
                                         $this->mibOptions['park_districts_last_updated'] = current_time('mysql');
                                 }
                                 $this->parkDistricts = $districts;
-                                
+
                                 update_option('mib_options', $this->mibOptions);
 
                                 echo "<p style='color:green'>Sikeres mentés!</p>";
@@ -295,14 +296,14 @@ class MibManagerCallbacks extends MibBaseController
 						<input type="text" name="mib-login-password" size="45" value="<?= isset($mib_options['mib-login-password']) ? esc_html( $mib_options['mib-login-password']) : '';?>">
 					</td>
 				</tr>
-                <tr id="dt_desc_box">
-                    <td class="label">
-                        <label for="dt_post_desc">Residential Park ID:</label>
-                    </td>
-                    <td class="field">
-                        <input type="text" name="mib-residential-park-id" size="45" value="<?= isset($mib_options['mib-residential-park-id']) ? esc_html( $mib_options['mib-residential-park-id']) : '';?>"> <!-- Új mező input -->
-                    </td>
-                </tr>
+		                <tr id="dt_desc_box">
+		                    <td class="label">
+		                        <label for="dt_post_desc">Residential Park ID:</label>
+		                    </td>
+		                    <td class="field">
+		                        <input type="text" name="mib-residential-park-id" size="45" value="<?= isset($mib_options['mib-residential-park-id']) ? esc_html( $mib_options['mib-residential-park-id']) : '';?>"> <!-- Új mező input -->
+		                    </td>
+		                </tr>
 
 			</tbody>
 		</table>
