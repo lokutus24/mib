@@ -194,6 +194,7 @@ class MibBaseController
 
             $image = '';
             $szintrajz = '';
+            $szintrajz_img = '';
             $alaprajz = '';
             $main_image = '';
             $alaprajz_image = '';
@@ -221,6 +222,7 @@ class MibBaseController
 
                     if (isset($img->category) && $img->category === 'Synopsis' && isset($img->src)) {
                         $szintrajz = '<a href="'.$img->src.'" target="_blank" rel="noopener">Szintrajz megtekintése</a>';
+                        $szintrajz_img = $img->src;
                     }
 
                     if (isset($img->category) && $img->category === 'Main image' && isset($img->src)) {
@@ -324,6 +326,7 @@ class MibBaseController
 		        'alaprajz' => $alaprajz, // Frissített alaprajz
 		        'alaprajz_image' => $alaprajz_image,
 		        'szintrajz' => $szintrajz, // Frissített szintrajz
+		        'szintrajz_img' => $szintrajz_img,
 		        'main_image' => $main_image,
 		        'notes' => ($item->residentialPark->notes) ? $item->residentialPark->notes : '',
                 'logo' => (
@@ -512,7 +515,7 @@ class MibBaseController
 
 	        if (!empty($data['alaprajz'])) {
 	        	$html .= '<h4>Alaprajz</h4>';
-	            $html .= '<img src="' . esc_url($data['alaprajz_image']) . '" alt="Logó" crossorigin="anonymous">';
+	            $html .= '<img src="' . esc_url($data['szintrajz_img']) . '" alt="Logó" crossorigin="anonymous">';
 	        }
 	        $html .= '<h4>Letölthető dokumentumok</h4>';
 	        
