@@ -259,6 +259,7 @@ class MibManagerCallbacks extends MibBaseController
                                         $this->mibOptions['park_districts_last_updated'] = current_time('mysql');
                                 }
                                 $this->parkDistricts = $districts;
+                                
                                 update_option('mib_options', $this->mibOptions);
 
                                 echo "<p style='color:green'>Sikeres mentés!</p>";
