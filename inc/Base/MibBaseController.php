@@ -937,7 +937,7 @@ class MibBaseController
 				    $html .= '</div>';
 
 					// Ár
-                                        $html .= '<div class="list-view-price-container mt-2 mt-md-0" style="display: flex; align-items: center; gap: 10px;">';
+                                        $html .= '<div class="list-view-price-container mt-2 mt-md-0" style="display: contents; align-items: center; gap: 10px;">';
                                                 if (!empty($data['originalPrice'])) {
                                                     $html .= '<span class="mib-old-price">' . esc_html($data['originalPrice']) . '</span>';
                                                 }
@@ -1122,7 +1122,7 @@ class MibBaseController
 				    $html .= '</div>';
 
 				    // Ár
-                                    $html .= '<div class="list-view-price-container mt-2 mt-md-0" style="display: flex; align-items: center; gap: 10px;">';
+                                    $html .= '<div class="list-view-price-container mt-2 mt-md-0" style="display: contents; align-items: center; gap: 10px;">';
                                                 if (!empty($data['originalPrice'])) {
                                                     $html .= '<span class="mib-old-price">' . esc_html($data['originalPrice']) . '</span>';
                                                 }
