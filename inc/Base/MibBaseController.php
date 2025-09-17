@@ -1964,6 +1964,7 @@ class MibBaseController
         }
 
     private function getFilterDistrictByCatalog($filterType) {
+
             $selected = $filterType['district'] ?? '';
             $districtOptions = $this->getDistrictOptionsForFilters($filterType);
 
@@ -1972,9 +1973,18 @@ class MibBaseController
                 . '<select id="district-select" class="form-select district-select">'
                 . '<option value="">Válassz helyszínt</option>';
 
+
+
             foreach ($districtOptions as $key => $value) {
+
+                $nameLabel = '';
+                if (in_array($key, [12])) {
+                    $nameLabel = 'Budapest';
+                }else{
+                    $nameLabel = 'Balaton';
+                }
                 $selectedAttr = ($selected === $key) ? ' selected' : '';
-                $html .= '<option value="' . esc_attr($key) . '"' . $selectedAttr . '>' . esc_html($value) . '</option>';
+                $html .= '<option value="' . esc_attr($key) . '"' . $selectedAttr . '>'.$nameLabel .' '. esc_html($value) . '</option>';
             }
 
             $html .= '</select></div>';
