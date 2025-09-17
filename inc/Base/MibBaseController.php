@@ -2392,10 +2392,38 @@ class MibBaseController
             $body = wp_remote_retrieve_body($response);
             $json = json_decode($body, true);
 
-            $parkDistricts = $this->extractDistrictCodesFromData($json);
+            if (!is_array($json) || empty($json['district'])) {
+                continue;
+            }
 
-            if (!empty($parkDistricts)) {
-                $districts[$parkId] = array_values(array_unique($parkDistricts));
+            $rawValues = $json['district'];
+
+            if (!is_array($rawValues)) {
+                $rawValues = [$rawValues];
+            }
+
+            $codes = [];
+
+            foreach ($rawValues as $value) {
+                if (is_array($value)) {
+                    foreach ($value as $nested) {
+                        $code = $this->resolveDistrictCode($nested);
+                        if ($code !== null) {
+                            $codes[$code] = true;
+                        }
+                    }
+                    continue;
+                }
+
+                $code = $this->resolveDistrictCode($value);
+
+                if ($code !== null) {
+                    $codes[$code] = true;
+                }
+            }
+
+            if (!empty($codes)) {
+                $districts[$parkId] = array_keys($codes);
             }
         }
 
@@ -2413,90 +2441,23 @@ class MibBaseController
         return $headers;
     }
 
-    private function extractDistrictCodesFromData($data): array
-    {
-        $values = $this->collectDistrictValues($data);
-
-        if (empty($values)) {
-            return [];
-        }
-
-        $codes = [];
-
-        foreach ($values as $value) {
-            $code = $this->matchDistrictCode($value);
-            if ($code !== null) {
-                $codes[$code] = true;
-            }
-        }
-
-        return array_keys($codes);
-    }
-
-    private function collectDistrictValues($data): array
-    {
-        if (is_object($data)) {
-            $data = (array) $data;
-        }
-
-        if (!is_array($data)) {
-            return is_string($data) ? [$data] : [];
-        }
-
-        $values = [];
-
-        foreach ($data as $key => $value) {
-            if (is_string($key) && stripos($key, 'district') !== false) {
-                if (is_string($value)) {
-                    $values[] = $value;
-                } else {
-                    $values = array_merge($values, $this->collectAllStrings($value));
-                }
-                continue;
-            }
-
-            if (is_array($value) || is_object($value)) {
-                $values = array_merge($values, $this->collectDistrictValues($value));
-            }
-        }
-
-        return $values;
-    }
-
-    private function collectAllStrings($data): array
-    {
-        if (is_object($data)) {
-            $data = (array) $data;
-        }
-
-        if (!is_array($data)) {
-            return is_string($data) ? [$data] : [];
-        }
-
-        $strings = [];
-
-        foreach ($data as $value) {
-            if (is_array($value) || is_object($value)) {
-                $strings = array_merge($strings, $this->collectAllStrings($value));
-            } elseif (is_string($value)) {
-                $strings[] = $value;
-            }
-        }
-
-        return $strings;
-    }
-
-    private function matchDistrictCode($value): ?string
+    private function resolveDistrictCode($value): ?string
     {
         if (!is_string($value)) {
             return null;
         }
 
-        $valueLower = function_exists('mb_strtolower') ? mb_strtolower(trim($value)) : strtolower(trim($value));
+        $value = trim($value);
 
-        if ($valueLower === '') {
+        if ($value === '') {
             return null;
         }
+
+        if (isset($this->districtNames[$value])) {
+            return $value;
+        }
+
+        $valueLower = function_exists('mb_strtolower') ? mb_strtolower($value) : strtolower($value);
 
         foreach ($this->districtNames as $code => $label) {
             $codeLower = function_exists('mb_strtolower') ? mb_strtolower($code) : strtolower($code);
@@ -2506,16 +2467,11 @@ class MibBaseController
                 return $code;
             }
 
-            if (strpos($valueLower, $codeLower) !== false || strpos($valueLower, $labelLower) !== false) {
-                return $code;
-            }
-        }
+            $normalizedValue = str_replace(['.', '-', 'kerület', 'kerulet', 'ker.', ' '], '', $valueLower);
+            $normalizedCode = str_replace(['.', '-', ' '], '', $codeLower);
+            $normalizedLabel = str_replace(['.', '-', ' '], '', $labelLower);
 
-        $normalized = str_replace(['.', '-', 'kerület', 'kerulet', 'ker.', ' '], '', $valueLower);
-
-        foreach ($this->districtNames as $code => $label) {
-            $codeNormalized = str_replace(['.', ' '], '', function_exists('mb_strtolower') ? mb_strtolower($code) : strtolower($code));
-            if ($normalized === $codeNormalized) {
+            if ($normalizedValue === $normalizedCode || $normalizedValue === $normalizedLabel) {
                 return $code;
             }
         }
@@ -2525,90 +2481,72 @@ class MibBaseController
 
     private function getDistrictOptionsForFilters($filterType = []): array
     {
-        $parkIds = $this->determineRelevantParkIds($filterType);
-        $districtCodes = $this->getDistrictCodesForParkIds($parkIds);
+        $parkIds = [];
 
-        if (empty($districtCodes) && !empty($this->parkDistricts)) {
-            $districtCodes = $this->getDistrictCodesForParkIds(array_keys($this->parkDistricts));
+        if (!empty($filterType['residential_park_ids'])) {
+            $parkIds = $filterType['residential_park_ids'];
+        } elseif (!empty($filterType['residentialParkId'])) {
+            $parkIds = $filterType['residentialParkId'];
+        } elseif (!empty($this->selectedShortcodeOption['residential_park_ids'])) {
+            $parkIds = $this->selectedShortcodeOption['residential_park_ids'];
+        } elseif (!empty($this->filterOptionDatas['residential_park_ids'])) {
+            $parkIds = $this->filterOptionDatas['residential_park_ids'];
+        } elseif (!empty($this->residentialParkId)) {
+            $parkIds = $this->residentialParkId;
         }
 
-        if (empty($districtCodes)) {
+        if (!is_array($parkIds)) {
+            $parkIds = array_map('trim', explode(',', (string) $parkIds));
+        }
+
+        $parkIds = array_values(array_unique(array_filter(array_map('intval', $parkIds))));
+
+        if (empty($parkIds)) {
             return $this->districtNames;
         }
 
-        $options = [];
+        $knownParkIds = array_keys($this->parkDistricts);
+        $missingParkIds = array_diff($parkIds, $knownParkIds);
 
-        foreach ($districtCodes as $code) {
-            if (isset($this->districtNames[$code])) {
-                $options[$code] = $this->districtNames[$code];
-            }
-        }
+        if (!empty($missingParkIds)) {
+            $updatedDistricts = $this->fetchParkDistrictsFromApi($missingParkIds, $this->parkDistricts);
 
-        return !empty($options) ? $options : $this->districtNames;
-    }
+            if (!empty($updatedDistricts)) {
+                $this->parkDistricts = $updatedDistricts;
 
-    private function determineRelevantParkIds($filterType = []): array
-    {
-        $parkIds = [];
-        $filterTypeProperty = [];
+                if (is_array($this->mibOptions)) {
+                    $this->mibOptions['park_districts'] = $this->parkDistricts;
 
-        if (property_exists($this, 'filterType') && is_array($this->filterType)) {
-            $filterTypeProperty = $this->filterType;
-        }
-
-        if (!empty($filterType['residentialParkId'])) {
-            $parkIds = $this->parseParkIds($filterType['residentialParkId']);
-        } elseif (!empty($filterType['residential_park_ids'])) {
-            $parkIds = $this->parseParkIds($filterType['residential_park_ids']);
-        } elseif (!empty($filterTypeProperty['residential_park_ids'])) {
-            $parkIds = $this->parseParkIds($filterTypeProperty['residential_park_ids']);
-        } elseif (!empty($this->filterOptionDatas['residential_park_ids'])) {
-            $parkIds = $this->parseParkIds($this->filterOptionDatas['residential_park_ids']);
-        } elseif (!empty($this->residentialParkId)) {
-            $parkIds = $this->parseParkIds($this->residentialParkId);
-        }
-
-        return array_values(array_unique(array_filter($parkIds)));
-    }
-
-    private function parseParkIds($value): array
-    {
-        if (is_array($value)) {
-            return array_map('intval', $value);
-        }
-
-        if (is_string($value)) {
-            $ids = array_map('intval', array_filter(array_map('trim', explode(',', $value))));
-            return $ids;
-        }
-
-        if (is_numeric($value)) {
-            return [intval($value)];
-        }
-
-        return [];
-    }
-
-    private function getDistrictCodesForParkIds(array $parkIds): array
-    {
-        $districts = [];
-
-        foreach ($parkIds as $parkId) {
-            $parkId = (int) $parkId;
-            if ($parkId <= 0) {
-                continue;
-            }
-
-            if (!empty($this->parkDistricts[$parkId]) && is_array($this->parkDistricts[$parkId])) {
-                foreach ($this->parkDistricts[$parkId] as $code) {
-                    if (is_string($code) && isset($this->districtNames[$code])) {
-                        $districts[$code] = true;
+                    if (function_exists('update_option')) {
+                        update_option('mib_options', $this->mibOptions);
                     }
                 }
             }
         }
 
-        return array_keys($districts);
+        $options = [];
+
+        foreach ($parkIds as $parkId) {
+            if (empty($this->parkDistricts[$parkId])) {
+                continue;
+            }
+
+            $codes = $this->parkDistricts[$parkId];
+
+            if (!is_array($codes)) {
+                $codes = [$codes];
+            }
+
+            foreach ($codes as $code) {
+                $resolved = $this->resolveDistrictCode($code);
+
+                if ($resolved !== null && isset($this->districtNames[$resolved])) {
+                    $options[$resolved] = $this->districtNames[$resolved];
+                }
+            }
+        }
+
+        return !empty($options) ? $options : $this->districtNames;
     }
 
     protected function sanitizeParkDistricts($districts): array
@@ -2632,8 +2570,20 @@ class MibBaseController
             }
 
             $codes = [];
+
             foreach ($values as $value) {
-                $code = $this->matchDistrictCode($value);
+                if (is_array($value)) {
+                    foreach ($value as $nested) {
+                        $code = $this->resolveDistrictCode($nested);
+                        if ($code !== null) {
+                            $codes[$code] = true;
+                        }
+                    }
+                    continue;
+                }
+
+                $code = $this->resolveDistrictCode($value);
+
                 if ($code !== null) {
                     $codes[$code] = true;
                 }
