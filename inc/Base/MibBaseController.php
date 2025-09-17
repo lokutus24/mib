@@ -149,6 +149,8 @@ class MibBaseController
 
     public $shortcodeType = '';
 
+    public $parkDistricts = [];
+
     public function __construct() {
 
         $this->pluginPath = plugin_dir_path(dirname(__FILE__, 2));
@@ -159,6 +161,9 @@ class MibBaseController
 
         // Adminon beállított residentialParkId
         $this->mibOptions = maybe_unserialize(get_option('mib_options'));
+        $this->parkDistricts = isset($this->mibOptions['park_districts']) && is_array($this->mibOptions['park_districts'])
+            ? $this->sanitizeParkDistricts($this->mibOptions['park_districts'])
+            : [];
         $this->residentialParkId = isset($this->mibOptions['mib-residential-park-id']) ? $this->mibOptions['mib-residential-park-id'] : null;
 
         // Ha az admin felületen van beállítva ID, azt használjuk, ha nem akkor mylelle most
@@ -1959,22 +1964,23 @@ class MibBaseController
         }
 
     private function getFilterDistrictByCatalog($filterType) {
-	    $selected = $filterType['district'] ?? '';
+            $selected = $filterType['district'] ?? '';
+            $districtOptions = $this->getDistrictOptionsForFilters($filterType);
 
-	    $html = '<div class="catalog-dropdown">'
-	        . '<label for="district-select" class="form-label">Helyszín</label>'
-	        . '<select id="district-select" class="form-select district-select">'
-	        . '<option value="">Válassz helyszínt</option>';
+            $html = '<div class="catalog-dropdown">'
+                . '<label for="district-select" class="form-label">Helyszín</label>'
+                . '<select id="district-select" class="form-select district-select">'
+                . '<option value="">Válassz helyszínt</option>';
 
-	    foreach ($this->districtNames as $key => $value) {
-	        $selectedAttr = ($selected === $key) ? ' selected' : '';
-	        $html .= '<option value="' . esc_attr($key) . '"' . $selectedAttr . '>' . esc_html($value) . '</option>';
-	    }
+            foreach ($districtOptions as $key => $value) {
+                $selectedAttr = ($selected === $key) ? ' selected' : '';
+                $html .= '<option value="' . esc_attr($key) . '"' . $selectedAttr . '>' . esc_html($value) . '</option>';
+            }
 
-	    $html .= '</select></div>';
+            $html .= '</select></div>';
 
-	    return $html;
-	}
+            return $html;
+        }
 
 
     private function getFilterFloor($filterType) {
@@ -2083,22 +2089,23 @@ class MibBaseController
 		}
 
         private function getFilterDistrict($filterType) {
-		    $selected = $filterType['district'] ?? '';
+                    $selected = $filterType['district'] ?? '';
+                    $districtOptions = $this->getDistrictOptionsForFilters($filterType);
 
-		    $html = '<div class="mb-2">'
-		        . '<label for="district-select" class="form-label">Helyszín</label>'
-		        . '<select id="district-select" class="form-select district-select">'
-		        . '<option value="">Válassz helyszínt</option>';
+                    $html = '<div class="mb-2">'
+                        . '<label for="district-select" class="form-label">Helyszín</label>'
+                        . '<select id="district-select" class="form-select district-select">'
+                        . '<option value="">Válassz helyszínt</option>';
 
-		    foreach ($this->districtNames as $key => $value) {
-		        $selectedAttr = ($selected === $key) ? ' selected' : '';
-		        $html .= '<option value="' . esc_attr($key) . '"' . $selectedAttr . '>' . esc_html($value) . '</option>';
-		    }
+                    foreach ($districtOptions as $key => $value) {
+                        $selectedAttr = ($selected === $key) ? ' selected' : '';
+                        $html .= '<option value="' . esc_attr($key) . '"' . $selectedAttr . '>' . esc_html($value) . '</option>';
+                    }
 
-		    $html .= '</select></div>';
+                    $html .= '</select></div>';
 
-		    return $html;
-		}
+                    return $html;
+                }
 
         private function getFilterAvailability($filterType) {
 		    if (isset($filterType['status']) && !is_array($filterType['status'])) {
@@ -2325,32 +2332,319 @@ class MibBaseController
 	}
 	
 
-        public function getLoadMoreButton($currentPage = 1, $totalItems = 750, $itemsPerPage = 50, $hidden = false) {
-            $html = '';
+    public function getLoadMoreButton($currentPage = 1, $totalItems = 750, $itemsPerPage = 50, $hidden = false) {
+        $html = '';
 
-            // Védekezés: ha nem szám, vagy 0, állítsuk 1-re
-            $itemsPerPage = (is_numeric($itemsPerPage) && $itemsPerPage > 0) ? (int)$itemsPerPage : 1;
+        // Védekezés: ha nem szám, vagy 0, állítsuk 1-re
+        $itemsPerPage = (is_numeric($itemsPerPage) && $itemsPerPage > 0) ? (int)$itemsPerPage : 1;
 
-            $totalPages = ceil($totalItems / $itemsPerPage);
+        $totalPages = ceil($totalItems / $itemsPerPage);
 
-            if ($currentPage < $totalPages) {
-                $nextPage = $currentPage + 1;
-                $containerAttributes = 'class="load-more-container"';
-                if ($hidden) {
-                    $containerAttributes .= ' style="display:none;" data-auto-load="1"';
-                }
-
-                $buttonAttributes = 'id="load-more-button" class="btn btn-primary" data-page="' . $nextPage . '"';
-                if ($hidden) {
-                    $buttonAttributes .= ' data-auto-load="1"';
-                }
-
-                $html .= '<div ' . $containerAttributes . '>';
-                $html .= '<button ' . $buttonAttributes . '>Még több ingatlan</button>';
-                $html .= '</div>';
+        if ($currentPage < $totalPages) {
+            $nextPage = $currentPage + 1;
+            $containerAttributes = 'class="load-more-container"';
+            if ($hidden) {
+                $containerAttributes .= ' style="display:none;" data-auto-load="1"';
             }
 
-            return $html;
+            $buttonAttributes = 'id="load-more-button" class="btn btn-primary" data-page="' . $nextPage . '"';
+            if ($hidden) {
+                $buttonAttributes .= ' data-auto-load="1"';
+            }
+
+            $html .= '<div ' . $containerAttributes . '>';
+            $html .= '<button ' . $buttonAttributes . '>Még több ingatlan</button>';
+            $html .= '</div>';
         }
+
+        return $html;
+    }
+
+    protected function getParkNameMap()
+    {
+        return $this->parkNames;
+    }
+
+    protected function fetchParkDistrictsFromApi(array $parkIds, array $existingDistricts = []): array
+    {
+        $districts = $existingDistricts;
+        $headers = $this->buildMibApiHeaders();
+
+        foreach ($parkIds as $parkId) {
+            $parkId = (int) $parkId;
+            if ($parkId <= 0) {
+                continue;
+            }
+
+            $url = "https://ugyfel.mibportal.hu:3000/residential_parks/get/{$parkId}";
+            $response = wp_remote_get($url, [
+                'timeout'     => 10,
+                'redirection' => 10,
+                'httpversion' => '1.1',
+                'headers'     => $headers,
+            ]);
+
+            if (is_wp_error($response)) {
+                error_log('MIB fetchParkDistrictsFromApi error (' . $parkId . '): ' . $response->get_error_message());
+                continue;
+            }
+
+            $body = wp_remote_retrieve_body($response);
+            $json = json_decode($body, true);
+
+            $parkDistricts = $this->extractDistrictCodesFromData($json);
+
+            if (!empty($parkDistricts)) {
+                $districts[$parkId] = array_values(array_unique($parkDistricts));
+            }
+        }
+
+        return $districts;
+    }
+
+    protected function buildMibApiHeaders(): array
+    {
+        $headers = [];
+
+        if (!empty($this->mibOptions['token'])) {
+            $headers['Authorization'] = "Bearer {$this->mibOptions['token']}";
+        }
+
+        return $headers;
+    }
+
+    private function extractDistrictCodesFromData($data): array
+    {
+        $values = $this->collectDistrictValues($data);
+
+        if (empty($values)) {
+            return [];
+        }
+
+        $codes = [];
+
+        foreach ($values as $value) {
+            $code = $this->matchDistrictCode($value);
+            if ($code !== null) {
+                $codes[$code] = true;
+            }
+        }
+
+        return array_keys($codes);
+    }
+
+    private function collectDistrictValues($data): array
+    {
+        if (is_object($data)) {
+            $data = (array) $data;
+        }
+
+        if (!is_array($data)) {
+            return is_string($data) ? [$data] : [];
+        }
+
+        $values = [];
+
+        foreach ($data as $key => $value) {
+            if (is_string($key) && stripos($key, 'district') !== false) {
+                if (is_string($value)) {
+                    $values[] = $value;
+                } else {
+                    $values = array_merge($values, $this->collectAllStrings($value));
+                }
+                continue;
+            }
+
+            if (is_array($value) || is_object($value)) {
+                $values = array_merge($values, $this->collectDistrictValues($value));
+            }
+        }
+
+        return $values;
+    }
+
+    private function collectAllStrings($data): array
+    {
+        if (is_object($data)) {
+            $data = (array) $data;
+        }
+
+        if (!is_array($data)) {
+            return is_string($data) ? [$data] : [];
+        }
+
+        $strings = [];
+
+        foreach ($data as $value) {
+            if (is_array($value) || is_object($value)) {
+                $strings = array_merge($strings, $this->collectAllStrings($value));
+            } elseif (is_string($value)) {
+                $strings[] = $value;
+            }
+        }
+
+        return $strings;
+    }
+
+    private function matchDistrictCode($value): ?string
+    {
+        if (!is_string($value)) {
+            return null;
+        }
+
+        $valueLower = function_exists('mb_strtolower') ? mb_strtolower(trim($value)) : strtolower(trim($value));
+
+        if ($valueLower === '') {
+            return null;
+        }
+
+        foreach ($this->districtNames as $code => $label) {
+            $codeLower = function_exists('mb_strtolower') ? mb_strtolower($code) : strtolower($code);
+            $labelLower = function_exists('mb_strtolower') ? mb_strtolower($label) : strtolower($label);
+
+            if ($valueLower === $codeLower || $valueLower === $labelLower) {
+                return $code;
+            }
+
+            if (strpos($valueLower, $codeLower) !== false || strpos($valueLower, $labelLower) !== false) {
+                return $code;
+            }
+        }
+
+        $normalized = str_replace(['.', '-', 'kerület', 'kerulet', 'ker.', ' '], '', $valueLower);
+
+        foreach ($this->districtNames as $code => $label) {
+            $codeNormalized = str_replace(['.', ' '], '', function_exists('mb_strtolower') ? mb_strtolower($code) : strtolower($code));
+            if ($normalized === $codeNormalized) {
+                return $code;
+            }
+        }
+
+        return null;
+    }
+
+    private function getDistrictOptionsForFilters($filterType = []): array
+    {
+        $parkIds = $this->determineRelevantParkIds($filterType);
+        $districtCodes = $this->getDistrictCodesForParkIds($parkIds);
+
+        if (empty($districtCodes) && !empty($this->parkDistricts)) {
+            $districtCodes = $this->getDistrictCodesForParkIds(array_keys($this->parkDistricts));
+        }
+
+        if (empty($districtCodes)) {
+            return $this->districtNames;
+        }
+
+        $options = [];
+
+        foreach ($districtCodes as $code) {
+            if (isset($this->districtNames[$code])) {
+                $options[$code] = $this->districtNames[$code];
+            }
+        }
+
+        return !empty($options) ? $options : $this->districtNames;
+    }
+
+    private function determineRelevantParkIds($filterType = []): array
+    {
+        $parkIds = [];
+        $filterTypeProperty = [];
+
+        if (property_exists($this, 'filterType') && is_array($this->filterType)) {
+            $filterTypeProperty = $this->filterType;
+        }
+
+        if (!empty($filterType['residentialParkId'])) {
+            $parkIds = $this->parseParkIds($filterType['residentialParkId']);
+        } elseif (!empty($filterType['residential_park_ids'])) {
+            $parkIds = $this->parseParkIds($filterType['residential_park_ids']);
+        } elseif (!empty($filterTypeProperty['residential_park_ids'])) {
+            $parkIds = $this->parseParkIds($filterTypeProperty['residential_park_ids']);
+        } elseif (!empty($this->filterOptionDatas['residential_park_ids'])) {
+            $parkIds = $this->parseParkIds($this->filterOptionDatas['residential_park_ids']);
+        } elseif (!empty($this->residentialParkId)) {
+            $parkIds = $this->parseParkIds($this->residentialParkId);
+        }
+
+        return array_values(array_unique(array_filter($parkIds)));
+    }
+
+    private function parseParkIds($value): array
+    {
+        if (is_array($value)) {
+            return array_map('intval', $value);
+        }
+
+        if (is_string($value)) {
+            $ids = array_map('intval', array_filter(array_map('trim', explode(',', $value))));
+            return $ids;
+        }
+
+        if (is_numeric($value)) {
+            return [intval($value)];
+        }
+
+        return [];
+    }
+
+    private function getDistrictCodesForParkIds(array $parkIds): array
+    {
+        $districts = [];
+
+        foreach ($parkIds as $parkId) {
+            $parkId = (int) $parkId;
+            if ($parkId <= 0) {
+                continue;
+            }
+
+            if (!empty($this->parkDistricts[$parkId]) && is_array($this->parkDistricts[$parkId])) {
+                foreach ($this->parkDistricts[$parkId] as $code) {
+                    if (is_string($code) && isset($this->districtNames[$code])) {
+                        $districts[$code] = true;
+                    }
+                }
+            }
+        }
+
+        return array_keys($districts);
+    }
+
+    protected function sanitizeParkDistricts($districts): array
+    {
+        if (!is_array($districts)) {
+            return [];
+        }
+
+        $sanitized = [];
+
+        foreach ($districts as $parkId => $values) {
+            $parkId = (int) $parkId;
+            if ($parkId <= 0) {
+                continue;
+            }
+
+            if (is_array($values) && array_key_exists('codes', $values) && is_array($values['codes'])) {
+                $values = $values['codes'];
+            } elseif (!is_array($values)) {
+                $values = [$values];
+            }
+
+            $codes = [];
+            foreach ($values as $value) {
+                $code = $this->matchDistrictCode($value);
+                if ($code !== null) {
+                    $codes[$code] = true;
+                }
+            }
+
+            if (!empty($codes)) {
+                $sanitized[$parkId] = array_keys($codes);
+            }
+        }
+
+        return $sanitized;
+    }
 
 }

@@ -219,35 +219,59 @@ class MibManagerCallbacks extends MibBaseController
 		<?php
 	}
 
-	public function optionInputs( $args ){
+        public function optionInputs( $args ){
 
-		if ( isset($_POST['mib-login-email']) ) {
+                if ( isset($_POST['mib-login-email']) ) {
 
-			$datas = serialize(
-				[
-					'mib-login-email' => $_POST['mib-login-email'], 
-					'mib-login-password' => $_POST['mib-login-password'],
-                    'mib-residential-park-id' => $_POST['mib-residential-park-id'],
-				]
-			);
-			update_option('mib_options', $datas);
+                        $email    = isset($_POST['mib-login-email']) ? sanitize_text_field(wp_unslash($_POST['mib-login-email'])) : '';
+                        $password = isset($_POST['mib-login-password']) ? sanitize_text_field(wp_unslash($_POST['mib-login-password'])) : '';
+                        $parkId   = isset($_POST['mib-residential-park-id']) ? sanitize_text_field(wp_unslash($_POST['mib-residential-park-id'])) : '';
 
+                        $options = maybe_unserialize(get_option('mib_options'));
+                        if (!is_array($options)) {
+                                $options = [];
+                        }
 
-			$response = (new MibAuthController())->loginToMib();
-          	
+                        $options['mib-login-email'] = $email;
+                        $options['mib-login-password'] = $password;
+                        $options['mib-residential-park-id'] = $parkId;
 
-			if (isset($response->token)) {
-				
-				echo "<p style='color:green'>Sikeres mentés!</p>";
+                        update_option('mib_options', $options);
+                        $this->mibOptions = $options;
 
-			}else{
+                        $authController = new MibAuthController();
+                        $response = $authController->loginToMib();
 
-				echo "<p style='color:red'>Hiba a bevitt adatokban! - {$response->error->message}</p>";
-				
-			}
-		}
+                        if (isset($response->token)) {
 
-		$mib_options = get_option('mib_options');
+                                $this->mibOptions = maybe_unserialize(get_option('mib_options')) ?: [];
+
+                                $existingDistricts = [];
+                                if (isset($this->mibOptions['park_districts']) && is_array($this->mibOptions['park_districts'])) {
+                                        $existingDistricts = $this->sanitizeParkDistricts($this->mibOptions['park_districts']);
+                                }
+
+                                $parkIds = array_keys($this->getParkNameMap());
+                                $districts = $this->fetchParkDistrictsFromApi($parkIds, $existingDistricts);
+
+                                $this->mibOptions['park_districts'] = $districts;
+                                if (function_exists('current_time')) {
+                                        $this->mibOptions['park_districts_last_updated'] = current_time('mysql');
+                                }
+                                $this->parkDistricts = $districts;
+                                update_option('mib_options', $this->mibOptions);
+
+                                echo "<p style='color:green'>Sikeres mentés!</p>";
+
+                        }else{
+
+                                $errorMessage = isset($response->error->message) ? $response->error->message : __('Ismeretlen hiba történt.', 'mib');
+                                echo "<p style='color:red'>Hiba a bevitt adatokban! - {$errorMessage}</p>";
+
+                        }
+                }
+
+                $mib_options = maybe_unserialize(get_option('mib_options'));
 
 		?>
 
@@ -259,7 +283,7 @@ class MibManagerCallbacks extends MibBaseController
 					<label for='mib-email'>Mib email:</label><br>
 					</td>
 					<td class="field">
-						<input type="text" name="mib-login-email" size="45" value="<?= isset($mib_options['mib-login-email']) ? esc_html( $mib_options['mib-login-email']) : '';?>">
+                                                <input type="text" name="mib-login-email" size="45" value="<?= isset($mib_options['mib-login-email']) ? esc_html( $mib_options['mib-login-email']) : '';?>">
 					</td>
 				</tr>
 				<tr id="dt_desc_box">
