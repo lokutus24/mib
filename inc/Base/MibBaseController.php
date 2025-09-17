@@ -2526,6 +2526,28 @@ class MibBaseController
     private function getDistrictOptionsForFilters($filterType = []): array
     {
         $parkIds = $this->determineRelevantParkIds($filterType);
+
+        if (!empty($parkIds)) {
+            $knownParkIds = array_keys($this->parkDistricts);
+            $missingParkIds = array_diff($parkIds, $knownParkIds);
+
+            if (!empty($missingParkIds)) {
+                $updatedDistricts = $this->fetchParkDistrictsFromApi($missingParkIds, $this->parkDistricts);
+
+                if (!empty($updatedDistricts)) {
+                    $this->parkDistricts = $updatedDistricts;
+
+                    if (is_array($this->mibOptions)) {
+                        $this->mibOptions['park_districts'] = $this->parkDistricts;
+
+                        if (function_exists('update_option')) {
+                            update_option('mib_options', $this->mibOptions);
+                        }
+                    }
+                }
+            }
+        }
+
         $districtCodes = $this->getDistrictCodesForParkIds($parkIds);
 
         if (empty($districtCodes) && !empty($this->parkDistricts)) {
@@ -2562,6 +2584,8 @@ class MibBaseController
             $parkIds = $this->parseParkIds($filterType['residential_park_ids']);
         } elseif (!empty($filterTypeProperty['residential_park_ids'])) {
             $parkIds = $this->parseParkIds($filterTypeProperty['residential_park_ids']);
+        } elseif (!empty($this->selectedShortcodeOption['residential_park_ids'])) {
+            $parkIds = $this->parseParkIds($this->selectedShortcodeOption['residential_park_ids']);
         } elseif (!empty($this->filterOptionDatas['residential_park_ids'])) {
             $parkIds = $this->parseParkIds($this->filterOptionDatas['residential_park_ids']);
         } elseif (!empty($this->residentialParkId)) {
