@@ -1979,18 +1979,18 @@ class MibBaseController
 
                 $nameLabel = '';
                 if (in_array($key, [12])) {
-                    $nameLabel = 'Budapest';
-                }else{
                     $nameLabel = 'Balaton';
+                }else{
+                    $nameLabel = 'Budapest '.esc_html($value);
                 }
                 $selectedAttr = ($selected === $key) ? ' selected' : '';
-                $html .= '<option value="' . esc_attr($key) . '"' . $selectedAttr . '>'.$nameLabel .' '. esc_html($value) . '</option>';
+                $html .= '<option value="' . esc_attr($key) . '"' . $selectedAttr . '>'.$nameLabel.'</option>';
             }
 
             $html .= '</select></div>';
 
             return $html;
-        }
+    }
 
 
     private function getFilterFloor($filterType) {
