@@ -338,6 +338,7 @@ class MibBaseController
 		        'szintrajz_img' => $szintrajz_img,
 		        'main_image' => $main_image,
 		        'notes' => ($item->residentialPark->notes) ? $item->residentialPark->notes : '',
+                'darkLogo' => (($item->residentialPark->darklogo) ? $item->residentialPark->darklogo : ''),
                 'logo' => (
                     (isset($this->filterOptionDatas['mib-dark_logo']) && $this->filterOptionDatas['mib-dark_logo'] == 1) ||
                     (!empty($this->selectedShortcodeOption['extras']) && in_array('dark_logo', $this->selectedShortcodeOption['extras']))
@@ -448,8 +449,9 @@ class MibBaseController
 	        ];
 
 	        $logo = '';
-			if (isset($this->filterOptionDatas['mib-display_logo']) && $this->filterOptionDatas['mib-display_logo'] == 1 && !empty($data['logo'])) {
-				$logo = '<img src="'.$data['logo'].'" crossorigin="anonymous">';
+			if (isset($this->filterOptionDatas['mib-display_logo']) && !empty($data['darklogo'])) {
+                echo "majom";
+				$logo = '<img src="'.$data['darklogo'].'" alt="Logó" class="apartman-logo" crossorigin="anonymous">';
 			}
 
 			$address = '';
@@ -476,7 +478,7 @@ class MibBaseController
 	                // Logó és helyiség
 	                $html .= '<div class="apartment-logo-header">';
 	                if (!empty($logo)) {
-	                    $html .= '<div class="park-logo"><img src="' . esc_url($data['logo']) . '" alt="Logó" crossorigin="anonymous"></div>';
+	                    $html .= '<div class="park-logo">'.$logo.'</div>';
 	                }
 
 	                if (!empty($address)) {
