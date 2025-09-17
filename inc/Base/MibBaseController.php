@@ -196,6 +196,7 @@ class MibBaseController
             $szintrajz = '';
             $alaprajz = '';
             $main_image = '';
+            $alaprajz_image = '';
 
             $useGalleryImage = (
                 !empty($this->selectedShortcodeOption['extras']) &&
@@ -225,6 +226,10 @@ class MibBaseController
                     if (isset($img->category) && $img->category === 'Main image' && isset($img->src)) {
                         $main_image = $img->src;
                     }
+
+                    if (isset($img->category) && $img->category === 'Floorplan' && isset($img->src)) {
+                        $alaprajz_image = $img->src;
+                    }
                    
                 }
 
@@ -245,7 +250,7 @@ class MibBaseController
 		    if (!empty($attachments)) {
 		        foreach ($attachments as $attachment) {
 		            if ($attachment['type'] === 'alaprajz') {
-		                $alaprajz = '<a href="'.$attachment['attachment_url'].'" target="_blank" rel="noopener">Alaprajz megtekintése</a>';
+		                $alaprajz = $attachment['attachment_url'];
 		            }
 		            if ($attachment['type'] === 'szintrajz') {
 		                $szintrajz = '<a href="'.$attachment['attachment_url'].'" target="_blank" rel="noopener">Szintrajz megtekintése</a>';
@@ -317,6 +322,7 @@ class MibBaseController
                 'statusclass' => ($item->status == 'Available' || $item->status == 'Reserved') ? 'text-success' : 'text-info',
 		        'image' => $image, // Frissített kép
 		        'alaprajz' => $alaprajz, // Frissített alaprajz
+		        'alaprajz_image' => $alaprajz_image,
 		        'szintrajz' => $szintrajz, // Frissített szintrajz
 		        'main_image' => $main_image,
 		        'notes' => ($item->residentialPark->notes) ? $item->residentialPark->notes : '',
@@ -506,7 +512,7 @@ class MibBaseController
 
 	        if (!empty($data['alaprajz'])) {
 	        	$html .= '<h4>Alaprajz</h4>';
-	            $html .= '<div class="apartment-plan-documents">' . $data['alaprajz'] . '</div>';
+	            $html .= '<img src="' . esc_url($data['alaprajz_image']) . '" alt="Logó" crossorigin="anonymous">';
 	        }
 	        $html .= '<h4>Letölthető dokumentumok</h4>';
 	        
