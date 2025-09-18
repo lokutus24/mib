@@ -213,9 +213,8 @@ class MibBaseController
                 in_array('gallery_first_image', $this->selectedShortcodeOption['extras'])
             );
 
-
             if (isset($item->apartmentsImages) && !empty($item->apartmentsImages) && empty($attachments) ) {
-
+                $i=0;
                 foreach ($item->apartmentsImages as $img) {
 
                     if (
@@ -226,12 +225,18 @@ class MibBaseController
                         isset($img->src)
                     ) {
                         $image = $img->src;
+                        if ($useGalleryImage && $i==0 ) {
+                            $szintrajz_img = $image;
+                        }
 
                     }
 
                     if (isset($img->category) && $img->category === 'Synopsis' && isset($img->src)) {
                         $szintrajz = '<a href="'.$img->src.'" target="_blank" rel="noopener">Szintrajz megtekintése</a>';
-                        $szintrajz_img = $img->src;
+                        if (empty($szintrajz_img)) {
+                            $szintrajz_img = $img->src;
+                        }
+                        
                     }
 
                     if (isset($img->category) && $img->category === 'Main image' && isset($img->src)) {
