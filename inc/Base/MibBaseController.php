@@ -450,7 +450,6 @@ class MibBaseController
 
 	        $logo = '';
 			if (isset($this->filterOptionDatas['mib-display_logo']) && !empty($data['darklogo'])) {
-                echo "majom";
 				$logo = '<img src="'.$data['darklogo'].'" alt="Logó" class="apartman-logo" crossorigin="anonymous">';
 			}
 
@@ -466,7 +465,7 @@ class MibBaseController
 
 	            // Bal oldal: alaprajz
                     $html .= '<div class="apartment-plan position-relative">';
-                    $html .= '<img crossorigin="anonymous" src="' . esc_url($data['main_image']) . '" alt="Lakás alaprajz">';
+                    $html .= '<img crossorigin="anonymous" src="' . esc_url($data['main_image']) . '" alt="Lakás Kép">';
                     if (!empty($data['otthonStartBadge'])) {
                         $html .= '<img id="osiamge" src="' . esc_url($data['otthonStartBadge']) . '" alt="Otthon Start"/>';
                     }
@@ -904,16 +903,16 @@ class MibBaseController
 					$address = $data['address'];
 				}
 
-                        $html .= '<div class="card-wrapper col-md-4 mb-3" data-id="' . esc_attr($data['id']) . '" data-otthon-start="' . ($data['otthonStart'] ? 1 : 0) . '">'; // 4 oszlopos grid
-                        $html .= '<div class="card h-100 position-relative">'; // A kártyát relatív pozicionáljuk
+                $html .= '<div class="card-wrapper col-md-4 mb-3" data-id="' . esc_attr($data['id']) . '" data-otthon-start="' . ($data['otthonStart'] ? 1 : 0) . '">'; // 4 oszlopos grid
+                $html .= '<div class="card h-100 position-relative">'; // A kártyát relatív pozicionáljuk
 
-                        // Kép wrapper, flexbox középre igazítással
-                        $html .= '<div class="primary-color card-image-wrapper">';
-                        $html .= '<img src="' . $data['image'] . '" class="card-img-top" alt="Lakás képe" crossorigin="anonymous">';
-                        if (!empty($data['otthonStartBadge'])) {
-                            $html .= '<img id="osiamge" src="' . esc_url($data['otthonStartBadge']) . '" alt="Otthon Start" />';
-                        }
-                        $html .= '</div>';
+                // Kép wrapper, flexbox középre igazítással
+                $html .= '<div class="primary-color card-image-wrapper">';
+                $html .= '<img src="' . ((!empty($data['szintrajz_img'])) ? $data['szintrajz_img'] : $data['image']) . '" class="card-img-top" alt="Lakás képe" crossorigin="anonymous">';
+                if (!empty($data['otthonStartBadge'])) {
+                    $html .= '<img id="osiamge" src="' . esc_url($data['otthonStartBadge']) . '" alt="Otthon Start" />';
+                }
+                $html .= '</div>';
 
 		        $html .= '<div id="apartment-card-body" class="secondary-color card-body d-flex flex-column justify-content-between text-white">';
 
