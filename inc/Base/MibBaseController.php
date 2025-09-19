@@ -207,6 +207,7 @@ class MibBaseController
             $alaprajz = '';
             $main_image = '';
             $alaprajz_image = '';
+            $gallery_first = '';
 
             $useGalleryImage = (
                 !empty($this->selectedShortcodeOption['extras']) &&
@@ -229,6 +230,9 @@ class MibBaseController
                             $szintrajz_img = $image;
                         }
 
+                        if ($i==0) {
+                            $gallery_first = $img->src;
+                        }
                     }
 
                     if (isset($img->category) && $img->category === 'Synopsis' && isset($img->src)) {
@@ -342,6 +346,7 @@ class MibBaseController
 		        'szintrajz' => $szintrajz, // Frissített szintrajz
 		        'szintrajz_img' => $szintrajz_img,
 		        'main_image' => $main_image,
+                'gallery_first' => $gallery_first,
 		        'notes' => ($item->residentialPark->notes) ? $item->residentialPark->notes : '',
                 'darkLogo' => (($item->residentialPark->darklogo) ? $item->residentialPark->darklogo : ''),
                 'logo' => (
@@ -454,8 +459,8 @@ class MibBaseController
 	        ];
 
 	        $logo = '';
-			if (isset($this->filterOptionDatas['mib-display_logo']) && !empty($data['darklogo'])) {
-				$logo = '<img src="'.$data['darklogo'].'" alt="Logó" class="apartman-logo" crossorigin="anonymous">';
+			if (isset($this->filterOptionDatas['mib-display_logo']) && !empty($data['darkLogo'])) {
+				$logo = '<img src="'.$data['darkLogo'].'" alt="Logó" class="apartman-logo" crossorigin="anonymous">';
 			}
 
 			$address = '';
@@ -470,7 +475,7 @@ class MibBaseController
 
 	            // Bal oldal: alaprajz
                     $html .= '<div class="apartment-plan position-relative">';
-                    $html .= '<img crossorigin="anonymous" src="' . esc_url($data['main_image']) . '" alt="Lakás Kép">';
+                    $html .= '<img crossorigin="anonymous" src="' . esc_url($data['gallery_first']) . '" alt="Lakás Kép">';
                     if (!empty($data['otthonStartBadge'])) {
                         $html .= '<img id="osiamge" src="' . esc_url($data['otthonStartBadge']) . '" alt="Otthon Start"/>';
                     }
