@@ -533,7 +533,7 @@ class MibBaseController
 	        $html .= '<div class="apartment-downloads">';
 	        $html .= '<div class="downloads-column">';
 
-	        if (!empty($data['alaprajz'])) {
+	        if (!empty($data['szintrajz_img'])) {
 	        	$html .= '<h4>Alaprajz</h4>';
 	            $html .= '<img src="' . esc_url($data['szintrajz_img']) . '" alt="Logó" crossorigin="anonymous">';
 	        }
@@ -1233,7 +1233,7 @@ class MibBaseController
 
                         // Kép wrapper, flexbox középre igazítással
                         $html .= '<div class="primary-color card-image-wrapper">';
-                        $html .= '<img src="' . $data['image'] . '" class="card-img-top" alt="Lakás képe" crossorigin="anonymous">';
+                        $html .= '<img src="' . ((!empty($data['szintrajz_img'])) ? $data['szintrajz_img'] : $data['image']) . '" class="card-img-top" alt="Lakás képe" crossorigin="anonymous">';
                         if (!empty($data['otthonStartBadge'])) {
                             $html .= '<img id="osiamge" src="' . esc_url($data['otthonStartBadge']) . '" alt="Otthon Start" />';
                         }
