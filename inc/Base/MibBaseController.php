@@ -533,10 +533,13 @@ class MibBaseController
 	        $html .= '<div class="apartment-downloads">';
 	        $html .= '<div class="downloads-column">';
 
-	        if (!empty($data['szintrajz_img'])) {
-	        	$html .= '<h4>Alaprajz</h4>';
-	            $html .= '<img src="' . esc_url($data['szintrajz_img']) . '" alt="Logó" crossorigin="anonymous" id="floorplanimg">';
-	        }
+                if (!empty($data['szintrajz_img'])) {
+                        $html .= '<h4>Alaprajz</h4>';
+                    $floorplanUrl = esc_url($data['szintrajz_img']);
+                    $html .= '<a href="' . $floorplanUrl . '" class="mib-floorplan-link">';
+                    $html .= '<img src="' . $floorplanUrl . '" alt="Logó" crossorigin="anonymous" id="floorplanimg">';
+                    $html .= '</a>';
+                }
 	        $html .= '<h4>Letölthető dokumentumok</h4>';
 	        
 	        if (!empty($data['alaprajz_image'])) {
