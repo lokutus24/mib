@@ -539,9 +539,16 @@ class MibBaseController
 	        }
 	        $html .= '<h4>Letölthető dokumentumok</h4>';
 	        
-	        if (!empty($data['szintrajz'])) {
-	            $html .= '<div class="apartment-plan-documents">' . $data['szintrajz'] . '</div>';
+	        if (!empty($data['alaprajz_image'])) {
+
+                $html .= '<a href="'.$data['alaprajz_image'].'" target="_blank" rel="noopener">Szintrajz megtekintése</a><br/>';
+	            //$html .= '<div class="apartment-plan-documents">' . $data['alaprajz_image'] . '</div>';
 	        }
+            if (!empty($data['szintrajz_img'])) {
+
+                $html .= '<a href="'.$data['szintrajz_img'].'" target="_blank" rel="noopener">Alaprajz megtekintése</a>';
+                //$html .= '<div class="apartment-plan-documents">' . $data['alaprajz_image'] . '</div>';
+            }
 	        $html .= '</div>';
 
 	        $html .= '<div class="info-column">';

@@ -11,7 +11,7 @@
 defined('ABSPATH') or die('nem kéne..');
 
 if (!defined('MIB_VERSION')) {
-    define('MIB_VERSION', 'v3.5.1');
+    define('MIB_VERSION', 'v3.5.2');
 }
 
 
