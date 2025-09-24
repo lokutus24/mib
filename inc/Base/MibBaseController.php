@@ -539,7 +539,7 @@ class MibBaseController
 	        }
 	        $html .= '<h4>Letölthető dokumentumok</h4>';
 	        
-	        if (!empty($data['alaprajz_ima0ge'])) {
+	        if (!empty($data['alaprajz_image'])) {
 
                 $html .= '<a href="'.$data['alaprajz_image'].'" target="_blank" rel="noopener">Szintrajz megtekintése</a><br/>';
 	            //$html .= '<div class="apartment-plan-documents">' . $data['alaprajz_image'] . '</div>';
