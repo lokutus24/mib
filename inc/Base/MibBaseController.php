@@ -535,11 +535,11 @@ class MibBaseController
 
 	        if (!empty($data['szintrajz_img'])) {
 	        	$html .= '<h4>Alaprajz</h4>';
-	            $html .= '<img src="' . esc_url($data['szintrajz_img']) . '" alt="Logó" crossorigin="anonymous">';
+	            $html .= '<img src="' . esc_url($data['szintrajz_img']) . '" alt="Logó" crossorigin="anonymous" id="floorplanimg">';
 	        }
 	        $html .= '<h4>Letölthető dokumentumok</h4>';
 	        
-	        if (!empty($data['alaprajz_image'])) {
+	        if (!empty($data['alaprajz_ima0ge'])) {
 
                 $html .= '<a href="'.$data['alaprajz_image'].'" target="_blank" rel="noopener">Szintrajz megtekintése</a><br/>';
 	            //$html .= '<div class="apartment-plan-documents">' . $data['alaprajz_image'] . '</div>';
