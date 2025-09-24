@@ -4294,6 +4294,14 @@ jQuery(document).ready(function($) {
         mibShow(mibLinks.index(this));
     });
 
+    $(document).on('click', '.mib-floorplan-link', function(e) {
+        $mibOverlay.css('opacity', 5);
+        $mibOverlay.css('display', 'flex');
+        e.preventDefault();
+        mibLinks = $('.mib-floorplan-link');
+        mibShow(mibLinks.index(this));
+    });
+
     $mibOverlay.on('click', function(e) {
         if (e.target === this) { $mibOverlay.fadeOut(200); }
     });
