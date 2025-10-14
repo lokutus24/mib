@@ -199,7 +199,8 @@ class MibBaseController
         foreach ($datas['data'] as $item) {
 
                 // Lekérjük az adatokat a get_attachments_by_meta_values függvényből
-            $attachments = $this->get_attachments_by_meta_values($item->name, $this->residentialParkId);
+            //$attachments = $this->get_attachments_by_meta_values($item->name, $this->residentialParkId);
+            $attachments = '';
 
             $image = '';
             $szintrajz = '';
@@ -208,6 +209,8 @@ class MibBaseController
             $main_image = '';
             $alaprajz_image = '';
             $gallery_first = '';
+            $siteplan_image = '';
+            $docsynopsisimg = '';
 
             $useGalleryImage = (
                 !empty($this->selectedShortcodeOption['extras']) &&
@@ -250,21 +253,32 @@ class MibBaseController
                     if (isset($img->category) && $img->category === 'Floorplan' && isset($img->src)) {
                         $alaprajz_image = $img->src;
                     }
+
+                    if (isset($img->category) && $img->category === 'Siteplan' && isset($img->src)) {
+                        $siteplan_image = $img->src;
+                    }
                    
                 }
 
 
                 if (isset($item->apartmentsDocuments) && !empty($item->apartmentsDocuments)) {
 	                foreach ($item->apartmentsDocuments as $img) {
-	                    if (isset($img->category) && $img->category === 'Floorplan' && isset($img->src)) {
+	                    if (isset($img->category) && $img->category === 'Floorplan' && isset($img->src) ) {
 	                        $alaprajz = '<a href="'.$img->src.'" target="_blank" rel="noopener">Alaprajz megtekintése</a>';
-	                        break;
+	                        //break;
 	                    }
+                        if ( isset($img->category) && $img->category === 'Synopsis' && isset($img->src) ) {
+
+                            $docsynopsisimg = $img->preview;
+                        }
 	                }
 	            }
             }
 
             
+
+            //print_r($alaprajz_image);
+            //die($img->src);
 
 		    // Végigmegyünk az adatbázisból lekért csatolmányokon és frissítjük a megfelelő értékeket
 		    if (!empty($attachments)) {
@@ -345,6 +359,8 @@ class MibBaseController
 		        'alaprajz_image' => $alaprajz_image,
 		        'szintrajz' => $szintrajz, // Frissített szintrajz
 		        'szintrajz_img' => $szintrajz_img,
+                'docsynopsisimg' => $docsynopsisimg,
+                'siteplan_image' => $siteplan_image,
 		        'main_image' => $main_image,
                 'gallery_first' => $gallery_first,
 		        'notes' => ($item->residentialPark->notes) ? $item->residentialPark->notes : '',
@@ -545,12 +561,15 @@ class MibBaseController
 	        if (!empty($data['alaprajz_image'])) {
 
                 $html .= '<a href="'.$data['alaprajz_image'].'" target="_blank" rel="noopener">Szintrajz megtekintése</a><br/>';
-	            //$html .= '<div class="apartment-plan-documents">' . $data['alaprajz_image'] . '</div>';
 	        }
             if (!empty($data['szintrajz_img'])) {
 
-                $html .= '<a href="'.$data['szintrajz_img'].'" target="_blank" rel="noopener">Alaprajz megtekintése</a>';
-                //$html .= '<div class="apartment-plan-documents">' . $data['alaprajz_image'] . '</div>';
+                $sz_img = (!empty($data['docsynopsisimg'])) ? $data['docsynopsisimg'] : $data['szintrajz_img'];
+                $html .= '<a href="'.$sz_img .'" target="_blank" rel="noopener">Alaprajz megtekintése</a><br/>';
+            }
+
+            if (!empty($data['siteplan_image'])) {
+                $html .= '<a href="'.$data['siteplan_image'].'" target="_blank" rel="noopener">Helyszínrajz megtekintése</a><br/>';
             }
 	        $html .= '</div>';
 
@@ -985,7 +1004,7 @@ class MibBaseController
 
                                         if (!empty($filterType['extras']) && in_array('display_supported_price', $filterType['extras']) && !empty($data['supportedPrice'])) {
                                             $html .= '<div class="mib-supported-price">';
-                                            $html .= '<span class="mib-supported-price-label">' . esc_html__('Támogatással elérhető ár:', 'mib') . '</span>';
+                                            $html .= '<span class="mib-supported-price-label">' . esc_html__('5% ÁFA visszaigényelhető! Ennyibe kerül neked:', 'mib') . '</span>';
                                             $html .= '<span class="mib-supported-price-value">' . esc_html($data['supportedPrice']) . '</span>';
                                             $html .= '</div>';
                                         }
@@ -1297,6 +1316,13 @@ class MibBaseController
                                                 $html .= '<strong class="fs-4 text-success third-text-color mib-new-price">' . esc_html($data['price']) . '</strong>';
                                         $html .= '</div>';
 
+                                    if (!empty($data['supportedPrice'])) {
+                                        $html .= '<div class="mib-supported-price">';
+                                        $html .= '<span class="mib-supported-price-label">' . esc_html__('5% ÁFA visszaigényelhető! Ennyibe kerül neked:', 'mib') . '</span>';
+                                        $html .= '<span class="mib-supported-price-value">' . esc_html($data['supportedPrice']) . '</span>';
+                                        $html .= '</div>';
+                                    }
+
 					// Függőleges elválasztó (gomb elé, csak lista nézetben)
 					$html .= '<div class="card-divider list-view-only"></div>';
 
@@ -1419,7 +1445,7 @@ class MibBaseController
 
                     if (!empty($this->selectedShortcodeOption['extras']) && in_array('display_supported_price', $this->selectedShortcodeOption['extras']) && !empty($data['supportedPrice'])) {
                         $html .= '              <div class="mib-supported-price">';
-                        $html .= '                <span class="mib-supported-price-label">' . esc_html__('Támogatással elérhető ár:', 'mib') . '</span>';
+                        $html .= '                <span class="mib-supported-price-label">' . esc_html__('5% ÁFA visszaigényelhető! Ennyibe kerül neked:', 'mib') . '</span>';
                         $html .= '                <span class="mib-supported-price-value">' . esc_html($data['supportedPrice']) . '</span>';
                         $html .= '              </div>';
                     }
@@ -1527,7 +1553,7 @@ class MibBaseController
 
                 if (!empty($this->selectedShortcodeOption['extras']) && in_array('display_supported_price', $this->selectedShortcodeOption['extras']) && !empty($data['supportedPrice'])) {
                     $html .= '<div class="mib-supported-price">';
-                    $html .= '<span class="mib-supported-price-label">' . esc_html__('Támogatással elérhető ár:', 'mib') . '</span>';
+                    $html .= '<span class="mib-supported-price-label">' . esc_html__('5% ÁFA visszaigényelhető! Ennyibe kerül neked:', 'mib') . '</span>';
                     $html .= '<span class="mib-supported-price-value">' . esc_html($data['supportedPrice']) . '</span>';
                     $html .= '</div>';
                 }
