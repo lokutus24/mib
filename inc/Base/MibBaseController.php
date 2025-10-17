@@ -301,13 +301,15 @@ class MibBaseController
 
             $otthonStart = false;
 			$badgeUrl = '';
+            $sale_white_badgeUrl = plugin_dir_url(dirname(__DIR__)) . 'assets/akcio_badge_feher.png';
+            $sale_black_badgeUrl = plugin_dir_url(dirname(__DIR__)) . 'assets/akcio_badge_fekete.png';
 
 			if (!is_null($item->price) && !is_null($item->salesFloorArea) && $item->salesFloorArea > 0) {
 			    $pricePerMeter = $item->price / $item->salesFloorArea;
 
 			    if ($pricePerMeter <= 1500000 && $item->price < 100000000) {
 			        $otthonStart = true;
-			        $badgeUrl = plugin_dir_url(dirname(__DIR__)) . 'assets/os.png';
+			        $badgeUrl = ($item->type == 'lakás') ? plugin_dir_url(dirname(__DIR__)) . 'assets/os.png' : '';
 			    }
 			}
 
@@ -316,15 +318,18 @@ class MibBaseController
             $discountPriceDisplay = '';
             $basePriceRaw = null;
             $discountPriceRaw = null;
+            $sale_price_badge = '';
 
             if (($item->status == 'Available' || $item->status == 'Reserved') && !is_null($item->price)) {
                 $priceDisplay = number_format($item->price, 0) . ' Ft';
-                $supportedPriceDisplay = number_format($item->price / 1.05, 0) . ' Ft';
+                $supportedPriceDisplay = ($item->type == 'lakás') ? number_format($item->price / 1.05, 0) . ' Ft' : '';
                 $basePriceRaw = (int) $item->price;
 
                 if (isset($item->discountPrice) && $item->discountPrice !== null && $item->discountPrice !== '' && is_numeric($item->discountPrice) && (float) $item->discountPrice > 0) {
                     $discountPriceDisplay = number_format($item->discountPrice, 0) . ' Ft';
                     $discountPriceRaw = (int) $item->discountPrice;
+
+                    $sale_price_badge = ($item->residentialPark->id == 43) ? $sale_white_badgeUrl : $sale_black_badgeUrl;
                 }
             }
 
@@ -374,6 +379,7 @@ class MibBaseController
                     'address' => ($item->residentialPark->address) ? $item->residentialPark->address : '',
                     'otthonStart' => $otthonStart,
                     'otthonStartBadge' => $badgeUrl,
+                'sale_price_badge' => $sale_price_badge,
                 'rooms' => isset($item->rooms) && is_array($item->rooms) ? array_map(function($room){
                     return [
                         'category_name' => $room->category_name ?? '',
@@ -536,6 +542,9 @@ class MibBaseController
                             $html .= '<span class="mib-old-price">' . esc_html($formattedOriginalPrice) . '</span>';
                         }
                         if (!empty($formattedPrice)) {
+                            if (!empty($data['sale_price_badge'])) {
+                                                   $html .= '<img id="saleimagebadge" src="'.$data['sale_price_badge'].'" alt="Akciós lakás">';
+                                                }
                             $html .= '<span class="mib-new-price">' . esc_html($formattedPrice) . '</span>';
                         }
                         $html .= '</div>';
@@ -549,13 +558,23 @@ class MibBaseController
 	        $html .= '<div class="apartment-downloads">';
 	        $html .= '<div class="downloads-column">';
 
-                if (!empty($data['szintrajz_img'])) {
-                        $html .= '<h4>Alaprajz</h4>';
-                    $floorplanUrl = esc_url($data['szintrajz_img']);
-                    $html .= '<a href="' . $floorplanUrl . '" class="mib-floorplan-link">';
-                    $html .= '<img src="' . $floorplanUrl . '" alt="Logó" crossorigin="anonymous" id="floorplanimg">';
-                    $html .= '</a>';
-                }
+            if (!empty($data['szintrajz_img'])) {
+                $html .= '<h4>Alaprajz</h4>';
+                $floorplanUrl = esc_url($data['szintrajz_img']);
+                $html .= '<a href="' . $floorplanUrl . '" class="mib-floorplan-link">';
+                $html .= '<img src="' . $floorplanUrl . '" alt="Logó" crossorigin="anonymous" id="floorplanimg">';
+                $html .= '</a>';
+            }
+
+            if (!empty($data['siteplan_image'])) {
+                $html .= '<h4>Helyszín rajz</h4>';
+                $floorplanUrl = esc_url($data['siteplan_image']);
+                $html .= '<a href="' . $floorplanUrl . '" class="mib-floorplan-link">';
+                $html .= '<img src="' . $floorplanUrl . '" alt="Logó" crossorigin="anonymous" id="floorplanimg">';
+                $html .= '</a>';
+            }
+
+
 	        $html .= '<h4>Letölthető dokumentumok</h4>';
 	        
 	        if (!empty($data['alaprajz_image'])) {
@@ -999,6 +1018,9 @@ class MibBaseController
                                                 if (!empty($data['originalPrice'])) {
                                                     $html .= '<span class="mib-old-price">' . esc_html($data['originalPrice']) . '</span>';
                                                 }
+                                                if (!empty($data['sale_price_badge'])) {
+                                                   $html .= '<img id="saleimagebadge" src="'.$data['sale_price_badge'].'" alt="Akciós lakás">';
+                                                }
                                                 $html .= '<strong class="fs-4 text-success third-text-color mib-new-price">' . esc_html($data['price']) . '</strong>';
                                         $html .= '</div>';
 
@@ -1184,6 +1206,9 @@ class MibBaseController
                                                 if (!empty($data['originalPrice'])) {
                                                     $html .= '<span class="mib-old-price">' . esc_html($data['originalPrice']) . '</span>';
                                                 }
+                                                if (!empty($data['sale_price_badge'])) {
+                                                   $html .= '<img id="saleimagebadge" src="'.$data['sale_price_badge'].'" alt="Akciós lakás">';
+                                                }
                                                 $html .= '<strong class="fs-4 text-success third-text-color mib-new-price">' . esc_html($data['price']) . '</strong>';
                                         $html .= '</div>';
 
@@ -1313,6 +1338,9 @@ class MibBaseController
                                                 if (!empty($data['originalPrice'])) {
                                                     $html .= '<span class="mib-old-price">' . esc_html($data['originalPrice']) . '</span>';
                                                 }
+                                                if (!empty($data['sale_price_badge'])) {
+                                                   $html .= '<img id="saleimagebadge" src="'.$data['sale_price_badge'].'" alt="Akciós lakás">';
+                                                }
                                                 $html .= '<strong class="fs-4 text-success third-text-color mib-new-price">' . esc_html($data['price']) . '</strong>';
                                         $html .= '</div>';
 
@@ -1440,6 +1468,9 @@ class MibBaseController
                     if (!empty($data['originalPrice'])) {
                         $html .= '                <span class="mib-old-price">' . esc_html($data['originalPrice']) . '</span>';
                     }
+                    if (!empty($data['sale_price_badge'])) {
+                                                   $html .= '<img id="saleimagebadge" src="'.$data['sale_price_badge'].'" alt="Akciós lakás">';
+                                                }
                     $html .= '                <strong class="fs-4 text-success third-text-color mib-new-price">' . esc_html($data['price']) . '</strong>';
                     $html .= '              </div>';
 
@@ -1548,6 +1579,9 @@ class MibBaseController
                 if (!empty($data['originalPrice'])) {
                     $html .= '<span class="mib-old-price">' . esc_html($data['originalPrice']) . '</span>';
                 }
+                if (!empty($data['sale_price_badge'])) {
+                                                   $html .= '<img id="saleimagebadge" src="'.$data['sale_price_badge'].'" alt="Akciós lakás">';
+                                                }
                 $html .= '<strong class="fs-4 text-success third-text-color mib-new-price">' . esc_html($data['price']) . '</strong>';
                 $html .= '</div>';
 

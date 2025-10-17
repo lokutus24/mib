@@ -1537,6 +1537,13 @@ width: 100% !important; /* Kis százalékos szélesség, hogy négy blokk elfér
     right:10px;
     width:60px;
 }
+
+#saleimagebadge{
+    position:absolute;
+    top: 105px;
+    right: 69px;
+    width:60px;
+}
 .catalog-dropdown legend,
 .mb-2 legend {
     font-size: 15px;
