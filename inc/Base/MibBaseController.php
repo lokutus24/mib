@@ -575,21 +575,7 @@ class MibBaseController
             }
 
 
-	        $html .= '<h4>Letölthető dokumentumok</h4>';
 	        
-	        if (!empty($data['alaprajz_image'])) {
-
-                $html .= '<a href="'.$data['alaprajz_image'].'" target="_blank" rel="noopener">Szintrajz megtekintése</a><br/>';
-	        }
-            if (!empty($data['szintrajz_img'])) {
-
-                $sz_img = (!empty($data['docsynopsisimg'])) ? $data['docsynopsisimg'] : $data['szintrajz_img'];
-                $html .= '<a href="'.$sz_img .'" target="_blank" rel="noopener">Alaprajz megtekintése</a><br/>';
-            }
-
-            if (!empty($data['siteplan_image'])) {
-                $html .= '<a href="'.$data['siteplan_image'].'" target="_blank" rel="noopener">Helyszínrajz megtekintése</a><br/>';
-            }
 	        $html .= '</div>';
 
 	        $html .= '<div class="info-column">';
@@ -602,8 +588,29 @@ class MibBaseController
                     }
                     $html .= '</ul>';
                 }
+
+                $html .= '<h4>Letölthető dokumentumok</h4>';
+            
+                if (!empty($data['alaprajz_image'])) {
+
+                    $html .= '<a href="'.$data['alaprajz_image'].'" target="_blank" rel="noopener">Szintrajz megtekintése</a><br/>';
+                }
+                if (!empty($data['szintrajz_img'])) {
+
+                    $sz_img = (!empty($data['docsynopsisimg'])) ? $data['docsynopsisimg'] : $data['szintrajz_img'];
+                    $html .= '<a href="'.$sz_img .'" target="_blank" rel="noopener">Alaprajz megtekintése</a><br/>';
+                }
+
+                if (!empty($data['siteplan_image'])) {
+                    $html .= '<a href="'.$data['siteplan_image'].'" target="_blank" rel="noopener">Helyszínrajz megtekintése</a><br/>';
+                }
+
+            
                 $html .= '</div>';
-                $html .= '</div>'; // .apartment-downloads
+                $html .= '</div>';
+
+
+
 
 	        // Ajánlott
 	        $html .= $this->getRecommendedApartmentsHtml($recommend);
