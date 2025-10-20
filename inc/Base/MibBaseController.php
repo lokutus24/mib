@@ -1276,7 +1276,7 @@ class MibBaseController
 		    foreach ($datas as $data) {
 
 		    	$logo = '';
-				if (isset($this->filterOptionDatas['mib-display_logo']) && $this->filterOptionDatas['mib-display_logo'] == 1 && !empty($data['logo'])) {
+				if (isset($this->filterOptionDatas['mib-display_logo']) && $this->filterOptionDatas['mib-display_logo'] == 1 && !empty($data['logo']) && $this->filterType === null) {
 					$logo = '<img src="'.$data['logo'].'" crossorigin="anonymous">';
 				}elseif (isset($this->filterType['extras']) && in_array('display_logo', $this->filterType['extras']) && !empty($data['logo']) ) {
 					$logo = '<img src="'.$data['logo'].'" crossorigin="anonymous">';
