@@ -320,7 +320,11 @@ class MibBaseController
             $discountPriceRaw = null;
             $sale_price_badge = '';
 
-            $isRustZone = property_exists($item, 'isRustZone') ? (bool) $item->isRustZone : false;
+            $isRustZone = (
+                isset($item->residentialPark) &&
+                is_object($item->residentialPark) &&
+                property_exists($item->residentialPark, 'isRustZone')
+            ) ? (bool) $item->residentialPark->isRustZone : false;
 
             if (($item->status == 'Available' || $item->status == 'Reserved') && !is_null($item->price)) {
                 $priceDisplay = number_format($item->price, 0) . ' Ft';
