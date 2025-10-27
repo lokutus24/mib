@@ -3491,11 +3491,18 @@ jQuery(document).ready(function($) {
 
     $(document).on('click', '#favorite-view', function () {
         const isActive = $(this).hasClass('active');
+        const favoriteIcon = $(this).find('i');
         const favorites = getFavorites();
 
         if (isActive) {
             // Ha már aktív, akkor visszaállítjuk a teljes nézetet
             $(this).removeClass('active');
+
+            if (favoriteIcon.length) {
+                favoriteIcon
+                    .removeClass('fa-solid third-text-color')
+                    .addClass('fa-regular');
+            }
 
             favoritesViewActive = false;
 
@@ -3528,6 +3535,12 @@ jQuery(document).ready(function($) {
             // Favorite nézet aktiválása
             $(this).addClass('active');
             $('#list-view, #grid-view').removeClass('active');
+
+            if (favoriteIcon.length) {
+                favoriteIcon
+                    .removeClass('fa-regular')
+                    .addClass('fa-solid third-text-color');
+            }
 
             // Elmentjük, melyik volt az előző nézet
             const currentView = sessionStorage.getItem('currentView') || 'grid';
