@@ -1511,10 +1511,15 @@ jQuery(document).ready(function($) {
     
     let loadMoreRequestInProgress = false;
     let infiniteObserver = null;
+    let favoritesViewActive = false;
 
     function triggerLoadMore(autoTriggered = false) {
         const loadMoreButton = $('#load-more-button');
         if (!loadMoreButton.length) {
+            return;
+        }
+
+        if (favoritesViewActive) {
             return;
         }
 
@@ -1747,6 +1752,17 @@ jQuery(document).ready(function($) {
         const loadMoreWrapper = loadMoreButton.closest('.load-more-container');
         const sentinel = container.find('.mib-infinite-scroll-sentinel').get(0);
         const autoScrollEnabled = container.length && container.data('infiniteScroll');
+
+        if (favoritesViewActive) {
+            if (infiniteObserver) {
+                infiniteObserver.disconnect();
+                infiniteObserver = null;
+            }
+            if (loadMoreWrapper.length) {
+                loadMoreWrapper.hide();
+            }
+            return;
+        }
 
         if (!autoScrollEnabled || !sentinel) {
             if (infiniteObserver) {
@@ -3481,6 +3497,8 @@ jQuery(document).ready(function($) {
             // Ha már aktív, akkor visszaállítjuk a teljes nézetet
             $(this).removeClass('active');
 
+            favoritesViewActive = false;
+
             // Visszaállítjuk az előző nézetet (pl. grid vagy list)
             const previousView = sessionStorage.getItem('previousView') || 'grid';
             sessionStorage.setItem('currentView', previousView);
@@ -3499,6 +3517,13 @@ jQuery(document).ready(function($) {
                 $('.card').removeClass('grid-view').addClass('list-view');
             }
 
+            const loadMoreWrapper = $('#load-more-button').closest('.load-more-container');
+            if (loadMoreWrapper.length) {
+                loadMoreWrapper.show();
+            }
+
+            initializeInfiniteScroll();
+
         } else {
             // Favorite nézet aktiválása
             $(this).addClass('active');
@@ -3508,6 +3533,8 @@ jQuery(document).ready(function($) {
             const currentView = sessionStorage.getItem('currentView') || 'grid';
             sessionStorage.setItem('previousView', currentView);
             sessionStorage.setItem('currentView', 'favorite');
+
+            favoritesViewActive = true;
 
             $('.card-wrapper').each(function () {
                 const id = $(this).data('id');
@@ -3525,6 +3552,15 @@ jQuery(document).ready(function($) {
             $('.card-wrapper')
                 .removeClass('col-md-12')
                 .addClass('col-md-3');
+
+            const loadMoreWrapper = $('#load-more-button').closest('.load-more-container');
+            if (loadMoreWrapper.length) {
+                loadMoreWrapper.hide();
+            }
+
+            if (infiniteObserver) {
+                infiniteObserver.disconnect();
+            }
         }
     });
 
