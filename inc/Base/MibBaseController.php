@@ -320,9 +320,13 @@ class MibBaseController
             $discountPriceRaw = null;
             $sale_price_badge = '';
 
+            $isRustZone = property_exists($item, 'isRustZone') ? (bool) $item->isRustZone : false;
+
             if (($item->status == 'Available' || $item->status == 'Reserved') && !is_null($item->price)) {
                 $priceDisplay = number_format($item->price, 0) . ' Ft';
-                $supportedPriceDisplay = ($item->type == 'lakás') ? number_format($item->price / 1.05, 0) . ' Ft' : '';
+                $supportedPriceDisplay = ($item->type == 'lakás' && $isRustZone)
+                    ? number_format($item->price / 1.05, 0) . ' Ft'
+                    : '';
                 $basePriceRaw = (int) $item->price;
 
                 if (isset($item->discountPrice) && $item->discountPrice !== null && $item->discountPrice !== '' && is_numeric($item->discountPrice) && (float) $item->discountPrice > 0) {
@@ -347,6 +351,7 @@ class MibBaseController
                 'basePriceRaw' => $basePriceRaw,
                 'discountPriceRaw' => $discountPriceRaw,
                 'supportedPrice' => $supportedPriceDisplay,
+                'isRustZone' => $isRustZone,
                 'salesFloorArea' => $item->salesFloorArea . ' m²',
 		        'floor' => ($item->floor == 0) ? 'földszint' : $item->floor,
 		        'balcony' => $item->balconyFloorArea . ' m²',
@@ -1031,7 +1036,7 @@ class MibBaseController
                                                 $html .= '<strong class="fs-4 text-success third-text-color mib-new-price">' . esc_html($data['price']) . '</strong>';
                                         $html .= '</div>';
 
-                                        if (!empty($filterType['extras']) && in_array('display_supported_price', $filterType['extras']) && !empty($data['supportedPrice'])) {
+                                        if (!empty($filterType['extras']) && in_array('display_supported_price', $filterType['extras']) && !empty($data['supportedPrice']) && !empty($data['isRustZone'])) {
                                             $html .= '<div class="mib-supported-price">';
                                             $html .= '<span class="mib-supported-price-label">' . esc_html__('5% ÁFA visszaigényelhető! Ennyibe kerül neked:', 'mib') . '</span>';
                                             $html .= '<span class="mib-supported-price-value">' . esc_html($data['supportedPrice']) . '</span>';
@@ -1351,7 +1356,7 @@ class MibBaseController
                                                 $html .= '<strong class="fs-4 text-success third-text-color mib-new-price">' . esc_html($data['price']) . '</strong>';
                                         $html .= '</div>';
 
-                                    if (!empty($data['supportedPrice'])) {
+                                    if (!empty($data['supportedPrice']) && !empty($data['isRustZone'])) {
                                         $html .= '<div class="mib-supported-price">';
                                         $html .= '<span class="mib-supported-price-label">' . esc_html__('5% ÁFA visszaigényelhető! Ennyibe kerül neked:', 'mib') . '</span>';
                                         $html .= '<span class="mib-supported-price-value">' . esc_html($data['supportedPrice']) . '</span>';
@@ -1481,7 +1486,7 @@ class MibBaseController
                     $html .= '                <strong class="fs-4 text-success third-text-color mib-new-price">' . esc_html($data['price']) . '</strong>';
                     $html .= '              </div>';
 
-                    if (!empty($this->selectedShortcodeOption['extras']) && in_array('display_supported_price', $this->selectedShortcodeOption['extras']) && !empty($data['supportedPrice'])) {
+                    if (!empty($this->selectedShortcodeOption['extras']) && in_array('display_supported_price', $this->selectedShortcodeOption['extras']) && !empty($data['supportedPrice']) && !empty($data['isRustZone'])) {
                         $html .= '              <div class="mib-supported-price">';
                         $html .= '                <span class="mib-supported-price-label">' . esc_html__('5% ÁFA visszaigényelhető! Ennyibe kerül neked:', 'mib') . '</span>';
                         $html .= '                <span class="mib-supported-price-value">' . esc_html($data['supportedPrice']) . '</span>';
@@ -1592,7 +1597,7 @@ class MibBaseController
                 $html .= '<strong class="fs-4 text-success third-text-color mib-new-price">' . esc_html($data['price']) . '</strong>';
                 $html .= '</div>';
 
-                if (!empty($this->selectedShortcodeOption['extras']) && in_array('display_supported_price', $this->selectedShortcodeOption['extras']) && !empty($data['supportedPrice'])) {
+                if (!empty($this->selectedShortcodeOption['extras']) && in_array('display_supported_price', $this->selectedShortcodeOption['extras']) && !empty($data['supportedPrice']) && !empty($data['isRustZone'])) {
                     $html .= '<div class="mib-supported-price">';
                     $html .= '<span class="mib-supported-price-label">' . esc_html__('5% ÁFA visszaigényelhető! Ennyibe kerül neked:', 'mib') . '</span>';
                     $html .= '<span class="mib-supported-price-value">' . esc_html($data['supportedPrice']) . '</span>';
