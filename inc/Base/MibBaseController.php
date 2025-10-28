@@ -2013,6 +2013,27 @@ class MibBaseController
                     !empty($this->filterOptionDatas['mib-otthonstart']),
                     !empty($this->filterOptionDatas['mib-stairway']),
                 ];
+              
+                $html .= '<div class="custom-filter-container">';
+	            $showAdvanced = false;
+	            if (isset($this->filterOptionDatas['mib-filter-district']) && $this->filterOptionDatas['mib-filter-district'] == true) {
+	                $showAdvanced = true;
+	            }
+	            if (isset($this->filterOptionDatas['mib-filter-orientation']) && $this->filterOptionDatas['mib-filter-orientation'] == true) {
+	                $showAdvanced = true;
+	            }
+	            if (isset($this->filterOptionDatas['mib-filter-availability']) && $this->filterOptionDatas['mib-filter-availability'] == true && $this->filterOptionDatas['inactive_hide'] != 1) {
+	                $showAdvanced = true;
+	            }
+                    if (isset($this->filterOptionDatas['mib-garden_connection']) && $this->filterOptionDatas['mib-garden_connection'] == true) {
+                        $showAdvanced = true;
+                    }
+                    if (isset($this->filterOptionDatas['mib-otthonstart']) && $this->filterOptionDatas['mib-otthonstart'] == true) {
+                        $showAdvanced = true;
+                    }
+                    if (isset($this->filterOptionDatas['mib-stairway']) && $this->filterOptionDatas['mib-stairway'] == true) {
+                        $showAdvanced = true;
+                    }
 
                 if (!empty($this->filterOptionDatas['mib-filter-availability']) && empty($this->filterOptionDatas['inactive_hide'])) {
                     $advancedToggles[] = true;
@@ -2043,6 +2064,28 @@ class MibBaseController
             if (!empty($this->filterOptionDatas['mib-filter-district'])) {
                 $html .= $this->getFilterDistrictByCatalog($filterType);
             }
+	            if (isset($this->filterOptionDatas['mib-filter-floor']) && $this->filterOptionDatas['mib-filter-floor'] == true) {
+	                $html .= $this->getFilterFloorByCatalog($filterType);
+	            }
+	            if (isset($this->filterOptionDatas['mib-filter-district']) && $this->filterOptionDatas['mib-filter-district'] == true) {
+                    $html .= $this->getFilterDistrictByCatalog($filterType);
+                }
+	            if (isset($this->filterOptionDatas['mib-filter-orientation']) && $this->filterOptionDatas['mib-filter-orientation'] == true) {
+	                $html .= $this->getFilterOrientationByCatalog($filterType);
+	            }
+	            if (isset($this->filterOptionDatas['mib-filter-availability']) && $this->filterOptionDatas['mib-filter-availability'] == true && $this->filterOptionDatas['inactive_hide'] != 1) {
+	                $html .= $this->getFilterAvailabilityByCatalog($filterType);
+	            }
+                    if (isset($this->filterOptionDatas['mib-garden_connection']) && $this->filterOptionDatas['mib-garden_connection'] == true) {
+                        $html .= $this->getFilterGardenConnectionByCatalog($filterType);
+                    }
+                    if (isset($this->filterOptionDatas['mib-otthonstart']) && $this->filterOptionDatas['mib-otthonstart'] == true) {
+                        $html .= $this->getFilterOtthonStartCheckboxByCatalog($filterType);
+                    }
+                    if (isset($this->filterOptionDatas['mib-stairway']) && $this->filterOptionDatas['mib-stairway'] == true) {
+                        $html .= $this->getFilterStairwayByCatalog($filterType);
+                    }
+            $html .= '</div>';
 
             if (!empty($this->filterOptionDatas['mib-filter-orientation'])) {
                 $html .= $this->getFilterOrientationByCatalog($filterType);
@@ -2350,6 +2393,10 @@ class MibBaseController
             $html .= '<div class="form-check">';
             $html .= '<input type="checkbox" class="form-check-input catalog-otthonstart-checkbox" id="catalog-otthonstart-filter" name="otthonStart" value="1" ' . $checked . '>';
             $html .= '<label class="form-check-label" for="catalog-otthonstart-filter">' . esc_html__('3%-os Otthon Start feltételeinek megfelelő', 'mib') . '</label>';
+            $html = '<div class="catalog-checkbox">';
+            $html .= '<div class="form-check">';
+            $html .= '<input type="checkbox" class="form-check-input catalog-otthonstart-checkbox" id="catalog-otthonstart-filter" name="otthonStart" value="1" ' . $checked . '>';
+            $html .= '<label class="form-check-label" for="catalog-otthonstart-filter">' . esc_html__('Otthon Start feltételeinek megfelelő', 'mib') . '</label>';
             $html .= '</div>';
             $html .= '</div>';
 
