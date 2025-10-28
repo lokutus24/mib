@@ -967,6 +967,7 @@ jQuery(document).ready(function($) {
         }).get();
 
         var selectGardenConnection = $('.catalog-gardenconnection-checkbox').is(':checked') ? 1 : 0;
+        var selectOtthonStart = $('.catalog-otthonstart-checkbox').is(':checked') ? 1 : 0;
 
 
         var minRoom = $("#custom-room-slider").slider("option", "values")[0];
@@ -1011,6 +1012,7 @@ jQuery(document).ready(function($) {
                 slider_max_value: maxSquare, // terület
                 availability: selectAvailability,
                 garden_connection: selectGardenConnection,
+                otthonStart: selectOtthonStart,
                 page_type: (cardContainer.length == 1) ? 'card' : 'table',
                 shortcode: shortcode,
                 apartman_number: apartman_number,
@@ -1072,6 +1074,17 @@ jQuery(document).ready(function($) {
                 } else {
                     $('.catalog-gardenconnection-checkbox').prop('checked', false);
                 }
+
+                if (selectOtthonStart == 1) {
+
+                    $('.catalog-otthonstart-checkbox').prop('checked', true);
+
+                } else {
+
+                    $('.catalog-otthonstart-checkbox').prop('checked', false);
+
+                }
+
 
                 selectStairway.forEach(function(value) {
                     $('.catalog-stairway-checkbox[value="' + value + '"]').prop('checked', true);
@@ -1575,6 +1588,7 @@ jQuery(document).ready(function($) {
         }).get();
 
         const selectGardenConnection = $('.catalog-gardenconnection-checkbox').is(':checked') ? 1 : 0;
+        const selectOtthonStart = $('.catalog-otthonstart-checkbox').is(':checked') ? 1 : 0;
 
         const wasAdvancedFiltersVisible = $('#advanced-filters').is(':visible');
 
@@ -1614,6 +1628,7 @@ jQuery(document).ready(function($) {
                 availability: selectAvailability,
                 typeOfBalcony: selectOritentation,
                 garden_connection: selectGardenConnection,
+                otthonStart: selectOtthonStart,
                 stairway: selectStairway,
                 sort: sort,
                 sortType: sortType,
@@ -1695,6 +1710,16 @@ jQuery(document).ready(function($) {
                         $('.catalog-gardenconnection-checkbox').prop('checked', true);
                     } else {
                         $('.catalog-gardenconnection-checkbox').prop('checked', false);
+                    }
+
+                    if (selectOtthonStart == 1) {
+
+                        $('.catalog-otthonstart-checkbox').prop('checked', true);
+
+                    } else {
+
+                        $('.catalog-otthonstart-checkbox').prop('checked', false);
+
                     }
 
                     selectAvailability.forEach(function(value) {
@@ -1849,6 +1874,7 @@ jQuery(document).ready(function($) {
         }).get();
 
         var selectGardenConnection = $('.catalog-gardenconnection-checkbox').is(':checked') ? 1 : 0;
+        var selectOtthonStart = $('.catalog-otthonstart-checkbox').is(':checked') ? 1 : 0;
 
 
         var minRoom = $("#custom-room-slider").slider("option", "values")[0];
@@ -1887,6 +1913,7 @@ jQuery(document).ready(function($) {
                 slider_max_value: maxSquare, // terület
                 availability: selectAvailability,
                 garden_connection: selectGardenConnection,
+                otthonStart: selectOtthonStart,
                 page_type: (cardContainer.length == 1) ? 'card' : 'table',
                 shortcode: shortcode,
                 apartman_number: apartman_number,
@@ -1949,6 +1976,16 @@ jQuery(document).ready(function($) {
                     $('.catalog-gardenconnection-checkbox').prop('checked', false);
                 }
 
+                if (selectOtthonStart == 1) {
+
+                    $('.catalog-otthonstart-checkbox').prop('checked', true);
+
+                } else {
+
+                    $('.catalog-otthonstart-checkbox').prop('checked', false);
+
+                }
+
                 selectStairway.forEach(function(value) {
                     $('.catalog-stairway-checkbox[value="' + value + '"]').prop('checked', true);
                 });
@@ -1994,6 +2031,7 @@ jQuery(document).ready(function($) {
         }).get();
 
         var selectGardenConnection = $('.catalog-gardenconnection-checkbox').is(':checked') ? 1 : 0;
+        var selectOtthonStart = $('.catalog-otthonstart-checkbox').is(':checked') ? 1 : 0;
 
 
         var minRoom = $("#custom-room-slider").slider("option", "values")[0];
@@ -2034,7 +2072,8 @@ jQuery(document).ready(function($) {
                 page_type: (cardContainer.length == 1) ? 'card' : 'table',
                 shortcode:shortcode,
                 apartman_number: apartman_number,
-                garden_connection:selectGardenConnection,
+                garden_connection: selectGardenConnection,
+                otthonStart: selectOtthonStart,
                 stairway:selectStairway,
                 sort: sort,
                 sortType: sortType,
@@ -2139,6 +2178,7 @@ jQuery(document).ready(function($) {
         }).get();
 
         var selectGardenConnection = $('.catalog-gardenconnection-checkbox').is(':checked') ? 1 : 0;
+        var selectOtthonStart = $('.catalog-otthonstart-checkbox').is(':checked') ? 1 : 0;
 
 
         var minRoom = $("#custom-room-slider").slider("option", "values")[0];
@@ -2177,6 +2217,7 @@ jQuery(document).ready(function($) {
                 slider_max_value: maxSquare, // terület
                 availability: selectAvailability,
                 garden_connection: selectGardenConnection,
+                otthonStart: selectOtthonStart,
                 page_type: (cardContainer.length == 1) ? 'card' : 'table',
                 shortcode: shortcode,
                 apartman_number: apartman_number,
@@ -2239,6 +2280,16 @@ jQuery(document).ready(function($) {
                     $('.catalog-gardenconnection-checkbox').prop('checked', false);
                 }
 
+                if (selectOtthonStart == 1) {
+
+                    $('.catalog-otthonstart-checkbox').prop('checked', true);
+
+                } else {
+
+                    $('.catalog-otthonstart-checkbox').prop('checked', false);
+
+                }
+
                 selectStairway.forEach(function(value) {
                     $('.catalog-stairway-checkbox[value="' + value + '"]').prop('checked', true);
                 });
@@ -2283,6 +2334,7 @@ jQuery(document).ready(function($) {
         }).get();
 
         var selectGardenConnection = $('.catalog-gardenconnection-checkbox').is(':checked') ? 1 : 0;
+        var selectOtthonStart = $('.catalog-otthonstart-checkbox').is(':checked') ? 1 : 0;
 
 
         var minRoom = $("#custom-room-slider").slider("option", "values")[0];
@@ -2319,6 +2371,7 @@ jQuery(document).ready(function($) {
                 slider_max_value: maxSquare, // terület
                 availability: selectAvailability,
                 garden_connection: selectGardenConnection,
+                otthonStart: selectOtthonStart,
                 page_type: (cardContainer.length == 1) ? 'card' : 'table',
                 shortcode: shortcode,
                 apartman_number: apartman_number,
@@ -2379,6 +2432,16 @@ jQuery(document).ready(function($) {
                     $('.catalog-gardenconnection-checkbox').prop('checked', true);
                 } else {
                     $('.catalog-gardenconnection-checkbox').prop('checked', false);
+                }
+
+                if (selectOtthonStart == 1) {
+
+                    $('.catalog-otthonstart-checkbox').prop('checked', true);
+
+                } else {
+
+                    $('.catalog-otthonstart-checkbox').prop('checked', false);
+
                 }
 
                 selectStairway.forEach(function(value) {
@@ -2502,6 +2565,11 @@ jQuery(document).ready(function($) {
             $('.catalog-gardenconnection-checkbox').prop('checked', urlGarden[0] === '1');
         }
 
+        const urlOtthonStart = fromUrl('otthonStart');
+        if (urlOtthonStart.length) {
+            $('.catalog-otthonstart-checkbox').prop('checked', urlOtthonStart[0] === '1');
+        }
+
           // Stairway
         const urlStairway = fromUrl('stairway');
         if (urlStairway.length) {
@@ -2532,6 +2600,7 @@ jQuery(document).ready(function($) {
             return this.value;
         }).get();
         const selectGardenConnection = $('.catalog-gardenconnection-checkbox').is(':checked') ? 1 : 0;
+        const selectOtthonStart = $('.catalog-otthonstart-checkbox').is(':checked') ? 1 : 0;
 
         const selectStairway = $('.catalog-stairway-checkbox:checked').map(function() {
             return this.value;
@@ -2626,6 +2695,16 @@ jQuery(document).ready(function($) {
                     $('.catalog-gardenconnection-checkbox').prop('checked', true);
                 } else {
                     $('.catalog-gardenconnection-checkbox').prop('checked', false);
+                }
+
+                if (selectOtthonStart == 1) {
+
+                    $('.catalog-otthonstart-checkbox').prop('checked', true);
+
+                } else {
+
+                    $('.catalog-otthonstart-checkbox').prop('checked', false);
+
                 }
 
                 selectAvailability.forEach(function(value) {
@@ -2909,6 +2988,7 @@ jQuery(document).ready(function($) {
         }).get();
 
         var selectGardenConnection = $('.catalog-gardenconnection-checkbox').is(':checked') ? 1 : 0;
+        var selectOtthonStart = $('.catalog-otthonstart-checkbox').is(':checked') ? 1 : 0;
         var wasAdvancedFiltersVisible = $('#advanced-filters').is(':visible');
 
         var minRoom = $("#custom-room-slider").slider("option", "values")[0];
@@ -2943,6 +3023,7 @@ jQuery(document).ready(function($) {
                 availability: selectAvailability,
                 typeOfBalcony: selectOritentation,
                 garden_connection: selectGardenConnection,
+                otthonStart: selectOtthonStart,
                 stairway:selectStairway,
                 sort: sort,
                 sortType: sortType,
@@ -3006,6 +3087,16 @@ jQuery(document).ready(function($) {
                     $('.catalog-gardenconnection-checkbox').prop('checked', false);
                 }
 
+                if (selectOtthonStart == 1) {
+
+                    $('.catalog-otthonstart-checkbox').prop('checked', true);
+
+                } else {
+
+                    $('.catalog-otthonstart-checkbox').prop('checked', false);
+
+                }
+
                 selectAvailability.forEach(function(value) {
                     $('.catalog-availability-checkbox[value="' + value + '"]').prop('checked', true);
                 });
@@ -3055,6 +3146,7 @@ jQuery(document).ready(function($) {
         }).get();
 
         var selectGardenConnection = $('.catalog-gardenconnection-checkbox').is(':checked') ? 1 : 0;
+        var selectOtthonStart = $('.catalog-otthonstart-checkbox').is(':checked') ? 1 : 0;
 
         var wasAdvancedFiltersVisible = $('#advanced-filters').is(':visible');
 
@@ -3092,6 +3184,7 @@ jQuery(document).ready(function($) {
                 availability: selectAvailability,
                 typeOfBalcony: selectOritentation,
                 garden_connection: selectGardenConnection,
+                otthonStart: selectOtthonStart,
                 stairway:selectStairway,
                 page_type: (cardContainer.length == 1) ? 'card' : 'table',
                 shortcode:shortcode,
@@ -3153,6 +3246,16 @@ jQuery(document).ready(function($) {
                     $('.catalog-gardenconnection-checkbox').prop('checked', false);
                 }
 
+                if (selectOtthonStart == 1) {
+
+                    $('.catalog-otthonstart-checkbox').prop('checked', true);
+
+                } else {
+
+                    $('.catalog-otthonstart-checkbox').prop('checked', false);
+
+                }
+
                 selectAvailability.forEach(function(value) {
                     $('.catalog-availability-checkbox[value="' + value + '"]').prop('checked', true);
                 });
@@ -3197,6 +3300,7 @@ jQuery(document).ready(function($) {
             return this.value;
         }).get();
         var selectGardenConnection = $('.catalog-gardenconnection-checkbox').is(':checked') ? 1 : 0;
+        var selectOtthonStart = $('.catalog-otthonstart-checkbox').is(':checked') ? 1 : 0;
 
         var selectStairway = $('.catalog-stairway-checkbox:checked').map(function() {
             return this.value;
@@ -3240,6 +3344,7 @@ jQuery(document).ready(function($) {
                 availability: selectAvailability,
                 typeOfBalcony: selectOritentation,
                 garden_connection: selectGardenConnection,
+                otthonStart: selectOtthonStart,
                 stairway:selectStairway,
                 sort: sort,
                 sortType: sortType,
@@ -3305,6 +3410,16 @@ jQuery(document).ready(function($) {
                     $('.catalog-gardenconnection-checkbox').prop('checked', false);
                 }
 
+                if (selectOtthonStart == 1) {
+
+                    $('.catalog-otthonstart-checkbox').prop('checked', true);
+
+                } else {
+
+                    $('.catalog-otthonstart-checkbox').prop('checked', false);
+
+                }
+
                 selectAvailability.forEach(function(value) {
                     $('.catalog-availability-checkbox[value="' + value + '"]').prop('checked', true);
                 });
@@ -3363,6 +3478,7 @@ jQuery(document).ready(function($) {
         }).get();
 
         var selectGardenConnection = $('.catalog-gardenconnection-checkbox').is(':checked') ? 1 : 0;
+        var selectOtthonStart = $('.catalog-otthonstart-checkbox').is(':checked') ? 1 : 0;
 
         var wasAdvancedFiltersVisible = $('#advanced-filters').is(':visible');
 
@@ -3390,6 +3506,7 @@ jQuery(document).ready(function($) {
                 availability: selectAvailability,
                 typeOfBalcony: selectOritentation,
                 garden_connection: selectGardenConnection,
+                otthonStart: selectOtthonStart,
                 stairway:selectStairway,
                 sort: sort,
                 sortType: sortType,
@@ -3451,6 +3568,16 @@ jQuery(document).ready(function($) {
                     $('.catalog-gardenconnection-checkbox').prop('checked', true);
                 } else {
                     $('.catalog-gardenconnection-checkbox').prop('checked', false);
+                }
+
+                if (selectOtthonStart == 1) {
+
+                    $('.catalog-otthonstart-checkbox').prop('checked', true);
+
+                } else {
+
+                    $('.catalog-otthonstart-checkbox').prop('checked', false);
+
                 }
 
                 selectAvailability.forEach(function(value) {
@@ -3740,6 +3867,7 @@ jQuery(document).ready(function($) {
         }).get();
 
         var selectGardenConnection = $('.catalog-gardenconnection-checkbox').is(':checked') ? 1 : 0;
+        var selectOtthonStart = $('.catalog-otthonstart-checkbox').is(':checked') ? 1 : 0;
 
         var wasAdvancedFiltersVisible = $('#advanced-filters').is(':visible');
 
@@ -3767,6 +3895,7 @@ jQuery(document).ready(function($) {
                 availability: selectAvailability,
                 typeOfBalcony: selectOritentation,
                 garden_connection: selectGardenConnection,
+                otthonStart: selectOtthonStart,
                 stairway:selectStairway,
                 sort: sort,
                 sortType: sortType,
@@ -3828,6 +3957,16 @@ jQuery(document).ready(function($) {
                     $('.catalog-gardenconnection-checkbox').prop('checked', true);
                 } else {
                     $('.catalog-gardenconnection-checkbox').prop('checked', false);
+                }
+
+                if (selectOtthonStart == 1) {
+
+                    $('.catalog-otthonstart-checkbox').prop('checked', true);
+
+                } else {
+
+                    $('.catalog-otthonstart-checkbox').prop('checked', false);
+
                 }
 
                 selectAvailability.forEach(function(value) {
@@ -4009,9 +4148,9 @@ jQuery(document).ready(function($) {
                 params.append('stairway[]', $(this).val());
             });
 
-            $('.catalog-otthonstart-checkbox:checked').each(function() {
-                params.append('otthonStart[]', $(this).val());
-            });
+            if ($('.catalog-otthonstart-checkbox').is(':checked')) {
+                params.set('otthonStart', $('.catalog-otthonstart-checkbox').val());
+            }
 
             $('.select-residential-park:checked').each(function() {
                 params.append('parkId[]', $(this).val());
@@ -4107,6 +4246,7 @@ jQuery(document).ready(function($) {
         var squareRange = [0, 0];
         var priceRange = [0, 0];
         var selectGardenConnection = 0;
+        var selectOtthonStart = $('.catalog-otthonstart-checkbox').is(':checked') ? 1 : 0;
         var selectedParkId = $('.select-residential-park').val();
 
         if (pageType === 'card') {
@@ -4156,6 +4296,7 @@ jQuery(document).ready(function($) {
                 typeOfBalcony: selectOritentation,
                 availability: selectAvailability,
                 garden_connection: selectGardenConnection,
+                otthonStart: selectOtthonStart,
                 stairway:selectStairway,
                 sort: sort,
                 sortType: sortType,
@@ -4219,6 +4360,21 @@ jQuery(document).ready(function($) {
                         $('.catalog-gardenconnection-checkbox').prop('checked', true);
                     } else {
                         $('.catalog-gardenconnection-checkbox').prop('checked', false);
+                    }
+
+
+                    if (selectOtthonStart == 1) {
+
+
+                        $('.catalog-otthonstart-checkbox').prop('checked', true);
+
+
+                    } else {
+
+
+                        $('.catalog-otthonstart-checkbox').prop('checked', false);
+
+
                     }
 
                     selectAvailability.forEach(function(value) {
