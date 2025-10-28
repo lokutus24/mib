@@ -557,6 +557,10 @@ class MibBaseController
                             $html .= '<span class="mib-new-price">' . esc_html($formattedPrice) . '</span>';
                         }
                         $html .= '</div>';
+
+                        if (!empty($data['isRustZone'])) {
+                            $html .= '<div class="apartment-rustzone-flag">' . esc_html__('isRustZone', 'mib') . '</div>';
+                        }
 	                $html .= '</div>'; // .apartment-info-box
 
 	            $html .= '</div>'; // .apartment-details
