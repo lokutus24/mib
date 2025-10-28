@@ -79,6 +79,7 @@ class MibManagerCallbacks extends MibBaseController
 					'mib-display_address'	  => (isset($_POST['mib-display_address'] ) && $_POST['mib-display_address'] == 'on') ? true : false,
 					'mib-display_sort'	  => (isset($_POST['mib-display_sort'] ) && $_POST['mib-display_sort'] == 'on') ? true : false,
 					'mib-garden_connection'	  => (isset($_POST['mib-garden_connection'] ) && $_POST['mib-garden_connection'] == 'on') ? true : false,
+					'mib-otthonstart'	  => (isset($_POST['mib-otthonstart'] ) && $_POST['mib-otthonstart'] == 'on') ? true : false,
 					'mib-stairway'	  => (isset($_POST['mib-stairway'] ) && $_POST['mib-stairway'] == 'on') ? true : false,
                                         'residential_park_ids' => isset($_POST['residential_park_ids']) ? array_filter(array_map('intval', explode(',', $_POST['residential_park_ids']))) : [],
 				]
@@ -122,6 +123,7 @@ class MibManagerCallbacks extends MibBaseController
 		$display_sort = (isset($mib_filter_options['mib-display_sort'])  && $mib_filter_options['mib-display_sort'] == 1) ? 'checked' : '';
 
 		$garden_connection = (isset($mib_filter_options['mib-garden_connection'])  && $mib_filter_options['mib-garden_connection'] == 1) ? 'checked' : '';
+                $otthonstart = (isset($mib_filter_options['mib-otthonstart'])  && $mib_filter_options['mib-otthonstart'] == 1) ? 'checked' : '';
 
 		$stairway = (isset($mib_filter_options['mib-stairway'])  && $mib_filter_options['mib-stairway'] == 1) ? 'checked' : '';
                 $residential_park_ids = isset($mib_filter_options['residential_park_ids']) ? implode(',', $mib_filter_options['residential_park_ids']) : '';
@@ -210,6 +212,9 @@ class MibManagerCallbacks extends MibBaseController
 
 		<div class="row" style="margin-bottom: 10px;">
 			Kert kapcsolat: <input type="checkbox" name="mib-garden_connection" size="45" <?=$garden_connection;?>>
+		</div>
+		<div class="row" style="margin-bottom: 10px;">
+			Otthon Start szűrő: <input type="checkbox" name="mib-otthonstart" size="45" <?=$otthonstart;?>>
 		</div>
 
 		<div class="row" style="margin-bottom: 10px;">

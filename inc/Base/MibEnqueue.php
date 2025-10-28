@@ -846,16 +846,20 @@ class MibEnqueue extends MibBaseController
 		    $args = array_merge($args, ['status' => $params['availability']]);
 		}
 
-		if ( !empty($params['garden_connection'] ) ) {
-		    
-		   	$gardenConnection = (isset($params['garden_connection'])) ? 'true' : 'false';
-		    $args = array_merge($args, ['gardenConnection' => $gardenConnection]);
-		}
+                if ( !empty($params['garden_connection'] ) ) {
 
-		if ( !empty($params['stairway'] ) ) {
-		    $params['stairway'] = (!is_string($params['stairway'])) ? implode(',',$params['stairway']) : $params['stairway'];
-		    $args = array_merge($args, ['stairway' => $params['stairway']]);
-		} 
+                        $gardenConnection = (isset($params['garden_connection'])) ? 'true' : 'false';
+                    $args = array_merge($args, ['gardenConnection' => $gardenConnection]);
+                }
+
+                if ( isset($params['otthonStart']) && $params['otthonStart'] !== '' ) {
+                    $args = array_merge($args, ['otthonStart' => sanitize_text_field($params['otthonStart'])]);
+                }
+
+                if ( !empty($params['stairway'] ) ) {
+                    $params['stairway'] = (!is_string($params['stairway'])) ? implode(',',$params['stairway']) : $params['stairway'];
+                    $args = array_merge($args, ['stairway' => $params['stairway']]);
+                }
 		if ( !empty($params['district'] ) ) {
 			$args = array_merge($args, ['district' => sanitize_text_field($params['district'])]);
 		}elseif($params['district'] == 0){
@@ -947,16 +951,20 @@ class MibEnqueue extends MibBaseController
                 }
 
 
-		if ( !empty($params['garden_connection'] ) ) {
-		    
-		   	$gardenConnection = (isset($params['garden_connection'])) ? 'true' : 'false';
-		    $args = array_merge($args, ['gardenConnection' => $gardenConnection]);
-		} 
+                if ( !empty($params['garden_connection'] ) ) {
 
-		if ( !empty($params['availability'] ) ) {
+                        $gardenConnection = (isset($params['garden_connection'])) ? 'true' : 'false';
+                    $args = array_merge($args, ['gardenConnection' => $gardenConnection]);
+                }
 
-			
-			$params['availability'] = (!is_string($params['availability'])) ? implode(',',$params['availability']) : $params['availability'];
+                if ( isset($params['otthonStart']) && $params['otthonStart'] !== '' ) {
+                    $args = array_merge($args, ['otthonStart' => sanitize_text_field($params['otthonStart'])]);
+                }
+
+                if ( !empty($params['availability'] ) ) {
+
+
+                        $params['availability'] = (!is_string($params['availability'])) ? implode(',',$params['availability']) : $params['availability'];
        		    $args = array_merge($args, ['status' => $params['availability']]);
        		}
 		if ( !empty($params['district'] ) ) {
