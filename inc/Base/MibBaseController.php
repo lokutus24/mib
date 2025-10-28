@@ -557,6 +557,13 @@ class MibBaseController
                             $html .= '<span class="mib-new-price">' . esc_html($formattedPrice) . '</span>';
                         }
                         $html .= '</div>';
+
+                        if (!empty($data['supportedPrice']) && !empty($data['isRustZone'])) {
+                            $html .= '<div class="apartment-rustzone-flag">';
+                            $html .= '<span class="mib-supported-price-label">' . esc_html__('5% ÁFA visszaigényelhető! Ennyibe kerül neked:', 'mib') . '</span>';
+                            $html .= '<span class="mib-supported-price-value">' . esc_html($data['supportedPrice']) . '</span>';
+                            $html .= '</div>';
+                        }
 	                $html .= '</div>'; // .apartment-info-box
 
 	            $html .= '</div>'; // .apartment-details

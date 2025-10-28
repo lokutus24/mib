@@ -1009,6 +1009,31 @@ width: 100% !important; /* Kis százalékos szélesség, hogy négy blokk elfér
     margin-top: 20px;
 }
 
+.apartment-rustzone-flag {
+    margin-top: 16px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    background-color: #f2f5ff;
+    color: #1c2f5c;
+    font-weight: 600;
+    text-align: center;
+}
+
+.apartment-rustzone-flag .mib-supported-price-label,
+.apartment-rustzone-flag .mib-supported-price-value {
+    display: block;
+}
+
+.apartment-rustzone-flag .mib-supported-price-label {
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.apartment-rustzone-flag .mib-supported-price-value {
+    font-weight: 700;
+    color: #3ecf8e;
+}
+
 .mibfloorplan {
     margin-top: 30px;
 }
