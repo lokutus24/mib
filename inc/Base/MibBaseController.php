@@ -1986,90 +1986,93 @@ class MibBaseController
 		    return $html;
 		}
 
-        private function getCatalogFilterHtml($filterType = [], $includeSearchButton = false){
+        private function getCatalogFilterHtml($filterType = [], $includeSearchButton = false)
+        {
             $html = '<div class="custom-filter-container">';
             $html .= '<div class="d-flex">';
-            if (!empty($this->filterOptionDatas)) {
 
-		        $html .= $this->getFilterResidentalParksForJustFilters();
-                
-                if (isset($this->filterOptionDatas['mib-filter-price_range']) && $this->filterOptionDatas['mib-filter-price_range'] == true) {
+            if (!empty($this->filterOptionDatas)) {
+                $html .= $this->getFilterResidentalParksForJustFilters();
+
+                if (!empty($this->filterOptionDatas['mib-filter-price_range'])) {
                     $html .= $this->priceFilterPriceByCatalog($filterType);
                 }
-                if (isset($this->filterOptionDatas['mib-filter-room']) && $this->filterOptionDatas['mib-filter-room'] == true) {
+
+                if (!empty($this->filterOptionDatas['mib-filter-room'])) {
                     $html .= $this->getFilterRoomByCatalog($filterType);
                 }
-                if (isset($this->filterOptionDatas['mib-filter-square-meter']) && $this->filterOptionDatas['mib-filter-square-meter'] == true) {
+
+                if (!empty($this->filterOptionDatas['mib-filter-square-meter'])) {
                     $html .= $this->squareFiltersByCatalog($filterType);
                 }
 
-                $html .= '<div class="custom-filter-container">';
-	            $showAdvanced = false;
-	            if (isset($this->filterOptionDatas['mib-filter-district']) && $this->filterOptionDatas['mib-filter-district'] == true) {
-	                $showAdvanced = true;
-	            }
-	            if (isset($this->filterOptionDatas['mib-filter-orientation']) && $this->filterOptionDatas['mib-filter-orientation'] == true) {
-	                $showAdvanced = true;
-	            }
-	            if (isset($this->filterOptionDatas['mib-filter-availability']) && $this->filterOptionDatas['mib-filter-availability'] == true && $this->filterOptionDatas['inactive_hide'] != 1) {
-	                $showAdvanced = true;
-	            }
-	            if (isset($this->filterOptionDatas['mib-garden_connection']) && $this->filterOptionDatas['mib-garden_connection'] == true) {
-	                $showAdvanced = true;
-	            }
-	            if (isset($this->filterOptionDatas['mib-stairway']) && $this->filterOptionDatas['mib-stairway'] == true) {
-	                $showAdvanced = true;
-	            }
+                $advancedToggles = [
+                    !empty($this->filterOptionDatas['mib-filter-district']),
+                    !empty($this->filterOptionDatas['mib-filter-orientation']),
+                    !empty($this->filterOptionDatas['mib-garden_connection']),
+                    !empty($this->filterOptionDatas['mib-otthonstart']),
+                    !empty($this->filterOptionDatas['mib-stairway']),
+                ];
 
-	            if ($showAdvanced) {
-	                $html .= '<div class="mb-2">';
-	                $html .= '<div class="mb-2" id="parksfilter">';
-	                $html .= '<button type="button" class="btn btn-outline-secondary btn-sm" id="toggle-advanced-filters">';
-	                $html .= '<i class="fas fa-sliders-h me-1"></i> További szűrők';
-	                $html .= '</button>';
-	                $html .= '</div>';
-	                $html .= '</div>';
+                if (!empty($this->filterOptionDatas['mib-filter-availability']) && empty($this->filterOptionDatas['inactive_hide'])) {
+                    $advancedToggles[] = true;
+                }
 
-	                
-	            }
+                if (in_array(true, $advancedToggles, true)) {
+                    $html .= '<div class="custom-filter-container">';
+                    $html .= '<div class="mb-2">';
+                    $html .= '<div class="mb-2" id="parksfilter">';
+                    $html .= '<button type="button" class="btn btn-outline-secondary btn-sm" id="toggle-advanced-filters">';
+                    $html .= '<i class="fas fa-sliders-h me-1"></i> További szűrők';
+                    $html .= '</button>';
+                    $html .= '</div>';
+                    $html .= '</div>';
+                    $html .= '</div>';
+                }
             }
-            $html .= '</div>';
-            $html .= '</div>';
 
+            $html .= '</div>';
+            $html .= '</div>';
 
             $html .= '<div id="advanced-filters" class="flex-wrap" style="display:none;">';
 
+            if (!empty($this->filterOptionDatas['mib-filter-floor'])) {
+                $html .= $this->getFilterFloorByCatalog($filterType);
+            }
 
-	            if (isset($this->filterOptionDatas['mib-filter-floor']) && $this->filterOptionDatas['mib-filter-floor'] == true) {
-	                $html .= $this->getFilterFloorByCatalog($filterType);
-	            }
-	            if (isset($this->filterOptionDatas['mib-filter-district']) && $this->filterOptionDatas['mib-filter-district'] == true) {
-                    $html .= $this->getFilterDistrictByCatalog($filterType);
-                }
-	            if (isset($this->filterOptionDatas['mib-filter-orientation']) && $this->filterOptionDatas['mib-filter-orientation'] == true) {
-	                $html .= $this->getFilterOrientationByCatalog($filterType);
-	            }
-	            if (isset($this->filterOptionDatas['mib-filter-availability']) && $this->filterOptionDatas['mib-filter-availability'] == true && $this->filterOptionDatas['inactive_hide'] != 1) {
-	                $html .= $this->getFilterAvailabilityByCatalog($filterType);
-	            }
-	            if (isset($this->filterOptionDatas['mib-garden_connection']) && $this->filterOptionDatas['mib-garden_connection'] == true) {
-	                $html .= $this->getFilterGardenConnectionByCatalog($filterType);
-	            }
-	            if (isset($this->filterOptionDatas['mib-stairway']) && $this->filterOptionDatas['mib-stairway'] == true) {
-	                $html .= $this->getFilterStairwayByCatalog($filterType);
-	            }
+            if (!empty($this->filterOptionDatas['mib-filter-district'])) {
+                $html .= $this->getFilterDistrictByCatalog($filterType);
+            }
+
+            if (!empty($this->filterOptionDatas['mib-filter-orientation'])) {
+                $html .= $this->getFilterOrientationByCatalog($filterType);
+            }
+
+            if (!empty($this->filterOptionDatas['mib-filter-availability']) && empty($this->filterOptionDatas['inactive_hide'])) {
+                $html .= $this->getFilterAvailabilityByCatalog($filterType);
+            }
+
+            if (!empty($this->filterOptionDatas['mib-garden_connection'])) {
+                $html .= $this->getFilterGardenConnectionByCatalog($filterType);
+            }
+
+            if (!empty($this->filterOptionDatas['mib-otthonstart'])) {
+                $html .= $this->getFilterOtthonStartCheckboxByCatalog($filterType);
+            }
+
+            if (!empty($this->filterOptionDatas['mib-stairway'])) {
+                $html .= $this->getFilterStairwayByCatalog($filterType);
+            }
+
             $html .= '</div>';
-
-            $html .= '</div>';
-
 
             if ($includeSearchButton) {
-
                 $html .= '<div class="search-mib-filter-container" id="search-apartman-btn" class="btn third-color">Lakások keresése <i class="fa fa-arrow-right" aria-hidden="true"></i></div>';
             }
 
             return $html;
         }
+
 
     private function getFilterDistrictByCatalog($filterType) {
 
@@ -2301,37 +2304,57 @@ class MibBaseController
 
 
         private function getFilterGardenConnectionByCatalog($filterType = [])
-		{
-		    if (isset($filterType['garden_connection']) && !is_array($filterType['garden_connection'])) {
-		        $filterType['garden_connection'] = explode(',', $filterType['garden_connection']);
-		    }
+                {
+                    if (isset($filterType['garden_connection']) && !is_array($filterType['garden_connection'])) {
+                        $filterType['garden_connection'] = explode(',', $filterType['garden_connection']);
+                    }
 
-		    $html = '<div class="catalog-dropdown">
-		                <fieldset>
-		                    <legend class="form-label mb-1">Kertkapcsolat</legend>
-		                    <div class="dropdown">
-		                        <button class="btn btn-dark dropdown-toggle" type="button" id="gardenConnectionDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-		                            Válassz kertkapcsolat típust
-		                        </button>
-		                        <ul class="third-color mt-1 p-2 dropdown-menu" aria-labelledby="gardenConnectionDropdown">';
+                    $html = '<div class="catalog-dropdown">
+                                <fieldset>
+                                    <legend class="form-label mb-1">Kertkapcsolat</legend>
+                                    <div class="dropdown">
+                                        <button class="btn btn-dark dropdown-toggle" type="button" id="gardenConnectionDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                            Válassz kertkapcsolat típust
+                                        </button>
+                                        <ul class="third-color mt-1 p-2 dropdown-menu" aria-labelledby="gardenConnectionDropdown">';
 
-		    foreach ($this->gardenConnection as $key => $value) {
-		        $availabilityChecked = (isset($filterType['garden_connection']) && in_array($value, (array)$filterType['garden_connection'])) ? 'checked' : '';
+                    foreach ($this->gardenConnection as $key => $value) {
+                        $availabilityChecked = (isset($filterType['garden_connection']) && in_array($value, (array)$filterType['garden_connection'])) ? 'checked' : '';
 
-		        $html .= '<li>
-		                    <label class="dropdown-item">
-		                        <input type="checkbox" class="catalog-gardenconnection-checkbox form-check-input" name="garden_connection[]" value="' . esc_attr($value) . '" ' . $availabilityChecked . '> ' . esc_html($key) . '
-		                    </label>
-		                  </li>';
-		    }
+                        $html .= '<li>
+                                    <label class="dropdown-item">
+                                        <input type="checkbox" class="catalog-gardenconnection-checkbox form-check-input" name="garden_connection[]" value="' . esc_attr($value) . '" ' . $availabilityChecked . '> ' . esc_html($key) . '
+                                    </label>
+                                  </li>';
+                    }
 
-		    $html .=       '</ul>
-		                    </div>
-		                </fieldset>
-		            </div>';
+                    $html .=       '</ul>
+                                    </div>
+                                </fieldset>
+                            </div>';
 
-		    return $html;
-		}
+                    return $html;
+                }
+
+        private function getFilterOtthonStartCheckboxByCatalog($filterType = [])
+        {
+            $selected = [];
+            if (isset($filterType['otthon_start'])) {
+                $selected = is_array($filterType['otthon_start']) ? $filterType['otthon_start'] : explode(',', $filterType['otthon_start']);
+            }
+
+            $isChecked = in_array('1', array_map('strval', (array) $selected), true);
+            $checked = $isChecked ? 'checked' : '';
+
+            $html = '<div class="catalog-dropdown catalog-checkbox">';
+            $html .= '<div class="form-check">';
+            $html .= '<input type="checkbox" class="form-check-input catalog-otthonstart-checkbox" id="catalog-otthonstart-filter" name="otthonStart" value="1" ' . $checked . '>';
+            $html .= '<label class="form-check-label" for="catalog-otthonstart-filter">' . esc_html__('3%-os Otthon Start feltételeinek megfelelő', 'mib') . '</label>';
+            $html .= '</div>';
+            $html .= '</div>';
+
+            return $html;
+        }
 
         private function getFilterOtthonStartByCatalog($filterType = [])
         {
