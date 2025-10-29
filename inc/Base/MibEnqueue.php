@@ -120,6 +120,9 @@ class MibEnqueue extends MibBaseController
 		add_action('wp_ajax_set_stairway_values', array($this,'set_stairway_values') );
 		add_action('wp_ajax_nopriv_set_stairway_values', array($this,'set_stairway_values') );
 
+		add_action('wp_ajax_set_otthon_start_values', array($this,'set_otthon_start_values') );
+		add_action('wp_ajax_nopriv_set_otthon_start_values', array($this,'set_otthon_start_values') );
+
 		add_action('wp_ajax_set_residential_park_id', array($this,'set_residential_park_id') );
 		add_action('wp_ajax_nopriv_set_residential_park_id', array($this,'set_residential_park_id') );
 
@@ -309,6 +312,10 @@ class MibEnqueue extends MibBaseController
 	    ]);
 
 		wp_die();
+	}
+
+	public function set_otthon_start_values() {
+		return $this->set_stairway_values();
 	}
 
 	public function set_orientation_values_by_catalog() {
@@ -852,8 +859,11 @@ class MibEnqueue extends MibBaseController
                     $args = array_merge($args, ['gardenConnection' => $gardenConnection]);
                 }
 
-                if ( isset($params['otthonStart']) && $params['otthonStart'] !== '' ) {
-                    $args = array_merge($args, ['otthonStart' => sanitize_text_field($params['otthonStart'])]);
+                if ( isset($params['otthonStart']) ) {
+                    $otthonStart = sanitize_text_field($params['otthonStart']);
+                    if ($otthonStart === '1') {
+                        $args = array_merge($args, ['otthonStart' => $otthonStart]);
+                    }
                 }
 
                 if ( !empty($params['stairway'] ) ) {
@@ -957,8 +967,11 @@ class MibEnqueue extends MibBaseController
                     $args = array_merge($args, ['gardenConnection' => $gardenConnection]);
                 }
 
-                if ( isset($params['otthonStart']) && $params['otthonStart'] !== '' ) {
-                    $args = array_merge($args, ['otthonStart' => sanitize_text_field($params['otthonStart'])]);
+                if ( isset($params['otthonStart']) ) {
+                    $otthonStart = sanitize_text_field($params['otthonStart']);
+                    if ($otthonStart === '1') {
+                        $args = array_merge($args, ['otthonStart' => $otthonStart]);
+                    }
                 }
 
                 if ( !empty($params['availability'] ) ) {

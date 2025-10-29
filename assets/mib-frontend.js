@@ -2639,6 +2639,7 @@ jQuery(document).ready(function($) {
                 garden_connection: urlGarden,
                 stairway: urlStairway,
                 district: districtValue,
+                otthonStart: selectOtthonStart,
                 page_type: page_type,
                 sort: sort,
                 sortType: sortType,
@@ -4457,21 +4458,170 @@ jQuery(document).ready(function($) {
     });
 
     // Otthon start filter
-    $(document).on('change', '.catalog-otthonstart-checkbox', function() {
+    $(document).on('change', '.catalog-otthonstart-checkbox', function (e) {
 
         if (isDefaultCatalog()) {
             return;
         }
-        const checked = $(this).is(':checked');
-        $('[data-otthon-start]').each(function() {
-            const match = Number($(this).data('otthon-start')) === 1;
-            if (checked && !match) {
-                $(this).hide();
-            } else {
-                $(this).show();
+        
+        $('#mib-spinner').show();
+
+        var shortcode = '';
+        var apartman_number = '';
+        if ($('#custom-card-container').hasClass('shortcode-card')) {
+            shortcode = $('#custom-card-container').data('shortcode');
+            apartman_number = $('#custom-card-container').data('apartman_number');
+        }
+
+        const table = $('#custom-list-table-container');
+        const cardContainer = $('#custom-card-container');
+
+        var roomVals = $("#custom-room-slider").slider("option", "values") || [0, 0];
+        var minRoom = roomVals[0];
+        var maxRoom = roomVals[1];
+
+        var minFloor = $("#custom-floor-slider").slider("option", "values")[0];
+        var maxFloor = $("#custom-floor-slider").slider("option", "values")[1];
+
+        var minPrice = $("#custom-price-slider").slider("option", "values")[0];
+        var maxPrice = $("#custom-price-slider").slider("option", "values")[1];
+
+        var minSquare = $("#custom-square-slider").slider("option", "values")[0];
+        var maxSquare = $("#custom-square-slider").slider("option", "values")[1];
+
+        var selectAvailability = $('.catalog-availability-checkbox:checked').map(function() {
+            return this.value;
+        }).get();
+
+        var selectOritentation = $('.catalog-orientation-checkbox:checked').map(function() {
+            return this.value;
+        }).get();
+
+        var selectStairway = $('.catalog-stairway-checkbox:checked').map(function() {
+            return this.value;
+        }).get();
+
+        var selectGardenConnection = $('.catalog-gardenconnection-checkbox').is(':checked') ? 1 : 0;
+        var selectOtthonStart = $('.catalog-otthonstart-checkbox').is(':checked') ? 1 : 0;
+
+        var wasAdvancedFiltersVisible = $('#advanced-filters').is(':visible');
+
+        var sortParts = $('#mib-sort-select').val() ? $('#mib-sort-select').val().split('|') : [];
+        var sort = sortParts[0] || '';
+        var sortType = sortParts[1] || 'ASC';
+
+        var selectedParkId = $('.select-residential-park').val();
+
+        $.ajax({
+            url: ajaxurl,
+            type: 'POST',
+            dataType: 'JSON',
+            data: {
+                action: 'set_otthon_start_values',
+                floor_slider_min_value: minFloor,
+                floor_slider_max_value: maxFloor,
+                room_slider_min_value: minRoom,
+                room_slider_max_value: maxRoom,
+                price_slider_min_value:minPrice,
+                price_slider_max_value:maxPrice,
+                slider_min_value: minSquare,
+                slider_max_value: maxSquare,
+                availability: selectAvailability,
+                typeOfBalcony: selectOritentation,
+                garden_connection: selectGardenConnection,
+                otthonStart: selectOtthonStart,
+                stairway: selectStairway,
+                sort: sort,
+                sortType: sortType,
+                page_type: (cardContainer.length == 1) ? 'card' : 'table',
+                shortcode: shortcode,
+                apartman_number: apartman_number,
+                residental_park_id:selectedParkId
+            },
+            success: function(response) {
+
+                $('#mib-spinner').hide();
+
+                if ($('#custom-room-slider').hasClass('custom-filter')) {
+                    return;
+                }
+
+                if (table.length > 0) {
+                    table.replaceWith(response.data.html);
+                } else {
+                    cardContainer.replaceWith(response.data.html);
+                    restoreViewMode();
+                    hoverDropDown();
+                    checkFavorites();
+                }
+
+                if (wasAdvancedFiltersVisible) {
+                    $('#advanced-filters').css('display', 'flex');
+                    $('#toggle-advanced-filters').html('<i class="fas fa-times me-1"></i> Szűrők bezárása');
+                }
+
+                if (response.data.room_slider_min != null) {
+                    initializeRoomSlider(minRoom, maxRoom, response.data.room_slider_min, response.data.room_slider_max);
+                }else{
+                    $("#custom-room-slider").parent().remove();
+                }
+
+                if (response.data.floor_slider_min != null) {
+                    initializeFloorSlider(minFloor, maxFloor, response.data.floor_slider_min, response.data.floor_slider_max);
+                }else{
+                    $("#custom-floor-slider").parent().remove();
+                }
+
+                if (response.data.price_slider_min != null) {
+                    initializeCatalogPriceSlider(minPrice, maxPrice, response.data.price_slider_min, response.data.price_slider_max);
+                }else{
+                    $("#custom-price-slider").parent().remove();
+                }
+                
+                if (response.data.slider_min != null) {
+                    initializeCatalogSquareSlider(minSquare, maxSquare, response.data.slider_min, response.data.slider_max);
+                }else{
+                    $("#custom-square-slider").parent().remove();
+                }
+
+                selectOritentation.forEach(function(value) {
+                    $('.catalog-orientation-checkbox[value="' + value + '"]').prop('checked', true);
+                });
+                if (selectGardenConnection == 1) {
+                    $('.catalog-gardenconnection-checkbox').prop('checked', true);
+                } else {
+                    $('.catalog-gardenconnection-checkbox').prop('checked', false);
+                }
+
+                if (selectOtthonStart == 1) {
+
+                    $('.catalog-otthonstart-checkbox').prop('checked', true);
+
+                } else {
+
+                    $('.catalog-otthonstart-checkbox').prop('checked', false);
+
+                }
+
+                selectAvailability.forEach(function(value) {
+                    $('.catalog-availability-checkbox[value="' + value + '"]').prop('checked', true);
+                });
+
+                selectStairway.forEach(function(value) {
+                    $('.catalog-stairway-checkbox[value="' + value + '"]').prop('checked', true);
+                });
+
+                $('.select-residential-park').val(selectedParkId);
+
+                checkFavorites();
+                checkIfAnyFilterIsActive();
+
+            },
+            error: function(error) {
+                console.log('Hiba történt az Otthon Start szűrő frissítésekor.');
+                $('#mib-spinner').hide();
             }
         });
-        checkIfAnyFilterIsActive();
     });
 
     var $mibOverlay = $('<div class="mib-gallery-overlay"><span class="mib-gallery-close">&times;</span><img><span class="mib-gallery-prev">&#10094;</span><span class="mib-gallery-next">&#10095;</span></div>').appendTo('body');

@@ -899,13 +899,13 @@ class MibBaseController
                             $html .= $this->getFilterGardenConnectionByCatalog($filterType);
                         }
 
-                        if (in_array('otthon_start_filter', $filterType['extras'])) {
-                            $html .= $this->getFilterOtthonStartByCatalog($filterType);
-                        }
-
                         // Lépcsőház szűrő
                         if (in_array('staircase_filter', $filterType['extras'])) {
                             $html .= $this->getFilterStairwayByCatalog($filterType);
+                        }
+
+                        if (in_array('otthon_start_filter', $filterType['extras'])) {
+                            $html .= $this->getFilterOtthonStartByCatalog($filterType);
                         }
 
 		$html .= '</div>'; // advanced-filters vége
@@ -2076,15 +2076,18 @@ class MibBaseController
 	            if (isset($this->filterOptionDatas['mib-filter-availability']) && $this->filterOptionDatas['mib-filter-availability'] == true && $this->filterOptionDatas['inactive_hide'] != 1) {
 	                $html .= $this->getFilterAvailabilityByCatalog($filterType);
 	            }
-                    if (isset($this->filterOptionDatas['mib-garden_connection']) && $this->filterOptionDatas['mib-garden_connection'] == true) {
-                        $html .= $this->getFilterGardenConnectionByCatalog($filterType);
-                    }
-                    if (isset($this->filterOptionDatas['mib-otthonstart']) && $this->filterOptionDatas['mib-otthonstart'] == true) {
-                        $html .= $this->getFilterOtthonStartCheckboxByCatalog($filterType);
-                    }
-                    if (isset($this->filterOptionDatas['mib-stairway']) && $this->filterOptionDatas['mib-stairway'] == true) {
-                        $html .= $this->getFilterStairwayByCatalog($filterType);
-                    }
+                if (isset($this->filterOptionDatas['mib-garden_connection']) && $this->filterOptionDatas['mib-garden_connection'] == true) {
+                    $html .= $this->getFilterGardenConnectionByCatalog($filterType);
+                }
+                if (isset($this->filterOptionDatas['mib-stairway']) && $this->filterOptionDatas['mib-stairway'] == true) {
+                    $html .= $this->getFilterStairwayByCatalog($filterType);
+                }
+                if (isset($this->filterOptionDatas['mib-otthonstart']) && $this->filterOptionDatas['mib-otthonstart'] == true) {
+                    $html .= $this->getFilterOtthonStartCheckboxByCatalog($filterType);
+                }
+                
+
+
             $html .= '</div>';
 
             if (!empty($this->filterOptionDatas['mib-filter-orientation'])) {
@@ -2383,12 +2386,15 @@ class MibBaseController
         {
             $selected = [];
             if (isset($filterType['otthon_start'])) {
-                $selected = is_array($filterType['otthon_start']) ? $filterType['otthon_start'] : explode(',', $filterType['otthon_start']);
+                $selected = is_array($filterType['otthon_start'])
+                    ? $filterType['otthon_start']
+                    : explode(',', $filterType['otthon_start']);
             }
 
             $isChecked = in_array('1', array_map('strval', (array) $selected), true);
             $checked = $isChecked ? 'checked' : '';
 
+<<<<<<< HEAD
             $html = '<div class="catalog-dropdown catalog-checkbox">';
             $html .= '<div class="form-check">';
             $html .= '<input type="checkbox" class="form-check-input catalog-otthonstart-checkbox" id="catalog-otthonstart-filter" name="otthonStart" value="1" ' . $checked . '>';
@@ -2399,6 +2405,25 @@ class MibBaseController
             $html .= '<label class="form-check-label" for="catalog-otthonstart-filter">' . esc_html__('Otthon Start feltételeinek megfelelő', 'mib') . '</label>';
             $html .= '</div>';
             $html .= '</div>';
+=======
+            $html = '<div class="catalog-dropdown">
+                        <fieldset>
+                            <legend class="form-label mb-1">Otthon Start</legend>
+                            <div class="p-2">
+                                <div class="form-check">
+                                    <input type="checkbox"
+                                           class="form-check-input catalog-otthonstart-checkbox"
+                                           id="catalog-otthonstart-filter"
+                                           name="otthon_start[]"
+                                           value="1" ' . $checked . '>
+                                    <label class="form-check-label" for="catalog-otthonstart-filter">'
+                                        . esc_html__('Otthon Start feltételeinek megfelelő', 'mib') .
+                                    '</label>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>';
+>>>>>>> 69ea1b6 (otthon start filter)
 
             return $html;
         }
@@ -2410,24 +2435,27 @@ class MibBaseController
             }
 
             $html = '<div class="catalog-dropdown">
-                        <div class="dropdown">
-                            <button class="btn btn-dark dropdown-toggle" type="button" id="otthonStartDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                Otthon start feltételeinek megfelelő?
-                            </button>
-                            <ul class="third-color mt-1 p-2 dropdown-menu" aria-labelledby="otthonStartDropdown">';
+                        <fieldset>
+                            <legend class="form-label mb-1">Otthon Start</legend>
+                            <div class="dropdown">
+                                <button class="btn btn-dark dropdown-toggle" type="button" id="otthonStartDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Otthon start feltételeinek megfelelő?
+                                </button>
+                                <ul class="third-color mt-1 p-2 dropdown-menu" aria-labelledby="otthonStartDropdown">';
 
-            foreach ($this->otthonStart as $key => $value) {
-                $checked = (isset($filterType['otthon_start']) && in_array($value, (array)$filterType['otthon_start'])) ? 'checked' : '';
+                                foreach ($this->otthonStart as $key => $value) {
+                                    $checked = (isset($filterType['otthon_start']) && in_array($value, (array)$filterType['otthon_start'])) ? 'checked' : '';
 
-                $html .= '<li>
-                            <label class="dropdown-item">
-                                <input type="checkbox" class="catalog-otthonstart-checkbox form-check-input" name="otthon_start[]" value="' . $value . '" ' . $checked . '> ' . $key . '
-                            </label>
-                          </li>';
-            }
+                                    $html .= '<li>
+                                                <label class="dropdown-item">
+                                                    <input type="checkbox" class="catalog-otthonstart-checkbox form-check-input" name="otthon_start[]" value="' . esc_attr($value) . '" ' . $checked . '> ' . esc_html($key) . '
+                                                </label>
+                                              </li>';
+                                }
 
-            $html .=   '</ul>
-                        </div>
+                                    $html .=       '</ul>
+                            </div>
+                        </fieldset>
                     </div>';
 
             return $html;
