@@ -4457,6 +4457,32 @@ jQuery(document).ready(function($) {
         }
     });
 
+    function triggerOtthonStartFilter() {
+        const $checkbox = $('.catalog-otthonstart-checkbox');
+
+        if (!$checkbox.length) {
+            return;
+        }
+
+        if (!$checkbox.is(':checked')) {
+            $checkbox.prop('checked', true);
+        }
+
+        $checkbox.trigger('change');
+    }
+
+    $(document).on('click', '.mib-otthonstart-badge', function (e) {
+        e.preventDefault();
+        triggerOtthonStartFilter();
+    });
+
+    $(document).on('keydown', '.mib-otthonstart-badge', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            triggerOtthonStartFilter();
+        }
+    });
+
     // Otthon start filter
     $(document).on('change', '.catalog-otthonstart-checkbox', function (e) {
 

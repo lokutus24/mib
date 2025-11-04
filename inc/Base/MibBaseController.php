@@ -508,7 +508,7 @@ class MibBaseController
                     $html .= '<div class="apartment-plan position-relative">';
                     $html .= '<img crossorigin="anonymous" src="' . esc_url($data['gallery_first']) . '" alt="Lakás Kép">';
                     if (!empty($data['otthonStartBadge'])) {
-                        $html .= '<img id="osiamge" src="' . esc_url($data['otthonStartBadge']) . '" alt="Otthon Start"/>';
+                        $html .= '<img class="mib-otthonstart-badge" src="' . esc_url($data['otthonStartBadge']) . '" alt="Otthon Start" role="button" tabindex="0" />';
                     }
                     $html .= '</div>';
 
@@ -991,7 +991,7 @@ class MibBaseController
                 $html .= '<div class="primary-color card-image-wrapper">';
                 $html .= '<img src="' . ((!empty($data['szintrajz_img'])) ? $data['szintrajz_img'] : $data['image']) . '" class="card-img-top" alt="Lakás képe" crossorigin="anonymous">';
                 if (!empty($data['otthonStartBadge'])) {
-                    $html .= '<img id="osiamge" src="' . esc_url($data['otthonStartBadge']) . '" alt="Otthon Start" />';
+                    $html .= '<img class="mib-otthonstart-badge" src="' . esc_url($data['otthonStartBadge']) . '" alt="Otthon Start" role="button" tabindex="0" />';
                 }
                 $html .= '</div>';
 
@@ -1180,7 +1180,7 @@ class MibBaseController
                         $html .= '<div class="primary-color card-image-wrapper">';
                         $html .= '<img src="' . $data['image'] . '" class="card-img-top" alt="Lakás képe" crossorigin="anonymous">';
                         if (!empty($data['otthonStartBadge'])) {
-                            $html .= '<img id="osiamge" src="' . esc_url($data['otthonStartBadge']) . '" alt="Otthon Start" />';
+                            $html .= '<img class="mib-otthonstart-badge" src="' . esc_url($data['otthonStartBadge']) . '" alt="Otthon Start" role="button" tabindex="0" />';
                         }
                         $html .= '</div>';
 
@@ -1312,7 +1312,7 @@ class MibBaseController
                         $html .= '<div class="primary-color card-image-wrapper">';
                         $html .= '<img src="' . ((!empty($data['szintrajz_img'])) ? $data['szintrajz_img'] : $data['image']) . '" class="card-img-top" alt="Lakás képe" crossorigin="anonymous">';
                         if (!empty($data['otthonStartBadge'])) {
-                            $html .= '<img id="osiamge" src="' . esc_url($data['otthonStartBadge']) . '" alt="Otthon Start" />';
+                            $html .= '<img class="mib-otthonstart-badge" src="' . esc_url($data['otthonStartBadge']) . '" alt="Otthon Start" role="button" tabindex="0" />';
                         }
                         $html .= '</div>';
 
@@ -1447,9 +1447,9 @@ class MibBaseController
 	            // Kép blokk
 	            $html .= '            <div class="primary-color card-image-wrapper">';
 	            $html .= '              <img src="' . esc_url($data['image']) . '" class="card-img-top" alt="Lakás képe" crossorigin="anonymous">';
-	            if (!empty($data['otthonStartBadge'])) {
-	                $html .= '              <img id="osiamge" src="' . esc_url($data['otthonStartBadge']) . '" alt="Otthon Start">';
-	            }
+               if (!empty($data['otthonStartBadge'])) {
+                   $html .= '              <img class="mib-otthonstart-badge" src="' . esc_url($data['otthonStartBadge']) . '" alt="Otthon Start" role="button" tabindex="0">';
+               }
 	            $html .= '            </div>';
 
 	            // Card body
@@ -1570,7 +1570,7 @@ class MibBaseController
                 $html .= '<div class="primary-color card-image-wrapper">';
                 $html .= '<img src="' . $data['image'] . '" class="card-img-top" alt="Lakás képe" crossorigin="anonymous">';
                 if (!empty($data['otthonStartBadge'])) {
-                    $html .= '<img id="osiamge" src="' . esc_url($data['otthonStartBadge']) . '" alt="Otthon Start" />';
+                    $html .= '<img class="mib-otthonstart-badge" src="' . esc_url($data['otthonStartBadge']) . '" alt="Otthon Start" role="button" tabindex="0" />';
                 }
                 $html .= '</div>';
 
