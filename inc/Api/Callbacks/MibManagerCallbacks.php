@@ -81,6 +81,7 @@ class MibManagerCallbacks extends MibBaseController
 					'mib-garden_connection'	  => (isset($_POST['mib-garden_connection'] ) && $_POST['mib-garden_connection'] == 'on') ? true : false,
 					'mib-otthonstart'	  => (isset($_POST['mib-otthonstart'] ) && $_POST['mib-otthonstart'] == 'on') ? true : false,
 					'mib-stairway'	  => (isset($_POST['mib-stairway'] ) && $_POST['mib-stairway'] == 'on') ? true : false,
+					'mib-display_supported_price' => (isset($_POST['mib-display_supported_price'] ) && $_POST['mib-display_supported_price'] == 'on') ? true : false,
                                         'residential_park_ids' => isset($_POST['residential_park_ids']) ? array_filter(array_map('intval', explode(',', $_POST['residential_park_ids']))) : [],
 				]
 			);
@@ -127,6 +128,8 @@ class MibManagerCallbacks extends MibBaseController
 
 		$stairway = (isset($mib_filter_options['mib-stairway'])  && $mib_filter_options['mib-stairway'] == 1) ? 'checked' : '';
                 $residential_park_ids = isset($mib_filter_options['residential_park_ids']) ? implode(',', $mib_filter_options['residential_park_ids']) : '';
+
+                $mib_display_supported_price = (isset($mib_filter_options['mib-display_supported_price'])  && $mib_filter_options['mib-display_supported_price'] == 1) ? 'checked' : '';
 
 		?>
 
@@ -219,6 +222,10 @@ class MibManagerCallbacks extends MibBaseController
 
 		<div class="row" style="margin-bottom: 10px;">
 			Lépcsőház: <input type="checkbox" name="mib-stairway" size="45" <?=$stairway;?>>
+		</div>
+
+		<div class="row" style="margin-bottom: 10px;">
+			Támogatással elérhető ár megjelenítése: <input type="checkbox" name="mib-display_supported_price" size="45" <?=$mib_display_supported_price;?>>
 		</div>
 
 		<?php

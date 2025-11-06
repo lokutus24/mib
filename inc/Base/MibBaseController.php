@@ -1225,15 +1225,29 @@ class MibBaseController
 				    $html .= '</div>';
 
 				    // Ár
-                                    $html .= '<div class="list-view-price-container mt-2 mt-md-0" style="display: contents; align-items: center; gap: 10px;">';
-                                                if (!empty($data['originalPrice'])) {
-                                                    $html .= '<span class="mib-old-price">' . esc_html($data['originalPrice']) . '</span>';
-                                                }
-                                                if (!empty($data['sale_price_badge'])) {
-                                                   $html .= '<img id="saleimagebadge" src="'.$data['sale_price_badge'].'" alt="Akciós lakás">';
-                                                }
-                                                $html .= '<strong class="fs-4 text-success third-text-color mib-new-price">' . esc_html($data['price']) . '</strong>';
-                                        $html .= '</div>';
+                    $html .= '<div class="list-view-price-container mt-2 mt-md-0" style="display: contents; align-items: center; gap: 10px;">';
+                                if (!empty($data['originalPrice'])) {
+                                    $html .= '<span class="mib-old-price">' . esc_html($data['originalPrice']) . '</span>';
+                                }
+                                if (!empty($data['sale_price_badge'])) {
+                                   $html .= '<img id="saleimagebadge" src="'.$data['sale_price_badge'].'" alt="Akciós lakás">';
+                                }
+                                $html .= '<strong class="fs-4 text-success third-text-color mib-new-price">' . esc_html($data['price']) . '</strong>';
+
+
+                    if (
+                        !empty($this->filterOptionDatas['mib-display_supported_price'])
+                        && (int)$this->filterOptionDatas['mib-display_supported_price'] === 1
+                        && !empty($data['supportedPrice'])
+                        && !empty($data['isRustZone'])
+                    ) {
+                        $html .= '<div class="mib-supported-price">';
+                        $html .= '<span class="mib-supported-price-label">' . esc_html__('5% ÁFA visszaigényelhető! Ennyibe kerül neked:', 'mib') . '</span>';
+                        $html .= '<span class="mib-supported-price-value">' . esc_html($data['supportedPrice']) . '</span>';
+                        $html .= '</div>';
+                    }
+
+                    $html .= '</div>';
 
 					// Függőleges elválasztó (gomb elé, csak lista nézetben)
 					$html .= '<div class="card-divider list-view-only"></div>';
@@ -1357,22 +1371,25 @@ class MibBaseController
 				    $html .= '</div>';
 
 				    // Ár
-                                    $html .= '<div class="list-view-price-container mt-2 mt-md-0">';
-                                                if (!empty($data['originalPrice'])) {
-                                                    $html .= '<span class="mib-old-price">' . esc_html($data['originalPrice']) . '</span>';
-                                                }
-                                                if (!empty($data['sale_price_badge'])) {
-                                                   $html .= '<img id="saleimagebadge" src="'.$data['sale_price_badge'].'" alt="Akciós lakás">';
-                                                }
-                                                $html .= '<strong class="fs-4 text-success third-text-color mib-new-price">' . esc_html($data['price']) . '</strong>';
-                                        $html .= '</div>';
+                    $html .= '<div class="list-view-price-container mt-2 mt-md-0">';
+                                if (!empty($data['originalPrice'])) {
+                                    $html .= '<span class="mib-old-price">' . esc_html($data['originalPrice']) . '</span>';
+                                }
+                                if (!empty($data['sale_price_badge'])) {
+                                   $html .= '<img id="saleimagebadge" src="'.$data['sale_price_badge'].'" alt="Akciós lakás">';
+                                }
+                                $html .= '<strong class="fs-4 text-success third-text-color mib-new-price">' . esc_html($data['price']) . '</strong>';
 
-                                    if (!empty($data['supportedPrice']) && !empty($data['isRustZone'])) {
-                                        $html .= '<div class="mib-supported-price">';
-                                        $html .= '<span class="mib-supported-price-label">' . esc_html__('5% ÁFA visszaigényelhető! Ennyibe kerül neked:', 'mib') . '</span>';
-                                        $html .= '<span class="mib-supported-price-value">' . esc_html($data['supportedPrice']) . '</span>';
-                                        $html .= '</div>';
-                                    }
+                                // Supported price (5% ÁFA visszaigényelhető)
+
+                        $html .= '</div>';
+
+                    if (!empty($data['supportedPrice']) && !empty($data['isRustZone'])) {
+                        $html .= '<div class="mib-supported-price">';
+                        $html .= '<span class="mib-supported-price-label">' . esc_html__('5% ÁFA visszaigényelhető! Ennyibe kerül neked:', 'mib') . '</span>';
+                        $html .= '<span class="mib-supported-price-value">' . esc_html($data['supportedPrice']) . '</span>';
+                        $html .= '</div>';
+                    }
 
 					// Függőleges elválasztó (gomb elé, csak lista nézetben)
 					$html .= '<div class="card-divider list-view-only"></div>';
@@ -1424,6 +1441,7 @@ class MibBaseController
 	    $html .= '    <div class="swiper-wrapper">';
 
 	    if (!empty($datas)) {
+	        $otthonStartFilterUrl = esc_url(home_url('/lakaslista/?otthonStart=1&fromSlider=1'));
 	        foreach ($datas as $data) {
 
 	            $logo = '';
@@ -1447,9 +1465,11 @@ class MibBaseController
 	            // Kép blokk
 	            $html .= '            <div class="primary-color card-image-wrapper">';
 	            $html .= '              <img src="' . esc_url($data['image']) . '" class="card-img-top" alt="Lakás képe" crossorigin="anonymous">';
-               if (!empty($data['otthonStartBadge'])) {
-                   $html .= '              <img class="mib-otthonstart-badge" src="' . esc_url($data['otthonStartBadge']) . '" alt="Otthon Start" role="button" tabindex="0">';
-               }
+	            if (!empty($data['otthonStartBadge'])) {
+	                $html .= '              <a href="' . $otthonStartFilterUrl . '" class="mib-otthonstart-badge-link" aria-label="Otthon Start szűrő megnyitása">';
+	                $html .= '                <img class="mib-otthonstart-badge" src="' . esc_url($data['otthonStartBadge']) . '" alt="Otthon Start">';
+	                $html .= '              </a>';
+	            }
 	            $html .= '            </div>';
 
 	            // Card body
@@ -1989,74 +2009,107 @@ class MibBaseController
     
     private function getCatalogFilterHtml($filterType = [], $includeSearchButton = false)
     {
-        $html  = '<div class="custom-filter-container">';                 // A
-        $html .= '<div class="d-flex flex-wrap gap-2 align-items-start">';// B
+        $html = '<div class="custom-filter-container">';
+        $html .= '<div class="d-flex">';
 
         if (!empty($this->filterOptionDatas)) {
-            // Alap szűrők
             $html .= $this->getFilterResidentalParksForJustFilters();
 
             if (!empty($this->filterOptionDatas['mib-filter-price_range'])) {
                 $html .= $this->priceFilterPriceByCatalog($filterType);
             }
+
             if (!empty($this->filterOptionDatas['mib-filter-room'])) {
                 $html .= $this->getFilterRoomByCatalog($filterType);
             }
+
             if (!empty($this->filterOptionDatas['mib-filter-square-meter'])) {
                 $html .= $this->squareFiltersByCatalog($filterType);
             }
 
-            // Kell-e "További szűrők" gomb?
-            $hasAdvanced =
-                (!empty($this->filterOptionDatas['mib-filter-district'])) ||
-                (!empty($this->filterOptionDatas['mib-filter-orientation'])) ||
-                (!empty($this->filterOptionDatas['mib-garden_connection'])) ||
-                (!empty($this->filterOptionDatas['mib-otthonstart'])) ||
-                (!empty($this->filterOptionDatas['mib-stairway'])) ||
-                (!empty($this->filterOptionDatas['mib-filter-availability']) && empty($this->filterOptionDatas['inactive_hide']));
+            $advancedToggles = [
+                !empty($this->filterOptionDatas['mib-filter-district']),
+                !empty($this->filterOptionDatas['mib-filter-orientation']),
+                !empty($this->filterOptionDatas['mib-garden_connection']),
+                !empty($this->filterOptionDatas['mib-otthonstart']),
+                !empty($this->filterOptionDatas['mib-stairway']),
+            ];
+          
+            $html .= '<div class="custom-filter-container">';
+            $showAdvanced = false;
+            if (isset($this->filterOptionDatas['mib-filter-district']) && $this->filterOptionDatas['mib-filter-district'] == true) {
+                $showAdvanced = true;
+            }
+            if (isset($this->filterOptionDatas['mib-filter-orientation']) && $this->filterOptionDatas['mib-filter-orientation'] == true) {
+                $showAdvanced = true;
+            }
+            if (isset($this->filterOptionDatas['mib-filter-availability']) && $this->filterOptionDatas['mib-filter-availability'] == true && $this->filterOptionDatas['inactive_hide'] != 1) {
+                $showAdvanced = true;
+            }
+                if (isset($this->filterOptionDatas['mib-garden_connection']) && $this->filterOptionDatas['mib-garden_connection'] == true) {
+                    $showAdvanced = true;
+                }
+                if (isset($this->filterOptionDatas['mib-otthonstart']) && $this->filterOptionDatas['mib-otthonstart'] == true) {
+                    $showAdvanced = true;
+                }
+                if (isset($this->filterOptionDatas['mib-stairway']) && $this->filterOptionDatas['mib-stairway'] == true) {
+                    $showAdvanced = true;
+                }
 
-            if ($hasAdvanced) {
-                $html .= '<div class="custom-filter-container">';          // C (megnyitjuk és le is zárjuk lent)
-                $html .= '  <div class="mb-2">';
-                $html .= '    <div class="mb-2" id="parksfilter">';
-                $html .= '      <button type="button" class="btn btn-outline-secondary btn-sm" id="toggle-advanced-filters">';
-                $html .= '        <i class="fas fa-sliders-h me-1"></i> További szűrők';
-                $html .= '      </button>';
-                $html .= '    </div>';
-                $html .= '  </div>';
-                $html .= '</div>';                                        // /C
+            if (!empty($this->filterOptionDatas['mib-filter-availability']) && empty($this->filterOptionDatas['inactive_hide'])) {
+                $advancedToggles[] = true;
+            }
+
+            if (in_array(true, $advancedToggles, true)) {
+                $html .= '<div class="custom-filter-container">';
+                $html .= '<div class="mb-2">';
+                $html .= '<div class="mb-2" id="parksfilter">';
+                $html .= '<button type="button" class="btn btn-outline-secondary btn-sm" id="toggle-advanced-filters">';
+                $html .= '<i class="fas fa-sliders-h me-1"></i> További szűrők';
+                $html .= '</button>';
+                $html .= '</div>';
+                $html .= '</div>';
+                $html .= '</div>';
             }
         }
 
-        $html .= '</div>'; // /B
-        $html .= '</div>'; // /A
+        $html .= '</div>';
+        $html .= '</div>';
 
-        // Rejtett "További szűrők" panel – NEM duplikáljuk a hívásokat
-        $html .= '<div id="advanced-filters" class="d-flex flex-wrap gap-2" style="display:none;">';
+        $html .= '<div id="advanced-filters" class="flex-wrap" style="display:none;">';
 
         if (!empty($this->filterOptionDatas['mib-filter-floor'])) {
             $html .= $this->getFilterFloorByCatalog($filterType);
         }
+
         if (!empty($this->filterOptionDatas['mib-filter-district'])) {
             $html .= $this->getFilterDistrictByCatalog($filterType);
         }
-        if (!empty($this->filterOptionDatas['mib-filter-orientation'])) {
-            $html .= $this->getFilterOrientationByCatalog($filterType);
-        }
-        if (!empty($this->filterOptionDatas['mib-filter-availability']) && empty($this->filterOptionDatas['inactive_hide'])) {
-            $html .= $this->getFilterAvailabilityByCatalog($filterType);
-        }
-        if (!empty($this->filterOptionDatas['mib-garden_connection'])) {
-            $html .= $this->getFilterGardenConnectionByCatalog($filterType);
-        }
-        if (!empty($this->filterOptionDatas['mib-stairway'])) {
-            $html .= $this->getFilterStairwayByCatalog($filterType);
-        }
-        if (!empty($this->filterOptionDatas['mib-otthonstart'])) {
-            $html .= $this->getFilterOtthonStartCheckboxByCatalog($filterType);
-        }
+            if (isset($this->filterOptionDatas['mib-filter-floor']) && $this->filterOptionDatas['mib-filter-floor'] == true) {
+                $html .= $this->getFilterFloorByCatalog($filterType);
+            }
+            if (isset($this->filterOptionDatas['mib-filter-district']) && $this->filterOptionDatas['mib-filter-district'] == true) {
+                $html .= $this->getFilterDistrictByCatalog($filterType);
+            }
+            if (isset($this->filterOptionDatas['mib-filter-orientation']) && $this->filterOptionDatas['mib-filter-orientation'] == true) {
+                $html .= $this->getFilterOrientationByCatalog($filterType);
+            }
+            if (isset($this->filterOptionDatas['mib-filter-availability']) && $this->filterOptionDatas['mib-filter-availability'] == true && $this->filterOptionDatas['inactive_hide'] != 1) {
+                $html .= $this->getFilterAvailabilityByCatalog($filterType);
+            }
+            if (isset($this->filterOptionDatas['mib-garden_connection']) && $this->filterOptionDatas['mib-garden_connection'] == true) {
+                $html .= $this->getFilterGardenConnectionByCatalog($filterType);
+            }
+            if (isset($this->filterOptionDatas['mib-stairway']) && $this->filterOptionDatas['mib-stairway'] == true) {
+                $html .= $this->getFilterStairwayByCatalog($filterType);
+            }
+            if (isset($this->filterOptionDatas['mib-otthonstart']) && $this->filterOptionDatas['mib-otthonstart'] == true) {
+                $html .= $this->getFilterOtthonStartCheckboxByCatalog($filterType);
+            }
+            
 
-        $html .= '</div>'; // /advanced-filters
+
+        $html .= '</div>';
 
         if ($includeSearchButton) {
             $html .= '<div class="search-mib-filter-container" id="search-apartman-btn" class="btn third-color">Lakások keresése <i class="fa fa-arrow-right" aria-hidden="true"></i></div>';

@@ -127,6 +127,10 @@ class MibEnqueue extends MibBaseController
 		add_action('wp_ajax_nopriv_set_residential_park_id', array($this,'set_residential_park_id') );
 
 
+		add_action('wp_ajax_set_otthon_start_values_by_slider', array($this,'set_otthon_start_values_by_slider') );
+		add_action('wp_ajax_nopriv_set_otthon_start_values_by_slider', array($this,'set_otthon_start_values_by_slider') );
+
+
 	}
 
 	public function mib_get_shortcode() {
@@ -287,13 +291,42 @@ class MibEnqueue extends MibBaseController
 
 	public function set_stairway_values() {
 
-
 	    $perPage = ($_POST['page_type'] == 'card') ? ((isset($_POST['apartman_number']) && !empty($_POST['apartman_number']) ) ? $_POST['apartman_number'] : $this->numberOfApartmens) : 50;
 
 		list($args, $page) = $this->getArgumentumsByCatalog($_POST);
 
-
 		list($slider_min, $slider_max, $price_slider_min, $price_slider_max, $floor_slider_min, $floor_slider_max, $room_slider_min, $room_slider_max, $garden_connection) = $this->getBaseSliderDatas();
+		$html = $this->getTable($args, $page, $perPage, $_POST['page_type']);
+
+		wp_send_json_success([
+			'html' 		 => $html,
+	        'slider_min' => $slider_min,
+	        'slider_max' => $slider_max,
+	        'price_slider_min' => $price_slider_min,
+	        'price_slider_max' => $price_slider_max,
+	        'floor_slider_min' => $floor_slider_min,
+	        'floor_slider_max' => $floor_slider_max,
+	        'room_slider_min' => $room_slider_min,
+	        'room_slider_max' => $room_slider_max,
+	        'garden_connection' => $garden_connection,
+	        'orientation_filter' => ( (isset($_POST['apartman_number']) && !empty($this->filterType) && in_array('orientation_filters', $this->filterType['extras'])) ) ? 1 : null,
+	        'available_only' => ( (isset($_POST['apartman_number']) && !empty($this->filterType) && in_array('available_only', $this->filterType['extras'])) ) ? 1 : null
+	    ]);
+
+		wp_die();
+	}
+
+
+
+
+	public function set_otthon_start_values_by_slider(){
+
+		$perPage = ($_POST['page_type'] == 'card') ? ((isset($_POST['apartman_number']) && !empty($_POST['apartman_number']) ) ? $_POST['apartman_number'] : $this->numberOfApartmens) : 50;
+
+		list($args, $page) = $this->getArgumentumsByCatalog($_POST);
+		list($slider_min, $slider_max, $price_slider_min, $price_slider_max, $floor_slider_min, $floor_slider_max, $room_slider_min, $room_slider_max, $garden_connection) = $this->getBaseSliderDatas();
+
+
 		$html = $this->getTable($args, $page, $perPage, $_POST['page_type']);
 
 		wp_send_json_success([
@@ -654,6 +687,154 @@ class MibEnqueue extends MibBaseController
 		wp_die();
 	}
 
+    private function shouldHydrateDefaultOtthonStartFilters(array $params): bool
+    {
+        if (!isset($params['otthonStart']) || (string) $params['otthonStart'] !== '1') {
+            return false;
+        }
+
+        if (!empty($params['shortcode'])) {
+            return false;
+        }
+
+        $keysToCheck = [
+            'price_slider_min_value',
+            'price_slider_max_value',
+            'slider_min_value',
+            'slider_max_value',
+            'floor_slider_min_value',
+            'floor_slider_max_value',
+            'room_slider_min_value',
+            'room_slider_max_value',
+            'availability',
+            'typeOfBalcony',
+            'stairway',
+            'garden_connection',
+            'district',
+            'residental_park_id',
+            'residential_park_id',
+        ];
+
+        foreach ($keysToCheck as $key) {
+            if (!array_key_exists($key, $params)) {
+                continue;
+            }
+
+            $value = $params[$key];
+
+            if (is_array($value)) {
+                $filtered = array_filter($value, static function ($item) {
+                    return $item !== '' && $item !== null;
+                });
+                if (!empty($filtered)) {
+                    return false;
+                }
+            } else {
+                if ($value !== '' && $value !== null) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    private function getDefaultOtthonStartFilterParams(array $params): array
+    {
+        $defaults = [];
+
+        $defaultShortcode = $this->getDefaultCatalogShortcodeKey();
+        if (!empty($defaultShortcode) && isset($this->shortcodesOptions[$defaultShortcode]) && is_array($this->shortcodesOptions[$defaultShortcode])) {
+            $config = $this->shortcodesOptions[$defaultShortcode];
+            $defaults['shortcode'] = $defaultShortcode;
+
+            if (!empty($config['number_of_apartment']) && empty($params['apartman_number'])) {
+                $defaults['apartman_number'] = $config['number_of_apartment'];
+            }
+
+            if (!empty($config['filters']) && is_array($config['filters'])) {
+                if (in_array('price', $config['filters'], true) && !empty($config['ranges']['price'])) {
+                    $defaults['price_slider_min_value'] = $config['ranges']['price']['min'] ?? null;
+                    $defaults['price_slider_max_value'] = $config['ranges']['price']['max'] ?? null;
+                }
+                if (in_array('area', $config['filters'], true) && !empty($config['ranges']['area'])) {
+                    $defaults['slider_min_value'] = $config['ranges']['area']['min'] ?? null;
+                    $defaults['slider_max_value'] = $config['ranges']['area']['max'] ?? null;
+                }
+                if (in_array('floor', $config['filters'], true) && !empty($config['ranges']['floor'])) {
+                    $defaults['floor_slider_min_value'] = $config['ranges']['floor']['min'] ?? null;
+                    $defaults['floor_slider_max_value'] = $config['ranges']['floor']['max'] ?? null;
+                }
+                if (in_array('room', $config['filters'], true) && !empty($config['ranges']['room'])) {
+                    $defaults['room_slider_min_value'] = $config['ranges']['room']['min'] ?? null;
+                    $defaults['room_slider_max_value'] = $config['ranges']['room']['max'] ?? null;
+                }
+            }
+
+            if (!empty($config['residential_park_ids']) && is_array($config['residential_park_ids'])) {
+                $defaults['residental_park_id'] = implode(',', array_map('intval', $config['residential_park_ids']));
+            }
+
+            if (!empty($config['extras']) && is_array($config['extras']) && in_array('available_only', $config['extras'], true)) {
+                $defaults['availability'] = ['Available'];
+            }
+        }
+
+        if (!isset($defaults['price_slider_min_value']) && !empty($this->filterOptionDatas['mib-filter-price_range'])
+            && isset($this->filterOptionDatas['mib-filter-price-slider-min'], $this->filterOptionDatas['mib-filter-price-slider-max'])) {
+            $defaults['price_slider_min_value'] = $this->filterOptionDatas['mib-filter-price-slider-min'];
+            $defaults['price_slider_max_value'] = $this->filterOptionDatas['mib-filter-price-slider-max'];
+        }
+
+        if (!isset($defaults['slider_min_value']) && !empty($this->filterOptionDatas['mib-filter-square-meter'])
+            && isset($this->filterOptionDatas['mib-filter-square-meter-slider-min'], $this->filterOptionDatas['mib-filter-square-meter-slider-max'])) {
+            $defaults['slider_min_value'] = $this->filterOptionDatas['mib-filter-square-meter-slider-min'];
+            $defaults['slider_max_value'] = $this->filterOptionDatas['mib-filter-square-meter-slider-max'];
+        }
+
+        if (!isset($defaults['floor_slider_min_value']) && !empty($this->filterOptionDatas['mib-filter-floor'])
+            && isset($this->filterOptionDatas['mib-filter-floor-from'], $this->filterOptionDatas['mib-filter-floor-to'])) {
+            $defaults['floor_slider_min_value'] = $this->filterOptionDatas['mib-filter-floor-from'];
+            $defaults['floor_slider_max_value'] = $this->filterOptionDatas['mib-filter-floor-to'];
+        }
+
+        if (!isset($defaults['room_slider_min_value']) && !empty($this->filterOptionDatas['mib-filter-room'])
+            && isset($this->filterOptionDatas['mib-filter-room-from'], $this->filterOptionDatas['mib-filter-room-to'])) {
+            $defaults['room_slider_min_value'] = $this->filterOptionDatas['mib-filter-room-from'];
+            $defaults['room_slider_max_value'] = $this->filterOptionDatas['mib-filter-room-to'];
+        }
+
+        if (!isset($defaults['availability']) && !empty($this->filterOptionDatas['mib-filter-availability']) && !empty($this->filterOptionDatas['inactive_hide'])) {
+            $defaults['availability'] = ['Available'];
+        }
+
+        if (!isset($defaults['residental_park_id']) && !empty($this->filterOptionDatas['residential_park_ids']) && is_array($this->filterOptionDatas['residential_park_ids'])) {
+            $defaults['residental_park_id'] = implode(',', array_map('intval', $this->filterOptionDatas['residential_park_ids']));
+        }
+
+        return array_filter($defaults, static function ($value) {
+            return $value !== null;
+        });
+    }
+
+    private function getDefaultCatalogShortcodeKey()
+    {
+        $defaultFromOption = get_option('mib_default_catalog_shortcode');
+        if (!empty($defaultFromOption)) {
+            return $defaultFromOption;
+        }
+
+        if (!empty($this->shortcodesOptions) && is_array($this->shortcodesOptions)) {
+            foreach ($this->shortcodesOptions as $shortcodeName => $config) {
+                if (is_array($config) && !empty($config['is_default_catalog'])) {
+                    return $shortcodeName;
+                }
+            }
+        }
+
+        return null;
+    }
+
 	/**
 	 * get default slider values
 	 */
@@ -853,27 +1034,30 @@ class MibEnqueue extends MibBaseController
 		    $args = array_merge($args, ['status' => $params['availability']]);
 		}
 
-                if ( !empty($params['garden_connection'] ) ) {
+        if ( !empty($params['garden_connection'] ) ) {
 
-                        $gardenConnection = (isset($params['garden_connection'])) ? 'true' : 'false';
-                    $args = array_merge($args, ['gardenConnection' => $gardenConnection]);
-                }
+                $gardenConnection = (isset($params['garden_connection'])) ? 'true' : 'false';
+            $args = array_merge($args, ['gardenConnection' => $gardenConnection]);
+        }
 
-                if ( isset($params['otthonStart']) ) {
-                    $otthonStart = sanitize_text_field($params['otthonStart']);
-                    if ($otthonStart === '1') {
-                        $args = array_merge($args, ['otthonStart' => $otthonStart]);
-                    }
-                }
+        if ( isset($params['otthonStart']) && $params['otthonStart'] !=0) {
+            $otthonStart = sanitize_text_field($params['otthonStart']);
+            if ($otthonStart === '1') {
+                $args = array_merge($args, ['otthonStart' => 1]);
+            }
+        }
 
-                if ( !empty($params['stairway'] ) ) {
-                    $params['stairway'] = (!is_string($params['stairway'])) ? implode(',',$params['stairway']) : $params['stairway'];
-                    $args = array_merge($args, ['stairway' => $params['stairway']]);
-                }
+
+        if ( !empty($params['stairway'] ) ) {
+            $params['stairway'] = (!is_string($params['stairway'])) ? implode(',',$params['stairway']) : $params['stairway'];
+            $args = array_merge($args, ['stairway' => $params['stairway']]);
+        }
+
 		if ( !empty($params['district'] ) ) {
 			$args = array_merge($args, ['district' => sanitize_text_field($params['district'])]);
 		}elseif($params['district'] == 0){
-			$args = array_merge($args, ['district' => '']);
+			//$args = array_merge($args, ['district' => '']);
+			unset($args['district']);
 		}
 		// Sorting parameters
 		if ( !empty($params['sort']) ) {
@@ -955,72 +1139,73 @@ class MibEnqueue extends MibBaseController
 		    $args = array_merge($args, ['numberOfRooms' => $params['room']]);
 		}
 
-                if ( !empty($params['typeOfBalcony'] ) ) {
-                    $params['typeOfBalcony'] = (!is_string($params['typeOfBalcony'])) ? implode(',', $params['typeOfBalcony']) : $params['typeOfBalcony'];
-                    $args = array_merge($args, ['typeOfBalcony' => $params['typeOfBalcony']]);
-                }
+        if ( !empty($params['typeOfBalcony'] ) ) {
+            $params['typeOfBalcony'] = (!is_string($params['typeOfBalcony'])) ? implode(',', $params['typeOfBalcony']) : $params['typeOfBalcony'];
+            $args = array_merge($args, ['typeOfBalcony' => $params['typeOfBalcony']]);
+        }
 
 
-                if ( !empty($params['garden_connection'] ) ) {
+        if ( !empty($params['garden_connection'] ) ) {
 
-                        $gardenConnection = (isset($params['garden_connection'])) ? 'true' : 'false';
-                    $args = array_merge($args, ['gardenConnection' => $gardenConnection]);
-                }
+                $gardenConnection = (isset($params['garden_connection'])) ? 'true' : 'false';
+            $args = array_merge($args, ['gardenConnection' => $gardenConnection]);
+        }
 
-                if ( isset($params['otthonStart']) ) {
-                    $otthonStart = sanitize_text_field($params['otthonStart']);
-                    if ($otthonStart === '1') {
-                        $args = array_merge($args, ['otthonStart' => $otthonStart]);
-                    }
-                }
+        if ( isset($params['otthonStart']) ) {
+            $otthonStart = sanitize_text_field($params['otthonStart']);
+            if ($otthonStart === '1') {
+                $args = array_merge($args, ['otthonStart' => 1]);
+            }
+        }
 
-                if ( !empty($params['availability'] ) ) {
+        if ( !empty($params['availability'] ) ) {
 
 
-                        $params['availability'] = (!is_string($params['availability'])) ? implode(',',$params['availability']) : $params['availability'];
-       		    $args = array_merge($args, ['status' => $params['availability']]);
-       		}
+                $params['availability'] = (!is_string($params['availability'])) ? implode(',',$params['availability']) : $params['availability'];
+		    $args = array_merge($args, ['status' => $params['availability']]);
+		}
+
 		if ( !empty($params['district'] ) ) {
 			$args = array_merge($args, ['district' => sanitize_text_field($params['district'])]);
 		}
        		// Sorting parameters
-       		if (!empty($params['sort'])) {
-       		    $args = array_merge($args, ['sort' => sanitize_text_field($params['sort'])]);
-       		}
-       		if (!empty($params['sortType'])) {
-       		    $sortType = strtoupper($params['sortType']) === 'DESC' ? 'DESC' : 'ASC';
-       		    $args = array_merge($args, ['sortType' => $sortType]);
-       		}
+   		if (!empty($params['sort'])) {
+   		    $args = array_merge($args, ['sort' => sanitize_text_field($params['sort'])]);
+   		}
+   		if (!empty($params['sortType'])) {
+   		    $sortType = strtoupper($params['sortType']) === 'DESC' ? 'DESC' : 'ASC';
+   		    $args = array_merge($args, ['sortType' => $sortType]);
+   		}
 
-            if (!empty($this->filterType['residential_park_ids'])) {
+        if (!empty($this->filterType['residential_park_ids'])) {
 
-                    $args = array_merge($args, ['residentialParkId' => implode(',', $this->filterType['residential_park_ids']) ]);
-            }elseif (!empty($this->filterOptionDatas['residential_park_ids'])) {
-                    $args = array_merge($args, ['residentialParkId' => implode(',', $this->filterOptionDatas['residential_park_ids']) ]);
-            }else{
-                    $args = array_merge($args, ['residentialParkId' => $this->residentialParkId ]);
-            }
+                $args = array_merge($args, ['residentialParkId' => implode(',', $this->filterType['residential_park_ids']) ]);
+        }elseif (!empty($this->filterOptionDatas['residential_park_ids'])) {
+                $args = array_merge($args, ['residentialParkId' => implode(',', $this->filterOptionDatas['residential_park_ids']) ]);
+        }else{
+                $args = array_merge($args, ['residentialParkId' => $this->residentialParkId ]);
+        }
 
-                if (!empty($this->filterType['apartment_skus'])) {
+        if (!empty($this->filterType['apartment_skus'])) {
 
 
-                        $args = array_merge($args, ['name' => implode(',', $this->filterType['apartment_skus']) ]);
-                }
+                $args = array_merge($args, ['name' => implode(',', $this->filterType['apartment_skus']) ]);
+        }
 
-                if (!empty($this->filterType['type'])) {
-                        $args = array_merge($args, ['type' => $this->filterType['type']]);
-                }
-                if (!empty($this->filterType['extras']) && in_array('hide_unavailable', $this->filterType['extras']) ) {
-                        $args = array_merge($args, ['status' => 'Available']);
+        if (!empty($this->filterType['type'])) {
+                $args = array_merge($args, ['type' => $this->filterType['type']]);
+        }
+        if (!empty($this->filterType['extras']) && in_array('hide_unavailable', $this->filterType['extras']) ) {
+                $args = array_merge($args, ['status' => 'Available']);
 
-                }elseif(!empty($this->filterOptionDatas) && $this->filterOptionDatas['inactive_hide'] == 1){
-                        $args = array_merge($args, ['status' => 'Available']);
-                }
+        }elseif(!empty($this->filterOptionDatas) && $this->filterOptionDatas['inactive_hide'] == 1){
+                $args = array_merge($args, ['status' => 'Available']);
+        }
 
-                // Force apartment type for table view
-                if (isset($params['page_type']) && $params['page_type'] === 'table') {
-                        $args = array_merge($args, ['type' => 'lakás']);
-                }
+        // Force apartment type for table view
+        if (isset($params['page_type']) && $params['page_type'] === 'table') {
+                $args = array_merge($args, ['type' => 'lakás']);
+        }
 
 		$page = 1;
 		if (isset($params['page']) ) {
@@ -1041,21 +1226,21 @@ class MibEnqueue extends MibBaseController
 		$table_data = $this->setDataToTable($datas);
 
                 //egyedi shortcode-os megjelenítés.
-                if (isset($_POST['shortcode']) && !empty($_POST['shortcode'])) {
+        if (isset($_POST['shortcode']) && !empty($_POST['shortcode'])) {
 
-                        // merge dynamic filter configuration with current args so
-                        // sort options remain selected after AJAX refresh
-                        $shortcodeConfig = array_merge($this->filterType, $args);
+            // merge dynamic filter configuration with current args so
+            // sort options remain selected after AJAX refresh
+            $shortcodeConfig = array_merge($this->filterType, $args);
 
-                        $html = $this->getCardHtmlShortCode(
-                            $table_data,
-                            $datas['total'],
-                            $currentPage,
-                            $shortcodeConfig,
-                            $_POST['shortcode'],
-                            $_POST['apartman_number']
-                        );
-                }
+            $html = $this->getCardHtmlShortCode(
+                $table_data,
+                $datas['total'],
+                $currentPage,
+                $shortcodeConfig,
+                $_POST['shortcode'],
+                $_POST['apartman_number']
+            );
+        }
 		elseif ($type == 'card') {
 
 			$html = $this->getCardHtml($table_data, $datas['total'], $currentPage, $args);
@@ -1126,9 +1311,6 @@ class MibEnqueue extends MibBaseController
         $perPage = ($_POST['page_type'] == 'card') ? ((isset($_POST['apartman_number']) && !empty($_POST['apartman_number']) ) ? $_POST['apartman_number'] : $this->numberOfApartmens) : 50;
 
 		list($args, $page) = $this->getArgumentumsByCatalog($_POST);
-
-		print_r($args);
-		die();
 
         list($slider_min, $slider_max, $price_slider_min, $price_slider_max, $floor_slider_min, $floor_slider_max, $room_slider_min, $room_slider_max, $garden_connection) = $this->getBaseSliderDatas();
 		$html = $this->getTable($args, $page, $perPage, $_POST['page_type']);
