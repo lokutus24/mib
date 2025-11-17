@@ -334,7 +334,7 @@ class MibBaseController
                 $basePriceRaw = (int) $item->price;
 
                 if (isset($item->discountPrice) && $item->discountPrice !== null && $item->discountPrice !== '' && is_numeric($item->discountPrice) && (float) $item->discountPrice > 0) {
-                    $discountPriceDisplay = number_format($item->discountPrice, 0) . ' Ft';
+                    $discountPriceDisplay = number_format($item->discountPrice / 1.05, 0) . ' Ft';
                     $discountPriceRaw = (int) $item->discountPrice;
 
                     $sale_price_badge = ($item->residentialPark->id == 43) ? $sale_white_badgeUrl : $sale_black_badgeUrl;
@@ -354,7 +354,7 @@ class MibBaseController
                 'discountPrice' => $discountPriceDisplay,
                 'basePriceRaw' => $basePriceRaw,
                 'discountPriceRaw' => $discountPriceRaw,
-                'supportedPrice' => $supportedPriceDisplay,
+                'supportedPrice' => ($discountPriceDisplay) ? $discountPriceDisplay : $supportedPriceDisplay,
                 'isRustZone' => $isRustZone,
                 'salesFloorArea' => $item->salesFloorArea . ' m²',
 		        'floor' => ($item->floor == 0) ? 'földszint' : $item->floor,
@@ -560,8 +560,8 @@ class MibBaseController
 
                         if (!empty($data['supportedPrice']) && !empty($data['isRustZone'])) {
                             $html .= '<div class="apartment-rustzone-flag">';
-                            $html .= '<span class="mib-supported-price-label">' . esc_html__('5% ÁFA visszaigényelhető! Ennyibe kerül neked:', 'mib') . '</span>';
-                            $html .= '<span class="mib-supported-price-value">' . esc_html($data['supportedPrice']) . '</span>';
+                            $html .= '' . esc_html__('5% ÁFA visszaigényelhető! Ennyibe kerül neked:', 'mib') .'
+                            <b>' . esc_html($data['supportedPrice']) . '</b></p>';
                             $html .= '</div>';
                         }
 	                $html .= '</div>'; // .apartment-info-box

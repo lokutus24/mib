@@ -269,6 +269,7 @@ class MibEnqueue extends MibBaseController
 
 
 		list($slider_min, $slider_max, $price_slider_min, $price_slider_max, $floor_slider_min, $floor_slider_max, $room_slider_min, $room_slider_max, $garden_connection) = $this->getBaseSliderDatas();
+
 		$html = $this->getTable($args, $page, $perPage, $_POST['page_type']);
 
 		wp_send_json_success([
@@ -1070,42 +1071,42 @@ class MibEnqueue extends MibBaseController
 		    $args = array_merge($args, ['sortType' => $sortType]);
 		}
 
-            if ( isset($params['residental_park_id']) && !empty($params['residental_park_id']) ) {
+        if ( isset($params['residental_park_id']) && !empty($params['residental_park_id']) ) {
 
-                $args = array_merge($args, ['residentialParkId' => $params['residental_park_id'] ]);
-            }else{
+            $args = array_merge($args, ['residentialParkId' => $params['residental_park_id'] ]);
+        }else{
 
-                    if (!empty($this->filterType['residential_park_ids'])) {
+                if (!empty($this->filterType['residential_park_ids'])) {
 
-                            $args = array_merge($args, ['residentialParkId' => implode(',', $this->filterType['residential_park_ids']) ]);
-                    }elseif (!empty($this->filterOptionDatas['residential_park_ids'])) {
-                            $args = array_merge($args, ['residentialParkId' => implode(',', $this->filterOptionDatas['residential_park_ids']) ]);
-                    }else{
-                            $args = array_merge($args, ['residentialParkId' => $this->residentialParkId ]);
-                    }
+                        $args = array_merge($args, ['residentialParkId' => implode(',', $this->filterType['residential_park_ids']) ]);
+                }elseif (!empty($this->filterOptionDatas['residential_park_ids'])) {
+                        $args = array_merge($args, ['residentialParkId' => implode(',', $this->filterOptionDatas['residential_park_ids']) ]);
+                }else{
+                        $args = array_merge($args, ['residentialParkId' => $this->residentialParkId ]);
+                }
+        }
+
+        //Shortcode
+
+	
+
+            if (!empty($this->filterType['apartment_skus'])) {
+
+                    $args = array_merge($args, ['name' => implode(',', $this->filterType['apartment_skus']) ]);
             }
 
-            //Shortcode
+            if (!empty($this->filterType['type'])) {
+                    $args = array_merge($args, ['type' => $this->filterType['type']]);
+            }
 
-		
+            if (!empty($this->filterType['extras']) && in_array('hide_unavailable', $this->filterType['extras']) ) {
+                    $args = array_merge($args, ['status' => 'Available']);
+            }
 
-                if (!empty($this->filterType['apartment_skus'])) {
-
-                        $args = array_merge($args, ['name' => implode(',', $this->filterType['apartment_skus']) ]);
-                }
-
-                if (!empty($this->filterType['type'])) {
-                        $args = array_merge($args, ['type' => $this->filterType['type']]);
-                }
-
-                if (!empty($this->filterType['extras']) && in_array('hide_unavailable', $this->filterType['extras']) ) {
-                        $args = array_merge($args, ['status' => 'Available']);
-                }
-
-                // Force apartment type for table view
-                if (isset($params['page_type']) && $params['page_type'] === 'table') {
-                        $args = array_merge($args, ['type' => 'lakás']);
-                }
+            // Force apartment type for table view
+            if (isset($params['page_type']) && $params['page_type'] === 'table') {
+                    $args = array_merge($args, ['type' => 'lakás']);
+            }
 
 		$page = 1;
 		if (isset($params['page']) ) {

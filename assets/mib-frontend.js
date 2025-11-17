@@ -2381,7 +2381,7 @@ jQuery(document).ready(function($) {
                 residental_park_id:parkId
             },
             success: function(response) {
-                
+
                 if (table.length > 0) {
                     table.replaceWith(response.data.html);
                 } else {
@@ -2404,7 +2404,8 @@ jQuery(document).ready(function($) {
                 }
 
                 if (response.data.floor_slider_min != null) {
-                    initializeFloorSlider(minFloor, maxFloor, response.data.floor_slider_min, response.data.floor_slider_max);
+                    //alert(maxFloor);
+                    initializeFloorSlider(response.data.floor_slider_min, response.data.floor_slider_max, response.data.floor_slider_min, response.data.floor_slider_max);
                 }else{
                     $("#custom-floor-slider").parent().remove();
                 }
@@ -2449,6 +2450,9 @@ jQuery(document).ready(function($) {
                 });
 
                 $('.select-residential-park').val(parkId);
+            },
+            error: function (error) {
+                console.log(error);
             }
         });
     });
@@ -4703,8 +4707,7 @@ jQuery(document).ready(function($) {
         if (!$checkbox.is(':checked')) {
             $checkbox.prop('checked', true);
         }
-        alert('slider');
-        //handleOtthonStartFilter();
+        handleOtthonStartFilter();
     }
 
     $(document).on('click', '.mib-otthonstart-badge', function (e) {
