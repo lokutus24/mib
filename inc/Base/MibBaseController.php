@@ -96,6 +96,7 @@ class MibBaseController
         42 => 'BrickeryHomes',
         43 => 'Revital Park',
         44 => 'Vác Dunakert',
+        45 => 'Cascade Residence',
     ];
 
     private $parkDistrictName = [
@@ -334,7 +335,9 @@ class MibBaseController
                 $basePriceRaw = (int) $item->price;
 
                 if (isset($item->discountPrice) && $item->discountPrice !== null && $item->discountPrice !== '' && is_numeric($item->discountPrice) && (float) $item->discountPrice > 0) {
-                    $discountPriceDisplay = number_format($item->discountPrice / 1.05, 0) . ' Ft';
+
+                    $supportedPriceDisplay = number_format($item->discountPrice / 1.05, 0) . ' Ft';
+                    $discountPriceDisplay = number_format( (int)$item->discountPrice, 0, ',', ','). ' Ft';
                     $discountPriceRaw = (int) $item->discountPrice;
 
                     $sale_price_badge = ($item->residentialPark->id == 43) ? $sale_white_badgeUrl : $sale_black_badgeUrl;
@@ -354,7 +357,7 @@ class MibBaseController
                 'discountPrice' => $discountPriceDisplay,
                 'basePriceRaw' => $basePriceRaw,
                 'discountPriceRaw' => $discountPriceRaw,
-                'supportedPrice' => ($discountPriceDisplay) ? $discountPriceDisplay : $supportedPriceDisplay,
+                'supportedPrice' => $supportedPriceDisplay,
                 'isRustZone' => $isRustZone,
                 'salesFloorArea' => $item->salesFloorArea . ' m²',
 		        'floor' => ($item->floor == 0) ? 'földszint' : $item->floor,
