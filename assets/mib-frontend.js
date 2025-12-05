@@ -13,10 +13,10 @@ if (typeof noUiSlider !== 'undefined') {
             range: { min: Number(defaultMin), max: Number(defaultMax) },
             step: 1
         });
-        sliderEl.noUiSlider.on('update', function(values) {
+        sliderEl.noUiSlider.on('update', function (values) {
             output.textContent = `${parseInt(values[0])} - ${parseInt(values[1])}`;
         });
-        sliderEl.noUiSlider.on('change', function(values) {
+        sliderEl.noUiSlider.on('change', function (values) {
             saveRoomSliderValues(parseInt(values[0]), parseInt(values[1]));
             checkIfAnyFilterIsActive();
         });
@@ -35,10 +35,10 @@ if (typeof noUiSlider !== 'undefined') {
             range: { min: Number(defaultMin), max: Number(defaultMax) },
             step: 1
         });
-        sliderEl.noUiSlider.on('update', function(values) {
+        sliderEl.noUiSlider.on('update', function (values) {
             output.textContent = `${formatCurrency(values[0])} - ${formatCurrency(values[1])}`;
         });
-        sliderEl.noUiSlider.on('change', function(values) {
+        sliderEl.noUiSlider.on('change', function (values) {
             savePriceCatalogSliderValues(parseFloat(values[0]), parseFloat(values[1]));
             checkIfAnyFilterIsActive();
         });
@@ -57,10 +57,10 @@ if (typeof noUiSlider !== 'undefined') {
             range: { min: Number(defaultMin), max: Number(defaultMax) },
             step: 1
         });
-        sliderEl.noUiSlider.on('update', function(values) {
+        sliderEl.noUiSlider.on('update', function (values) {
             output.textContent = `${formatSquareMeter(values[0])} - ${formatSquareMeter(values[1])}`;
         });
-        sliderEl.noUiSlider.on('change', function(values) {
+        sliderEl.noUiSlider.on('change', function (values) {
             saveSquareCatalogSliderValues(parseFloat(values[0]), parseFloat(values[1]));
             checkIfAnyFilterIsActive();
         });
@@ -79,10 +79,10 @@ if (typeof noUiSlider !== 'undefined') {
             range: { min: Number(defaultMin), max: Number(defaultMax) },
             step: 1
         });
-        sliderEl.noUiSlider.on('update', function(values) {
+        sliderEl.noUiSlider.on('update', function (values) {
             output.textContent = `${parseInt(values[0])} - ${parseInt(values[1])}`;
         });
-        sliderEl.noUiSlider.on('change', function(values) {
+        sliderEl.noUiSlider.on('change', function (values) {
             saveFloorSliderValues(parseInt(values[0]), parseInt(values[1]));
             checkIfAnyFilterIsActive();
         });
@@ -90,15 +90,15 @@ if (typeof noUiSlider !== 'undefined') {
         setTimeout(() => checkIfAnyFilterIsActive(), 100);
     }
 }
-jQuery(function($) {
+jQuery(function ($) {
     // jQuery UI slider API shim: .slider() now uses noUiSlider under the hood
     if (typeof noUiSlider === 'undefined') return;
-    $.fn.slider = function() {
+    $.fn.slider = function () {
         var args = Array.prototype.slice.call(arguments);
         // init with options object
         if (args.length === 0 || typeof args[0] === 'object') {
             var options = args[0] || {};
-            return this.each(function() {
+            return this.each(function () {
                 var sliderEl = this;
                 if (sliderEl.noUiSlider) sliderEl.noUiSlider.destroy();
                 var connect = options.range === true;
@@ -115,12 +115,12 @@ jQuery(function($) {
                     step: step
                 });
                 if (typeof options.slide === 'function') {
-                    sliderEl.noUiSlider.on('update', function(vals) {
+                    sliderEl.noUiSlider.on('update', function (vals) {
                         options.slide.call(sliderEl, null, { values: vals.map(Number) });
                     });
                 }
                 if (typeof options.change === 'function') {
-                    sliderEl.noUiSlider.on('change', function(vals) {
+                    sliderEl.noUiSlider.on('change', function (vals) {
                         options.change.call(sliderEl, null, { values: vals.map(Number) });
                     });
                 }
@@ -129,7 +129,7 @@ jQuery(function($) {
         // method calls
         var method = args[0];
         if (method === 'destroy') {
-            return this.each(function() {
+            return this.each(function () {
                 if (this.noUiSlider) this.noUiSlider.destroy();
             });
         }
@@ -157,9 +157,9 @@ jQuery(function($) {
         return this;
     };
 });
-jQuery(document).ready(function($) {
+jQuery(document).ready(function ($) {
 
-    $.ajaxPrefilter(function(options, originalOptions, jqXHR) {
+    $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
         var district = $('.district-select').val();
         if (district) {
             if (typeof options.data === 'string') {
@@ -175,7 +175,7 @@ jQuery(document).ready(function($) {
     var debounceTimer;
 
     function isDefaultCatalog() {
-        return $('#search-apartman-btn').length ;
+        return $('#search-apartman-btn').length;
     }
 
     function initializeSlider(minValue, maxValue, defaultMin = 0, defaultMax = 200) {
@@ -185,12 +185,12 @@ jQuery(document).ready(function($) {
             min: Number(defaultMin),
             max: Number(defaultMax),
             values: [Number(minValue), Number(maxValue)],
-            slide: function(event, ui) {
+            slide: function (event, ui) {
                 $("#range-value").text(ui.values[0] + " - " + ui.values[1]);
             },
-            change: function(event, ui) {
+            change: function (event, ui) {
                 $("#range-value").text(ui.values[0] + " - " + ui.values[1]);
-                
+
                 saveSliderValues(ui.values[0], ui.values[1]);
             }
         });
@@ -198,17 +198,17 @@ jQuery(document).ready(function($) {
     }
 
     function initializePriceSlider(minValue, maxValue, defaultMin = 0, defaultMax = 100000000) {
-        
+
         $("#price-slider-range").slider({
             range: true,
             min: Number(defaultMin),
             max: Number(defaultMax),
             values: [Number(minValue), Number(maxValue)],
             //step: 100000000,
-            slide: function(event, ui) {
+            slide: function (event, ui) {
                 $("#price-range-value").text(formatCurrency(ui.values[0]) + " - " + formatCurrency(ui.values[1]));
             },
-            change: function(event, ui) {
+            change: function (event, ui) {
 
                 $("#price-range-value").text(formatCurrency(ui.values[0]) + " - " + formatCurrency(ui.values[1]));
                 savePriceSliderValues(ui.values[0], ui.values[1]);
@@ -216,7 +216,7 @@ jQuery(document).ready(function($) {
         });
         $("#price-range-value").text(formatCurrency(minValue) + " - " + formatCurrency(maxValue));
     }
-        
+
     $.ajax({
         url: ajaxurl,
         data: {
@@ -224,7 +224,7 @@ jQuery(document).ready(function($) {
         },
         type: 'POST',
         dataType: 'JSON',
-        success: function(response) {
+        success: function (response) {
 
             if (response) {
 
@@ -236,11 +236,11 @@ jQuery(document).ready(function($) {
                     min: Number(response.min),
                     max: Number(response.max),
                     values: [response.min, response.max],
-                    slide: function(event, ui) {
+                    slide: function (event, ui) {
                         $("#range-value").text(ui.values[0] + " - " + ui.values[1]);
                     },
-                    change: function(event, ui) {
-                        
+                    change: function (event, ui) {
+
                         $("#range-value").text(ui.values[0] + " - " + ui.values[1]);
                         console.log("Az új értékek: " + ui.values[0] + " és " + ui.values[1]);
                         // Itt hívhatod meg az AJAX kérést, vagy más műveletet végrehajtani
@@ -257,7 +257,7 @@ jQuery(document).ready(function($) {
                 console.error('Hiba: ' + response.data.message);
             }
         },
-        error: function(xhr, status, error) {
+        error: function (xhr, status, error) {
             console.error('AJAX hiba: ' + error);
         }
     });
@@ -270,7 +270,7 @@ jQuery(document).ready(function($) {
         },
         type: 'POST',
         dataType: 'JSON',
-        success: function(response) {
+        success: function (response) {
 
             if (response) {
                 //price input range
@@ -283,10 +283,10 @@ jQuery(document).ready(function($) {
                     max: Number(response.max),
                     values: [response.min, response.max],
                     //step: 100000000,
-                    slide: function(event, ui) {
+                    slide: function (event, ui) {
                         $("#price-range-value").text(formatCurrency(ui.values[0]) + " - " + formatCurrency(ui.values[1]));
                     },
-                    change: function(event, ui) {
+                    change: function (event, ui) {
                         $("#price-range-value").text(formatCurrency(ui.values[0]) + " - " + formatCurrency(ui.values[1]));
                         savePriceSliderValues(ui.values[0], ui.values[1]);
                     }
@@ -298,7 +298,7 @@ jQuery(document).ready(function($) {
                 console.error('Hiba: ' + response.data.message);
             }
         },
-        error: function(xhr, status, error) {
+        error: function (xhr, status, error) {
             console.error('AJAX hiba: ' + error);
         }
     });
@@ -336,28 +336,31 @@ jQuery(document).ready(function($) {
     }
 
     function saveSliderValues(minValue, maxValue) {
-         
+
         $('#mib-spinner').show();
 
         var table = $('#custom-list-table-container');
 
         var cardContainer = $('#custom-card-container');
-        
-        var selectedFloor = $('.floor-checkbox:checked').map(function() {
+
+        var selectedFloor = $('.floor-checkbox:checked').map(function () {
             return this.value;
         }).get();
         // Összegyűjti az összes bejelölt 'floor-checkbox' értékét egy tömbbe
-        var selectedRoom = $('.room-checkbox:checked').map(function() {
+        var selectedRoom = $('.room-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
-        var selectOritentation = $('.orientation-checkbox:checked').map(function() {
+        var selectOritentation = $('.orientation-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
-        var selectAvailability = $('.availability-checkbox:checked').map(function() {
+        var selectAvailability = $('.availability-checkbox:checked').map(function () {
             return this.value;
         }).get();
+
+
+        var selectDiscountPrice = $('.catalog-discountprice-checkbox').is(':checked') ? 1 : 0;
 
 
         var priceRange = getPriceSliderValues();
@@ -380,17 +383,18 @@ jQuery(document).ready(function($) {
                 room: selectedRoom,
                 typeOfBalcony: selectOritentation,
                 availability: selectAvailability,
+                discountPrice: selectDiscountPrice,
                 sort: sort,
                 sortType: sortType,
                 page_type: (cardContainer.length == 1) ? 'card' : 'table'
             },
-            success: function(response) {
+            success: function (response) {
                 //console.log("ajax után: "+minValue +" :"+ maxValue);
-                if (table.length>0) {
-                  table.replaceWith(response.data.html);
-                }else{
-                   cardContainer.replaceWith(response.data.html);
-                   restoreViewMode();
+                if (table.length > 0) {
+                    table.replaceWith(response.data.html);
+                } else {
+                    cardContainer.replaceWith(response.data.html);
+                    restoreViewMode();
                 }
                 $('#mib-spinner').hide();
                 hoverDropDown();
@@ -402,11 +406,11 @@ jQuery(document).ready(function($) {
                 initializePriceSlider(priceRange[0], priceRange[1], response.data.price_slider_min, response.data.price_slider_max);
 
             },
-            error: function(error) {
+            error: function (error) {
                 console.log('Hiba történt az adatok betöltése közben.');
                 $('#mib-spinner').hide();
                 hoverDropDown();
-                
+
                 initializeSlider(minValue, maxValue, response.data.slider_min, response.data.slider_max);
                 initializePriceSlider(priceRange[0], priceRange[1], response.data.price_slider_min, response.data.price_slider_max);
             }
@@ -414,28 +418,30 @@ jQuery(document).ready(function($) {
     }
 
     function savePriceSliderValues(minValue, maxValue) {
-         
+
         $('#mib-spinner').show();
 
         var table = $('#custom-list-table-container');
 
         var cardContainer = $('#custom-card-container');
-        
-        var selectedFloor = $('.floor-checkbox:checked').map(function() {
+
+        var selectedFloor = $('.floor-checkbox:checked').map(function () {
             return this.value;
         }).get();
         // Összegyűjti az összes bejelölt 'floor-checkbox' értékét egy tömbbe
-        var selectedRoom = $('.room-checkbox:checked').map(function() {
+        var selectedRoom = $('.room-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
-        var selectOritentation = $('.orientation-checkbox:checked').map(function() {
+        var selectOritentation = $('.orientation-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
-        var selectAvailability = $('.availability-checkbox:checked').map(function() {
+        var selectAvailability = $('.availability-checkbox:checked').map(function () {
             return this.value;
         }).get();
+
+        var selectDiscountPrice = $('.catalog-discountprice-checkbox').is(':checked') ? 1 : 0;
 
         // Get current square slider values
         var squareRange = getMainSliderValues();
@@ -458,35 +464,36 @@ jQuery(document).ready(function($) {
                 room: selectedRoom,
                 typeOfBalcony: selectOritentation,
                 availability: selectAvailability,
+                discountPrice: selectDiscountPrice,
                 sort: sort,
                 sortType: sortType,
                 page_type: (cardContainer.length == 1) ? 'card' : 'table'
             },
-            success: function(response) {
+            success: function (response) {
                 //console.log("ajax után: "+minValue +" :"+ maxValue);
-                if (table.length>0) {
-                  table.replaceWith(response.data.html);
-                }else{
-                   cardContainer.replaceWith(response.data.html);
-                   restoreViewMode();
+                if (table.length > 0) {
+                    table.replaceWith(response.data.html);
+                } else {
+                    cardContainer.replaceWith(response.data.html);
+                    restoreViewMode();
                 }
                 $('#mib-spinner').hide();
                 hoverDropDown();
                 updateFloorSelectionCount('floor', 'Emelet');
                 updateFloorSelectionCount('room', 'Szobák');
                 updateFloorSelectionCount('orientation', 'Erkély típusa');
-                
+
                 initializeSlider(squareRange[0], squareRange[1], response.data.slider_min, response.data.slider_max);
                 initializePriceSlider(minValue, maxValue, response.data.price_slider_min, response.data.price_slider_max);
-                
+
             },
-            error: function(error) {
+            error: function (error) {
                 console.log('Hiba történt az adatok betöltése közben.');
                 $('#mib-spinner').hide();
                 hoverDropDown();
                 initializeSlider(squareRange[0], squareRange[1], response.data.slider_min, response.data.slider_max);
                 initializePriceSlider(minValue, maxValue, response.data.price_slider_min, response.data.price_slider_max);
-                
+
             }
         });
     }
@@ -494,23 +501,23 @@ jQuery(document).ready(function($) {
 
     function updateFloorSelectionCount(element, name) {
         // Megszámolja a bejelölt checkboxokat
-        var selectedCount = $('.'+element+'-checkbox:checked').length;
+        var selectedCount = $('.' + element + '-checkbox:checked').length;
         // Frissíti a gomb szövegét
-        var buttonText = selectedCount > 0 ? name+" (" + selectedCount + ")" : name;
-        $('#'+element+'Dropdown').text(buttonText);
+        var buttonText = selectedCount > 0 ? name + " (" + selectedCount + ")" : name;
+        $('#' + element + 'Dropdown').text(buttonText);
     }
 
     function hoverDropDown() {
 
-        $('.dropdown-toggle').each(function() {
-            var dropdown = $(this); 
+        $('.dropdown-toggle').each(function () {
+            var dropdown = $(this);
             var dropdownMenu = dropdown.next('.dropdown-menu');
 
             dropdown.hover(
-                function() {
+                function () {
                     dropdownMenu.addClass('show');
-                }, function() {
-                    setTimeout(function() {
+                }, function () {
+                    setTimeout(function () {
                         if (!dropdownMenu.is(':hover')) {
                             dropdownMenu.removeClass('show');
                         }
@@ -518,25 +525,25 @@ jQuery(document).ready(function($) {
                 }
             );
 
-            dropdown.click(function(e) {
+            dropdown.click(function (e) {
                 e.stopPropagation();
                 dropdownMenu.toggleClass('show');
             });
         });
 
-        $(document).click(function() {
+        $(document).click(function () {
             $('.dropdown-menu').removeClass('show');
         });
 
-        $('.dropdown-menu').click(function(e) {
+        $('.dropdown-menu').click(function (e) {
             e.stopPropagation();
         });
     }
 
     hoverDropDown();
-    
+
     // Keresés kezelése
-    $('#custom-search-input').on('keyup', function(e) {
+    $('#custom-search-input').on('keyup', function (e) {
         var searchTerm = $(this).val();
         console.log(searchTerm);
 
@@ -547,34 +554,34 @@ jQuery(document).ready(function($) {
                 action: 'search_data',
                 searchTerm: searchTerm,
             },
-            success: function(response) {
+            success: function (response) {
                 $('.custom-list-table-container').html(response);
             }
         });
     });
 
-    $(document).on('change', '.floor-checkbox', function(e) {
+    $(document).on('change', '.floor-checkbox', function (e) {
 
         e.preventDefault();
         $('#mib-spinner').show();
         var table = $('#custom-list-table-container');
 
         var cardContainer = $('#custom-card-container');
-        
+
         // Összegyűjti az összes bejelölt 'floor-checkbox' értékét egy tömbbe
-        var selectedFloors = $('.floor-checkbox:checked').map(function() {
+        var selectedFloors = $('.floor-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
-        var selectedRoom = $('.room-checkbox:checked').map(function() {
+        var selectedRoom = $('.room-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
-        var selectOritentation = $('.orientation-checkbox:checked').map(function() {
+        var selectOritentation = $('.orientation-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
-        var selectAvailability = $('.availability-checkbox:checked').map(function() {
+        var selectAvailability = $('.availability-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
@@ -602,21 +609,21 @@ jQuery(document).ready(function($) {
                 price_slider_max_value: price_slider_max_value,
                 page_type: (cardContainer.length == 1) ? 'card' : 'table'
             },
-            success: function(response) {
+            success: function (response) {
 
-                if (table.length>0) {
-                  table.replaceWith(response.data.html);
-                }else{
-                   cardContainer.replaceWith(response.data.html);
-                   restoreViewMode();
+                if (table.length > 0) {
+                    table.replaceWith(response.data.html);
+                } else {
+                    cardContainer.replaceWith(response.data.html);
+                    restoreViewMode();
                 }
                 $('#mib-spinner').hide();
                 hoverDropDown();
                 updateFloorSelectionCount('floor', 'Emelet');
                 updateFloorSelectionCount('room', 'Szobák');
                 updateFloorSelectionCount('orientation', 'Erkély típusa');
-                
-                if ( $("#slider-range").length ) {
+
+                if ($("#slider-range").length) {
                     initializeSlider(slider_min, slider_max, response.data.slider_min, response.data.slider_max);
                     initializePriceSlider(price_slider_min_value, price_slider_max_value, response.data.price_slider_min, response.data.price_slider_max);
                 } else {
@@ -633,14 +640,14 @@ jQuery(document).ready(function($) {
                     initializeCatalogPriceSlider(response.data.price_slider_min, response.data.price_slider_max, response.data.price_slider_min, response.data.price_slider_max);
                 }
             },
-            error: function(error) {
+            error: function (error) {
                 console.log(error);
                 $('#mib-spinner').hide();
                 hoverDropDown();
-                if ($("#slider-range").length ) {
+                if ($("#slider-range").length) {
                     initializeSlider(slider_min, slider_max, response.data.slider_min, response.data.slider_max);
                     initializePriceSlider(price_slider_min_value, price_slider_max_value, response.data.price_slider_min, response.data.price_slider_max);
-                }else{
+                } else {
                     $('#min-price').val(price_slider_min_value);
                     $('#max-price').val(price_slider_max_value);
 
@@ -651,27 +658,27 @@ jQuery(document).ready(function($) {
         });
     });
 
-    $(document).on('change', '.room-checkbox', function(e) {
+    $(document).on('change', '.room-checkbox', function (e) {
 
         e.preventDefault();
         $('#mib-spinner').show();
         var table = $('#custom-list-table-container');
 
         var cardContainer = $('#custom-card-container');
-        
-        var selectedFloor = $('.floor-checkbox:checked').map(function() {
+
+        var selectedFloor = $('.floor-checkbox:checked').map(function () {
             return this.value;
         }).get();
         // Összegyűjti az összes bejelölt 'floor-checkbox' értékét egy tömbbe
-        var selectedRoom = $('.room-checkbox:checked').map(function() {
+        var selectedRoom = $('.room-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
-        var selectOritentation = $('.orientation-checkbox:checked').map(function() {
+        var selectOritentation = $('.orientation-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
-        var selectAvailability = $('.availability-checkbox:checked').map(function() {
+        var selectAvailability = $('.availability-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
@@ -701,23 +708,23 @@ jQuery(document).ready(function($) {
                 price_slider_max_value: price_slider_max_value,
                 page_type: (cardContainer.length == 1) ? 'card' : 'table'
             },
-            success: function(response) {
-                if (table.length>0) {
-                  table.replaceWith(response.data.html);
-                }else{
-                   cardContainer.replaceWith(response.data.html);
-                   restoreViewMode();
+            success: function (response) {
+                if (table.length > 0) {
+                    table.replaceWith(response.data.html);
+                } else {
+                    cardContainer.replaceWith(response.data.html);
+                    restoreViewMode();
                 }
                 $('#mib-spinner').hide();
                 hoverDropDown();
                 updateFloorSelectionCount('floor', 'Emelet');
                 updateFloorSelectionCount('room', 'Szobák');
                 updateFloorSelectionCount('orientation', 'Erkély típusa');
-                
-                if ($("#slider-range").length ) {
+
+                if ($("#slider-range").length) {
                     initializeSlider(slider_min, slider_max, response.data.slider_min, response.data.slider_max);
                     initializePriceSlider(price_slider_min_value, price_slider_max_value, response.data.price_slider_min, response.data.price_slider_max);
-                }else{
+                } else {
                     $('#min-price').val(price_slider_min_value);
                     $('#max-price').val(price_slider_max_value);
 
@@ -725,14 +732,14 @@ jQuery(document).ready(function($) {
                     $('#max-area').val(slider_max);
                 }
             },
-            error: function(error) {
-                
+            error: function (error) {
+
                 $('#mib-spinner').hide();
                 hoverDropDown();
-                if ($("#slider-range").length ) {
+                if ($("#slider-range").length) {
                     initializeSlider(slider_min, slider_max, response.data.slider_min, response.data.slider_max);
                     initializePriceSlider(price_slider_min_value, price_slider_max_value, response.data.price_slider_min, response.data.price_slider_max);
-                }else{
+                } else {
                     $('#min-price').val(price_slider_min_value);
                     $('#max-price').val(price_slider_max_value);
 
@@ -743,7 +750,7 @@ jQuery(document).ready(function($) {
         });
     });
 
-    $(document).on('change', '.orientation-checkbox', function(e) {
+    $(document).on('change', '.orientation-checkbox', function (e) {
 
         if (isDefaultCatalog()) {
             return;
@@ -754,20 +761,20 @@ jQuery(document).ready(function($) {
         var table = $('#custom-list-table-container');
 
         var cardContainer = $('#custom-card-container');
-        
-        var selectedFloor = $('.floor-checkbox:checked').map(function() {
+
+        var selectedFloor = $('.floor-checkbox:checked').map(function () {
             return this.value;
         }).get();
         // Összegyűjti az összes bejelölt 'floor-checkbox' értékét egy tömbbe
-        var selectedRoom = $('.room-checkbox:checked').map(function() {
+        var selectedRoom = $('.room-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
-        var selectOritentation = $('.orientation-checkbox:checked').map(function() {
+        var selectOritentation = $('.orientation-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
-        var selectAvailability = $('.availability-checkbox:checked').map(function() {
+        var selectAvailability = $('.availability-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
@@ -795,24 +802,24 @@ jQuery(document).ready(function($) {
                 price_slider_max_value: price_slider_max_value,
                 page_type: (cardContainer.length == 1) ? 'card' : 'table'
             },
-            success: function(response) {
-                if (table.length>0) {
-                  table.replaceWith(response.data.html);
-                }else{
-                   cardContainer.replaceWith(response.data.html);
-                   restoreViewMode();
+            success: function (response) {
+                if (table.length > 0) {
+                    table.replaceWith(response.data.html);
+                } else {
+                    cardContainer.replaceWith(response.data.html);
+                    restoreViewMode();
                 }
                 $('#mib-spinner').hide();
                 hoverDropDown();
                 updateFloorSelectionCount('floor', 'Emelet');
                 updateFloorSelectionCount('room', 'Szobák');
                 updateFloorSelectionCount('orientation', 'Erkély típusa');
-                
 
-                if ($("#slider-range").length ) {
+
+                if ($("#slider-range").length) {
                     initializeSlider(slider_min, slider_max, response.data.slider_min, response.data.slider_max);
                     initializePriceSlider(price_slider_min_value, price_slider_max_value, response.data.price_slider_min, response.data.price_slider_max);
-                }else{
+                } else {
                     $('#min-price').val(price_slider_min_value);
                     $('#max-price').val(price_slider_max_value);
 
@@ -820,14 +827,14 @@ jQuery(document).ready(function($) {
                     $('#max-area').val(slider_max);
                 }
             },
-            error: function(error) {
+            error: function (error) {
                 console.log(error);
                 $('#mib-spinner').hide();
                 hoverDropDown();
-                if ($("#slider-range").length ) {
+                if ($("#slider-range").length) {
                     initializeSlider(slider_min, slider_max, response.data.slider_min, response.data.slider_max);
                     initializePriceSlider(price_slider_min_value, price_slider_max_value, response.data.price_slider_min, response.data.price_slider_max);
-                }else{
+                } else {
                     $('#min-price').val(price_slider_min_value);
                     $('#max-price').val(price_slider_max_value);
 
@@ -838,7 +845,7 @@ jQuery(document).ready(function($) {
         });
     });
 
-    $(document).on('change', '.availability-checkbox', function(e) {
+    $(document).on('change', '.availability-checkbox', function (e) {
 
         if (isDefaultCatalog()) {
             return;
@@ -849,20 +856,20 @@ jQuery(document).ready(function($) {
         var table = $('#custom-list-table-container');
 
         var cardContainer = $('#custom-card-container');
-        
-        var selectedFloor = $('.floor-checkbox:checked').map(function() {
+
+        var selectedFloor = $('.floor-checkbox:checked').map(function () {
             return this.value;
         }).get();
         // Összegyűjti az összes bejelölt 'floor-checkbox' értékét egy tömbbe
-        var selectedRoom = $('.room-checkbox:checked').map(function() {
+        var selectedRoom = $('.room-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
-        var selectOritentation = $('.orientation-checkbox:checked').map(function() {
+        var selectOritentation = $('.orientation-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
-        var selectAvailability = $('.availability-checkbox:checked').map(function() {
+        var selectAvailability = $('.availability-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
@@ -890,23 +897,23 @@ jQuery(document).ready(function($) {
                 price_slider_max_value: price_slider_max_value,
                 page_type: (cardContainer.length == 1) ? 'card' : 'table'
             },
-            success: function(response) {
-                if (table.length>0) {
-                  table.replaceWith(response.data.html);
-                }else{
-                   cardContainer.replaceWith(response.data.html);
-                   restoreViewMode();
+            success: function (response) {
+                if (table.length > 0) {
+                    table.replaceWith(response.data.html);
+                } else {
+                    cardContainer.replaceWith(response.data.html);
+                    restoreViewMode();
                 }
                 $('#mib-spinner').hide();
                 hoverDropDown();
                 updateFloorSelectionCount('floor', 'Emelet');
                 updateFloorSelectionCount('room', 'Szobák');
                 updateFloorSelectionCount('orientation', 'Erkély típusa');
-            
-                if ($("#slider-range").length ) {
+
+                if ($("#slider-range").length) {
                     initializeSlider(slider_min, slider_max, response.data.slider_min, response.data.slider_max);
                     initializePriceSlider(price_slider_min_value, price_slider_max_value, response.data.price_slider_min, response.data.price_slider_max);
-                }else{
+                } else {
                     $('#min-price').val(price_slider_min_value);
                     $('#max-price').val(price_slider_max_value);
 
@@ -914,14 +921,14 @@ jQuery(document).ready(function($) {
                     $('#max-area').val(slider_max);
                 }
             },
-            error: function(error) {
+            error: function (error) {
                 console.log(error);
                 $('#mib-spinner').hide();
                 hoverDropDown();
-                if ($("#slider-range").length ) {
+                if ($("#slider-range").length) {
                     initializeSlider(slider_min, slider_max, response.data.slider_min, response.data.slider_max);
                     initializePriceSlider(price_slider_min_value, price_slider_max_value, response.data.price_slider_min, response.data.price_slider_max);
-                }else{
+                } else {
                     $('#min-price').val(price_slider_min_value);
                     $('#max-price').val(price_slider_max_value);
 
@@ -932,7 +939,7 @@ jQuery(document).ready(function($) {
         });
     });
 
-    $(document).on('change', '.district-select', function(e) {
+    $(document).on('change', '.district-select', function (e) {
 
         if (isDefaultCatalog()) {
             return;
@@ -949,25 +956,26 @@ jQuery(document).ready(function($) {
 
         const cardContainer = $('#custom-card-container');
         const table = $('#custom-list-table-container');
-        
-        var selectOritentation = $('.catalog-orientation-checkbox:checked').map(function() {
+
+        var selectOritentation = $('.catalog-orientation-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
-        var selectAvailability = $('.catalog-availability-checkbox:checked').map(function() {
+        var selectAvailability = $('.catalog-availability-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
-        var selectStairway = $('.catalog-stairway-checkbox:checked').map(function() {
+        var selectStairway = $('.catalog-stairway-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
-        var selectStairway = $('.catalog-stairway-checkbox:checked').map(function() {
+        var selectStairway = $('.catalog-stairway-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
         var selectGardenConnection = $('.catalog-gardenconnection-checkbox').is(':checked') ? 1 : 0;
         var selectOtthonStart = $('.catalog-otthonstart-checkbox').is(':checked') ? 1 : 0;
+        var selectDiscountPrice = $('.catalog-discountprice-checkbox').is(':checked') ? 1 : 0;
 
 
         var minRoom = $("#custom-room-slider").slider("option", "values")[0];
@@ -1013,16 +1021,17 @@ jQuery(document).ready(function($) {
                 availability: selectAvailability,
                 garden_connection: selectGardenConnection,
                 otthonStart: selectOtthonStart,
+                discountPrice: selectDiscountPrice,
                 page_type: (cardContainer.length == 1) ? 'card' : 'table',
                 shortcode: shortcode,
                 apartman_number: apartman_number,
-                stairway:selectStairway,
+                stairway: selectStairway,
                 sort: sort,
                 sortType: sortType,
-                residental_park_id:selectedParkId
+                residental_park_id: selectedParkId
             },
-            success: function(response) {
-                
+            success: function (response) {
+
                 if (table.length > 0) {
                     table.replaceWith(response.data.html);
                 } else {
@@ -1040,33 +1049,33 @@ jQuery(document).ready(function($) {
 
                 if (response.data.room_slider_min != null) {
                     initializeRoomSlider(minRoom, maxRoom, response.data.room_slider_min, response.data.room_slider_max);
-                }else{
+                } else {
                     $("#custom-room-slider").parent().remove();
                 }
 
                 if (response.data.floor_slider_min != null) {
                     initializeFloorSlider(minFloor, maxFloor, response.data.floor_slider_min, response.data.floor_slider_max);
-                }else{
+                } else {
                     $("#custom-floor-slider").parent().remove();
                 }
 
                 if (response.data.price_slider_min != null) {
                     initializeCatalogPriceSlider(minPrice, maxPrice, response.data.price_slider_min, response.data.price_slider_max);
-                }else{
+                } else {
                     $("#custom-price-slider").parent().remove();
                 }
-                
+
                 if (response.data.slider_min != null) {
                     initializeCatalogSquareSlider(minSquare, maxSquare, response.data.slider_min, response.data.slider_max);
-                }else{
+                } else {
                     $("#custom-square-slider").parent().remove();
                 }
 
-                selectAvailability.forEach(function(value) {
+                selectAvailability.forEach(function (value) {
                     $('.catalog-availability-checkbox[value="' + value + '"]').prop('checked', true);
                 });
 
-                selectOritentation.forEach(function(value) {
+                selectOritentation.forEach(function (value) {
                     $('.catalog-orientation-checkbox[value="' + value + '"]').prop('checked', true);
                 });
                 if (selectGardenConnection == 1) {
@@ -1086,7 +1095,7 @@ jQuery(document).ready(function($) {
                 }
 
 
-                selectStairway.forEach(function(value) {
+                selectStairway.forEach(function (value) {
                     $('.catalog-stairway-checkbox[value="' + value + '"]').prop('checked', true);
                 });
 
@@ -1094,14 +1103,14 @@ jQuery(document).ready(function($) {
 
                 checkFavorites();
             },
-            error: function(error) {
+            error: function (error) {
                 console.log(error);
                 $('#mib-spinner').hide();
                 hoverDropDown();
-                if ($("#slider-range").length ) {
+                if ($("#slider-range").length) {
                     initializeSlider(slider_min, slider_max, response.data?.slider_min, response.data?.slider_max);
                     initializePriceSlider(price_slider_min_value, price_slider_max_value, response.data?.price_slider_min, response.data?.price_slider_max);
-                }else{
+                } else {
                     $('#min-price').val(price_slider_min_value);
                     $('#max-price').val(price_slider_max_value);
 
@@ -1114,7 +1123,7 @@ jQuery(document).ready(function($) {
     });
 
     // Pagináció és keresés kezelése, ahogy korábban láttuk
-    $(document).on('click', '#page-link', function(e) {
+    $(document).on('click', '#page-link', function (e) {
 
         e.preventDefault();
 
@@ -1128,24 +1137,24 @@ jQuery(document).ready(function($) {
         }
 
         var page = $(this).data('page');
-        
+
         var table = $('#custom-list-table-container');
 
         var cardContainer = $('#custom-card-container');
-        
-        var selectedFloor = $('.floor-checkbox:checked').map(function() {
+
+        var selectedFloor = $('.floor-checkbox:checked').map(function () {
             return this.value;
         }).get();
         // Összegyűjti az összes bejelölt 'floor-checkbox' értékét egy tömbbe
-        var selectedRoom = $('.room-checkbox:checked').map(function() {
+        var selectedRoom = $('.room-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
-        var selectOritentation = $('.orientation-checkbox:checked').map(function() {
+        var selectOritentation = $('.orientation-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
-        var selectAvailability = $('.availability-checkbox:checked').map(function() {
+        var selectAvailability = $('.availability-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
@@ -1174,15 +1183,15 @@ jQuery(document).ready(function($) {
         var minSquare = squareVals[0];
         var maxSquare = squareVals[1];
 
-        var selectAvailability = $('.catalog-availability-checkbox:checked').map(function() {
+        var selectAvailability = $('.catalog-availability-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
-        var selectOritentation = $('.catalog-orientation-checkbox:checked').map(function() {
+        var selectOritentation = $('.catalog-orientation-checkbox:checked').map(function () {
             return this.value;
         }).get();
         //catalogus nézet idáig
-        
+
         $.ajax({
             url: ajaxurl,
             type: 'POST',
@@ -1199,10 +1208,10 @@ jQuery(document).ready(function($) {
                 price_slider_min_value: price_slider_min_value,
                 price_slider_max_value: price_slider_max_value,
                 page_type: (cardContainer.length == 1) ? 'card' : 'table',
-                shortcode:shortcode,
+                shortcode: shortcode,
                 apartman_number: apartman_number
             },
-            success: function(response) {
+            success: function (response) {
 
 
                 if (table.length > 0) {
@@ -1217,41 +1226,41 @@ jQuery(document).ready(function($) {
 
                 if (response.data.room_slider_min != null) {
                     initializeRoomSlider(minRoom, maxRoom, response.data.room_slider_min, response.data.room_slider_max);
-                }else{
+                } else {
                     $("#custom-room-slider").parent().remove();
                 }
 
                 if (response.data.floor_slider_min != null) {
                     initializeFloorSlider(minFloor, maxFloor, response.data.floor_slider_min, response.data.floor_slider_max);
-                }else{
+                } else {
                     $("#custom-floor-slider").parent().remove();
                 }
 
                 if (response.data.price_slider_min != null) {
                     initializeCatalogPriceSlider(minPrice, maxPrice, response.data.price_slider_min, response.data.price_slider_max);
-                }else{
+                } else {
                     $("#custom-price-slider").parent().remove();
                 }
-                
+
                 if (response.data.slider_min != null) {
                     initializeCatalogSquareSlider(minSquare, maxSquare, response.data.slider_min, response.data.slider_max);
-                }else{
+                } else {
                     $("#custom-square-slider").parent().remove();
                 }
 
-                selectAvailability.forEach(function(value) {
+                selectAvailability.forEach(function (value) {
                     $('.catalog-availability-checkbox[value="' + value + '"]').prop('checked', true);
                 });
 
-                selectOritentation.forEach(function(value) {
+                selectOritentation.forEach(function (value) {
                     $('.catalog-orientation-checkbox[value="' + value + '"]').prop('checked', true);
                 });//
 
-                
-                if ($("#slider-range").length ) {
+
+                if ($("#slider-range").length) {
                     initializeSlider(slider_min, slider_max, response.data.slider_min, response.data.slider_max);
                     initializePriceSlider(price_slider_min_value, price_slider_max_value, response.data.price_slider_min, response.data.price_slider_max);
-                }else{
+                } else {
                     $('#min-price').val(price_slider_min_value);
                     $('#max-price').val(price_slider_max_value);
 
@@ -1259,15 +1268,15 @@ jQuery(document).ready(function($) {
                     $('#max-area').val(slider_max);
                 }
             },
-            error: function(error) {
+            error: function (error) {
 
                 console.log('Hiba történt az adatok betöltése közben.');
                 $('#mib-spinner').hide();
                 hoverDropDown();
-                if ($("#slider-range").length ) {
+                if ($("#slider-range").length) {
                     initializeSlider(slider_min, slider_max, response.data.slider_min, response.data.slider_max);
                     initializePriceSlider(price_slider_min_value, price_slider_max_value, response.data.price_slider_min, response.data.price_slider_max);
-                }else{
+                } else {
                     $('#min-price').val(price_slider_min_value);
                     $('#max-price').val(price_slider_max_value);
 
@@ -1278,8 +1287,8 @@ jQuery(document).ready(function($) {
         });
     });
 
-    $(document).on('click', '#mib-filter-deletefilters', function(e) {
-        
+    $(document).on('click', '#mib-filter-deletefilters', function (e) {
+
         e.preventDefault();
         $('#mib-spinner').show();
 
@@ -1295,20 +1304,20 @@ jQuery(document).ready(function($) {
                 action: 'deletefilters',
                 page_type: (cardContainer.length == 1) ? 'card' : 'table'
             },
-            success: function(response) {
-                if (table.length>0) {
-                  table.replaceWith(response.data.html);
-                }else{
-                   cardContainer.replaceWith(response.data.html);
-                   restoreViewMode();
+            success: function (response) {
+                if (table.length > 0) {
+                    table.replaceWith(response.data.html);
+                } else {
+                    cardContainer.replaceWith(response.data.html);
+                    restoreViewMode();
                 }
                 $('#mib-spinner').hide();
                 hoverDropDown();
                 // Az alapértelmezett értékek használata a slider inicializálásához
-                if ($("#slider-range").length ) {
+                if ($("#slider-range").length) {
                     initializeSlider(response.data.slider_min, response.data.slider_max, response.data.slider_min, response.data.slider_max);
                     initializePriceSlider(response.data.price_slider_min, response.data.price_slider_max, response.data.price_slider_min, response.data.price_slider_max);
-                }else{
+                } else {
                     $('#min-price').val(response.data.price_slider_min);
                     $('#max-price').val(response.data.price_slider_max);
 
@@ -1316,14 +1325,14 @@ jQuery(document).ready(function($) {
                     $('#max-area').val(response.data.slider_max);
                 }
             },
-            error: function(error) {
+            error: function (error) {
                 console.log('Hiba történt az adatok betöltése közben.');
                 $('#mib-spinner').hide();
                 hoverDropDown();
-                if ($("#slider-range").length ) {
+                if ($("#slider-range").length) {
                     initializeSlider(response.data.slider_min, response.data.slider_max, response.data.slider_min, response.data.slider_max);
                     initializePriceSlider(response.data.price_slider_min, response.data.price_slider_max, response.data.price_slider_min, response.data.price_slider_max);
-                }else{
+                } else {
                     $('#min-price').val(price_slider_min_value);
                     $('#max-price').val(price_slider_max_value);
 
@@ -1337,10 +1346,10 @@ jQuery(document).ready(function($) {
 
     var debounceTimer;
 
-    $(document).on('input', '#min-price, #max-price', function(e) {
+    $(document).on('input', '#min-price, #max-price', function (e) {
         clearTimeout(debounceTimer); // Minden input változásnál törli az előző időzítést
 
-        debounceTimer = setTimeout(function() {
+        debounceTimer = setTimeout(function () {
             // Lekérjük a mezők értékeit
             var minPrice = $('#min-price').val();
             var maxPrice = $('#max-price').val();
@@ -1355,20 +1364,20 @@ jQuery(document).ready(function($) {
             var table = $('#custom-list-table-container');
 
             var cardContainer = $('#custom-card-container');
-            
-            var selectedFloor = $('.floor-checkbox:checked').map(function() {
+
+            var selectedFloor = $('.floor-checkbox:checked').map(function () {
                 return this.value;
             }).get();
 
-            var selectedRoom = $('.room-checkbox:checked').map(function() {
+            var selectedRoom = $('.room-checkbox:checked').map(function () {
                 return this.value;
             }).get();
 
-            var selectOrientation = $('.orientation-checkbox:checked').map(function() {
+            var selectOrientation = $('.orientation-checkbox:checked').map(function () {
                 return this.value;
             }).get();
 
-            var selectAvailability = $('.availability-checkbox:checked').map(function() {
+            var selectAvailability = $('.availability-checkbox:checked').map(function () {
                 return this.value;
             }).get();
 
@@ -1396,12 +1405,12 @@ jQuery(document).ready(function($) {
                     availability: selectAvailability,
                     page_type: (cardContainer.length == 1) ? 'card' : 'table'
                 },
-                success: function(response) {
-                    if (table.length>0) {
-                      table.replaceWith(response.data.html);
-                    }else{
-                       cardContainer.replaceWith(response.data.html);
-                       restoreViewMode();
+                success: function (response) {
+                    if (table.length > 0) {
+                        table.replaceWith(response.data.html);
+                    } else {
+                        cardContainer.replaceWith(response.data.html);
+                        restoreViewMode();
                     }
                     $('#mib-spinner').hide();
                     hoverDropDown();
@@ -1409,7 +1418,7 @@ jQuery(document).ready(function($) {
                     updateFloorSelectionCount('room', 'Szobák');
                     updateFloorSelectionCount('orientation', 'Erkély típusa');
 
-                    if ($("#slider-range").length ) {
+                    if ($("#slider-range").length) {
                         initializeSlider(slider_min, slider_max, response.data.slider_min, response.data.slider_max);
                         initializePriceSlider(price_slider_min_value, price_slider_max_value, response.data.price_slider_min, response.data.price_slider_max);
                     } else {
@@ -1419,7 +1428,7 @@ jQuery(document).ready(function($) {
                         $('#max-area').val(slider_max);
                     }
                 },
-                error: function(error) {
+                error: function (error) {
                     console.log('Hiba történt az adatok betöltése közben.');
                     $('#mib-spinner').hide();
                     hoverDropDown();
@@ -1429,11 +1438,11 @@ jQuery(document).ready(function($) {
         }, 500); // 500 ms-os késleltetés
     });
 
-    $(document).on('input', '#min-area, #max-area', function(e) {
+    $(document).on('input', '#min-area, #max-area', function (e) {
 
         clearTimeout(debounceTimer); // Törli az előző időzítőt
 
-        debounceTimer = setTimeout(function() { // Késleltetett hívás
+        debounceTimer = setTimeout(function () { // Késleltetett hívás
             // Lekérjük a mezők értékeit
             var minPrice = $('#min-price').val();
             var maxPrice = $('#max-price').val();
@@ -1446,20 +1455,20 @@ jQuery(document).ready(function($) {
             var table = $('#custom-list-table-container');
 
             var cardContainer = $('#custom-card-container');
-            
-            var selectedFloor = $('.floor-checkbox:checked').map(function() {
-                return this.value;
-            }).get();
-            
-            var selectedRoom = $('.room-checkbox:checked').map(function() {
+
+            var selectedFloor = $('.floor-checkbox:checked').map(function () {
                 return this.value;
             }).get();
 
-            var selectOrientation = $('.orientation-checkbox:checked').map(function() {
+            var selectedRoom = $('.room-checkbox:checked').map(function () {
                 return this.value;
             }).get();
 
-            var selectAvailability = $('.availability-checkbox:checked').map(function() {
+            var selectOrientation = $('.orientation-checkbox:checked').map(function () {
+                return this.value;
+            }).get();
+
+            var selectAvailability = $('.availability-checkbox:checked').map(function () {
                 return this.value;
             }).get();
 
@@ -1487,12 +1496,12 @@ jQuery(document).ready(function($) {
                     availability: selectAvailability,
                     page_type: (cardContainer.length == 1) ? 'card' : 'table'
                 },
-                success: function(response) {
-                    if (table.length>0) {
-                      table.replaceWith(response.data.html);
-                    }else{
-                       cardContainer.replaceWith(response.data.html);
-                       restoreViewMode();
+                success: function (response) {
+                    if (table.length > 0) {
+                        table.replaceWith(response.data.html);
+                    } else {
+                        cardContainer.replaceWith(response.data.html);
+                        restoreViewMode();
                     }
                     $('#mib-spinner').hide();
                     hoverDropDown();
@@ -1500,7 +1509,7 @@ jQuery(document).ready(function($) {
                     updateFloorSelectionCount('room', 'Szobák');
                     updateFloorSelectionCount('orientation', 'Erkély típusa');
 
-                    if ($("#slider-range").length ) {
+                    if ($("#slider-range").length) {
                         initializeSlider(slider_min, slider_max, response.data.slider_min, response.data.slider_max);
                         initializePriceSlider(price_slider_min_value, price_slider_max_value, response.data.price_slider_min, response.data.price_slider_max);
                     } else {
@@ -1511,7 +1520,7 @@ jQuery(document).ready(function($) {
                         $('#max-area').val(slider_max);
                     }
                 },
-                error: function(error) {
+                error: function (error) {
                     console.log('Hiba történt az adatok betöltése közben.');
                     $('#mib-spinner').hide();
                     hoverDropDown();
@@ -1520,8 +1529,8 @@ jQuery(document).ready(function($) {
 
         }, 500); // 500 ms-os késleltetés
     });
-    
-    
+
+
     let loadMoreRequestInProgress = false;
     let infiniteObserver = null;
     let favoritesViewActive = false;
@@ -1575,20 +1584,21 @@ jQuery(document).ready(function($) {
         const minSquare = squareSliderVals[0];
         const maxSquare = squareSliderVals[1];
 
-        const selectAvailability = $('.catalog-availability-checkbox:checked').map(function() {
+        const selectAvailability = $('.catalog-availability-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
-        const selectOritentation = $('.catalog-orientation-checkbox:checked').map(function() {
+        const selectOritentation = $('.catalog-orientation-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
-        const selectStairway = $('.catalog-stairway-checkbox:checked').map(function() {
+        const selectStairway = $('.catalog-stairway-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
         const selectGardenConnection = $('.catalog-gardenconnection-checkbox').is(':checked') ? 1 : 0;
         const selectOtthonStart = $('.catalog-otthonstart-checkbox').is(':checked') ? 1 : 0;
+        const selectDiscountPrice = $('.catalog-discountprice-checkbox').is(':checked') ? 1 : 0;
 
         const wasAdvancedFiltersVisible = $('#advanced-filters').is(':visible');
 
@@ -1629,6 +1639,7 @@ jQuery(document).ready(function($) {
                 typeOfBalcony: selectOritentation,
                 garden_connection: selectGardenConnection,
                 otthonStart: selectOtthonStart,
+                discountPrice: selectDiscountPrice,
                 stairway: selectStairway,
                 sort: sort,
                 sortType: sortType,
@@ -1637,7 +1648,7 @@ jQuery(document).ready(function($) {
                 apartman_number: apartman_number,
                 residental_park_id: selectedParkId
             },
-            success: function(response) {
+            success: function (response) {
                 if (response && response.data) {
                     const hasMore = !!response.data.has_more;
 
@@ -1703,7 +1714,7 @@ jQuery(document).ready(function($) {
                         $("#custom-square-slider").parent().remove();
                     }
 
-                    selectOritentation.forEach(function(value) {
+                    selectOritentation.forEach(function (value) {
                         $('.catalog-orientation-checkbox[value="' + value + '"]').prop('checked', true);
                     });
                     if (selectGardenConnection === 1) {
@@ -1722,11 +1733,11 @@ jQuery(document).ready(function($) {
 
                     }
 
-                    selectAvailability.forEach(function(value) {
+                    selectAvailability.forEach(function (value) {
                         $('.catalog-availability-checkbox[value="' + value + '"]').prop('checked', true);
                     });
 
-                    selectStairway.forEach(function(value) {
+                    selectStairway.forEach(function (value) {
                         $('.catalog-stairway-checkbox[value="' + value + '"]').prop('checked', true);
                     });
 
@@ -1741,10 +1752,10 @@ jQuery(document).ready(function($) {
                     }
                 }
             },
-            error: function(error) {
+            error: function (error) {
                 console.log(error);
             },
-            complete: function() {
+            complete: function () {
                 loadMoreRequestInProgress = false;
 
                 const button = $('#load-more-button');
@@ -1766,7 +1777,7 @@ jQuery(document).ready(function($) {
         });
     }
 
-    $(document).on('click', '#load-more-button', function(e) {
+    $(document).on('click', '#load-more-button', function (e) {
         e.preventDefault();
         triggerLoadMore(false);
     });
@@ -1815,8 +1826,8 @@ jQuery(document).ready(function($) {
             infiniteObserver.disconnect();
         }
 
-        infiniteObserver = new IntersectionObserver(function(entries) {
-            entries.forEach(function(entry) {
+        infiniteObserver = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
                 if (entry.isIntersecting) {
                     const sentinelEl = $(entry.target);
                     if (sentinelEl.attr('data-loading') === '1') {
@@ -1843,12 +1854,12 @@ jQuery(document).ready(function($) {
 
     restoreViewMode();
 
-    $(document).on('change', '.catalog-availability-checkbox', function(e) {
+    $(document).on('change', '.catalog-availability-checkbox', function (e) {
 
         if (isDefaultCatalog()) {
             return;
         }
-        
+
         $('#mib-spinner').show();
 
         var shortcode = '';
@@ -1860,21 +1871,22 @@ jQuery(document).ready(function($) {
 
         const cardContainer = $('#custom-card-container');
         const table = $('#custom-list-table-container');
-        
-        var selectOritentation = $('.catalog-orientation-checkbox:checked').map(function() {
+
+        var selectOritentation = $('.catalog-orientation-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
-        var selectAvailability = $('.catalog-availability-checkbox:checked').map(function() {
+        var selectAvailability = $('.catalog-availability-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
-        var selectStairway = $('.catalog-stairway-checkbox:checked').map(function() {
+        var selectStairway = $('.catalog-stairway-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
         var selectGardenConnection = $('.catalog-gardenconnection-checkbox').is(':checked') ? 1 : 0;
         var selectOtthonStart = $('.catalog-otthonstart-checkbox').is(':checked') ? 1 : 0;
+        var selectDiscountPrice = $('.catalog-discountprice-checkbox').is(':checked') ? 1 : 0;
 
 
         var minRoom = $("#custom-room-slider").slider("option", "values")[0];
@@ -1914,16 +1926,17 @@ jQuery(document).ready(function($) {
                 availability: selectAvailability,
                 garden_connection: selectGardenConnection,
                 otthonStart: selectOtthonStart,
+                discountPrice: selectDiscountPrice,
                 page_type: (cardContainer.length == 1) ? 'card' : 'table',
                 shortcode: shortcode,
                 apartman_number: apartman_number,
-                stairway:selectStairway,
+                stairway: selectStairway,
                 sort: sort,
                 sortType: sortType,
-                residental_park_id:selectedParkId
+                residental_park_id: selectedParkId
             },
-            success: function(response) {
-                
+            success: function (response) {
+
                 if (table.length > 0) {
                     table.replaceWith(response.data.html);
                 } else {
@@ -1941,33 +1954,33 @@ jQuery(document).ready(function($) {
 
                 if (response.data.room_slider_min != null) {
                     initializeRoomSlider(minRoom, maxRoom, response.data.room_slider_min, response.data.room_slider_max);
-                }else{
+                } else {
                     $("#custom-room-slider").parent().remove();
                 }
 
                 if (response.data.floor_slider_min != null) {
                     initializeFloorSlider(minFloor, maxFloor, response.data.floor_slider_min, response.data.floor_slider_max);
-                }else{
+                } else {
                     $("#custom-floor-slider").parent().remove();
                 }
 
                 if (response.data.price_slider_min != null) {
                     initializeCatalogPriceSlider(minPrice, maxPrice, response.data.price_slider_min, response.data.price_slider_max);
-                }else{
+                } else {
                     $("#custom-price-slider").parent().remove();
                 }
-                
+
                 if (response.data.slider_min != null) {
                     initializeCatalogSquareSlider(minSquare, maxSquare, response.data.slider_min, response.data.slider_max);
-                }else{
+                } else {
                     $("#custom-square-slider").parent().remove();
                 }
 
-                selectAvailability.forEach(function(value) {
+                selectAvailability.forEach(function (value) {
                     $('.catalog-availability-checkbox[value="' + value + '"]').prop('checked', true);
                 });
 
-                selectOritentation.forEach(function(value) {
+                selectOritentation.forEach(function (value) {
                     $('.catalog-orientation-checkbox[value="' + value + '"]').prop('checked', true);
                 });
                 if (selectGardenConnection == 1) {
@@ -1986,7 +1999,7 @@ jQuery(document).ready(function($) {
 
                 }
 
-                selectStairway.forEach(function(value) {
+                selectStairway.forEach(function (value) {
                     $('.catalog-stairway-checkbox[value="' + value + '"]').prop('checked', true);
                 });
 
@@ -2000,7 +2013,7 @@ jQuery(document).ready(function($) {
 
 
     //catalog-gardenconnection-checkbox
-    $(document).on('change', '.catalog-gardenconnection-checkbox', function(e) {
+    $(document).on('change', '.catalog-gardenconnection-checkbox', function (e) {
 
         if (isDefaultCatalog()) {
             return;
@@ -2017,21 +2030,22 @@ jQuery(document).ready(function($) {
 
         const cardContainer = $('#custom-card-container');
         const table = $('#custom-list-table-container');
-        
-        var selectOritentation = $('.catalog-orientation-checkbox:checked').map(function() {
+
+        var selectOritentation = $('.catalog-orientation-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
-        var selectAvailability = $('.catalog-availability-checkbox:checked').map(function() {
+        var selectAvailability = $('.catalog-availability-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
-        var selectStairway = $('.catalog-stairway-checkbox:checked').map(function() {
+        var selectStairway = $('.catalog-stairway-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
         var selectGardenConnection = $('.catalog-gardenconnection-checkbox').is(':checked') ? 1 : 0;
         var selectOtthonStart = $('.catalog-otthonstart-checkbox').is(':checked') ? 1 : 0;
+        var selectDiscountPrice = $('.catalog-discountprice-checkbox').is(':checked') ? 1 : 0;
 
 
         var minRoom = $("#custom-room-slider").slider("option", "values")[0];
@@ -2059,28 +2073,29 @@ jQuery(document).ready(function($) {
             type: 'POST',
             data: {
                 action: 'set_garden_connection_values_by_catalog',
-                typeOfBalcony:selectOritentation,
+                typeOfBalcony: selectOritentation,
                 floor_slider_min_value: minFloor,
                 floor_slider_max_value: maxFloor,
                 room_slider_min_value: minRoom,
                 room_slider_max_value: maxRoom,
                 price_slider_min_value: minPrice,
                 price_slider_max_value: maxPrice,
-                slider_min_value:minSquare,//terület
-                slider_max_value:maxSquare,//terület
+                slider_min_value: minSquare,//terület
+                slider_max_value: maxSquare,//terület
                 availability: selectAvailability,
                 page_type: (cardContainer.length == 1) ? 'card' : 'table',
-                shortcode:shortcode,
+                shortcode: shortcode,
                 apartman_number: apartman_number,
                 garden_connection: selectGardenConnection,
                 otthonStart: selectOtthonStart,
-                stairway:selectStairway,
+                discountPrice: selectDiscountPrice,
+                stairway: selectStairway,
                 sort: sort,
                 sortType: sortType,
-                residental_park_id:selectedParkId
+                residental_park_id: selectedParkId
             },
-            success: function(response) {
-                
+            success: function (response) {
+
                 if (table.length > 0) {
                     table.replaceWith(response.data.html);
                 } else {
@@ -2098,43 +2113,43 @@ jQuery(document).ready(function($) {
 
                 if (response.data.room_slider_min != null) {
                     initializeRoomSlider(minRoom, maxRoom, response.data.room_slider_min, response.data.room_slider_max);
-                }else{
+                } else {
                     $("#custom-room-slider").parent().remove();
                 }
 
                 if (response.data.floor_slider_min != null) {
                     initializeFloorSlider(minFloor, maxFloor, response.data.floor_slider_min, response.data.floor_slider_max);
-                }else{
+                } else {
                     $("#custom-floor-slider").parent().remove();
                 }
 
                 if (response.data.price_slider_min != null) {
                     initializeCatalogPriceSlider(minPrice, maxPrice, response.data.price_slider_min, response.data.price_slider_max);
-                }else{
+                } else {
                     $("#custom-price-slider").parent().remove();
                 }
-                
+
                 if (response.data.slider_min != null) {
                     initializeCatalogSquareSlider(minSquare, maxSquare, response.data.slider_min, response.data.slider_max);
-                }else{
+                } else {
                     $("#custom-square-slider").parent().remove();
                 }
 
-                selectOritentation.forEach(function(value) {
+                selectOritentation.forEach(function (value) {
                     $('.catalog-orientation-checkbox[value="' + value + '"]').prop('checked', true);
                 });
 
-                selectAvailability.forEach(function(value) {
+                selectAvailability.forEach(function (value) {
                     $('.catalog-availability-checkbox[value="' + value + '"]').prop('checked', true);
                 });
 
                 if (selectGardenConnection == 1) {
                     $('.catalog-gardenconnection-checkbox').prop('checked', true);
-                }else{
+                } else {
                     $('.catalog-gardenconnection-checkbox').prop('checked', false);
                 }
 
-                selectStairway.forEach(function(value) {
+                selectStairway.forEach(function (value) {
                     $('.catalog-stairway-checkbox[value="' + value + '"]').prop('checked', true);
                 });
 
@@ -2146,13 +2161,13 @@ jQuery(document).ready(function($) {
         });
     });
 
-    
-    $(document).on('change', '.catalog-orientation-checkbox', function(e) {
+
+    $(document).on('change', '.catalog-orientation-checkbox', function (e) {
 
         if (isDefaultCatalog()) {
             return;
         }
-        
+
         $('#mib-spinner').show();
 
         var shortcode = '';
@@ -2164,21 +2179,22 @@ jQuery(document).ready(function($) {
 
         const cardContainer = $('#custom-card-container');
         const table = $('#custom-list-table-container');
-        
-        var selectOritentation = $('.catalog-orientation-checkbox:checked').map(function() {
+
+        var selectOritentation = $('.catalog-orientation-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
-        var selectAvailability = $('.catalog-availability-checkbox:checked').map(function() {
+        var selectAvailability = $('.catalog-availability-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
-        var selectStairway = $('.catalog-stairway-checkbox:checked').map(function() {
+        var selectStairway = $('.catalog-stairway-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
         var selectGardenConnection = $('.catalog-gardenconnection-checkbox').is(':checked') ? 1 : 0;
         var selectOtthonStart = $('.catalog-otthonstart-checkbox').is(':checked') ? 1 : 0;
+        var selectDiscountPrice = $('.catalog-discountprice-checkbox').is(':checked') ? 1 : 0;
 
 
         var minRoom = $("#custom-room-slider").slider("option", "values")[0];
@@ -2218,16 +2234,17 @@ jQuery(document).ready(function($) {
                 availability: selectAvailability,
                 garden_connection: selectGardenConnection,
                 otthonStart: selectOtthonStart,
+                discountPrice: selectDiscountPrice,
                 page_type: (cardContainer.length == 1) ? 'card' : 'table',
                 shortcode: shortcode,
                 apartman_number: apartman_number,
-                stairway:selectStairway,
+                stairway: selectStairway,
                 sort: sort,
                 sortType: sortType,
-                residental_park_id:selectedParkId
+                residental_park_id: selectedParkId
             },
-            success: function(response) {
-                
+            success: function (response) {
+
                 if (table.length > 0) {
                     table.replaceWith(response.data.html);
                 } else {
@@ -2245,33 +2262,33 @@ jQuery(document).ready(function($) {
 
                 if (response.data.room_slider_min != null) {
                     initializeRoomSlider(minRoom, maxRoom, response.data.room_slider_min, response.data.room_slider_max);
-                }else{
+                } else {
                     $("#custom-room-slider").parent().remove();
                 }
 
                 if (response.data.floor_slider_min != null) {
                     initializeFloorSlider(minFloor, maxFloor, response.data.floor_slider_min, response.data.floor_slider_max);
-                }else{
+                } else {
                     $("#custom-floor-slider").parent().remove();
                 }
 
                 if (response.data.price_slider_min != null) {
                     initializeCatalogPriceSlider(minPrice, maxPrice, response.data.price_slider_min, response.data.price_slider_max);
-                }else{
+                } else {
                     $("#custom-price-slider").parent().remove();
                 }
-                
+
                 if (response.data.slider_min != null) {
                     initializeCatalogSquareSlider(minSquare, maxSquare, response.data.slider_min, response.data.slider_max);
-                }else{
+                } else {
                     $("#custom-square-slider").parent().remove();
                 }
 
-                selectAvailability.forEach(function(value) {
+                selectAvailability.forEach(function (value) {
                     $('.catalog-availability-checkbox[value="' + value + '"]').prop('checked', true);
                 });
 
-                selectOritentation.forEach(function(value) {
+                selectOritentation.forEach(function (value) {
                     $('.catalog-orientation-checkbox[value="' + value + '"]').prop('checked', true);
                 });
                 if (selectGardenConnection == 1) {
@@ -2290,7 +2307,7 @@ jQuery(document).ready(function($) {
 
                 }
 
-                selectStairway.forEach(function(value) {
+                selectStairway.forEach(function (value) {
                     $('.catalog-stairway-checkbox[value="' + value + '"]').prop('checked', true);
                 });
 
@@ -2302,7 +2319,7 @@ jQuery(document).ready(function($) {
 
     });
 
-    $(document).on('change', '.select-residential-park', function(e) {
+    $(document).on('change', '.select-residential-park', function (e) {
 
         if (isDefaultCatalog()) {
             return;
@@ -2320,21 +2337,22 @@ jQuery(document).ready(function($) {
 
         const cardContainer = $('#custom-card-container');
         const table = $('#custom-list-table-container');
-        
-        var selectOritentation = $('.catalog-orientation-checkbox:checked').map(function() {
+
+        var selectOritentation = $('.catalog-orientation-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
-        var selectAvailability = $('.catalog-availability-checkbox:checked').map(function() {
+        var selectAvailability = $('.catalog-availability-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
-        var selectStairway = $('.catalog-stairway-checkbox:checked').map(function() {
+        var selectStairway = $('.catalog-stairway-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
         var selectGardenConnection = $('.catalog-gardenconnection-checkbox').is(':checked') ? 1 : 0;
         var selectOtthonStart = $('.catalog-otthonstart-checkbox').is(':checked') ? 1 : 0;
+        var selectDiscountPrice = $('.catalog-discountprice-checkbox').is(':checked') ? 1 : 0;
 
 
         var minRoom = $("#custom-room-slider").slider("option", "values")[0];
@@ -2372,15 +2390,16 @@ jQuery(document).ready(function($) {
                 availability: selectAvailability,
                 garden_connection: selectGardenConnection,
                 otthonStart: selectOtthonStart,
+                discountPrice: selectDiscountPrice,
                 page_type: (cardContainer.length == 1) ? 'card' : 'table',
                 shortcode: shortcode,
                 apartman_number: apartman_number,
-                stairway:selectStairway,
+                stairway: selectStairway,
                 sort: sort,
                 sortType: sortType,
-                residental_park_id:parkId
+                residental_park_id: parkId
             },
-            success: function(response) {
+            success: function (response) {
 
                 if (table.length > 0) {
                     table.replaceWith(response.data.html);
@@ -2399,34 +2418,34 @@ jQuery(document).ready(function($) {
 
                 if (response.data.room_slider_min != null) {
                     initializeRoomSlider(minRoom, maxRoom, response.data.room_slider_min, response.data.room_slider_max);
-                }else{
+                } else {
                     $("#custom-room-slider").parent().remove();
                 }
 
                 if (response.data.floor_slider_min != null) {
                     //alert(maxFloor);
                     initializeFloorSlider(response.data.floor_slider_min, response.data.floor_slider_max, response.data.floor_slider_min, response.data.floor_slider_max);
-                }else{
+                } else {
                     $("#custom-floor-slider").parent().remove();
                 }
 
                 if (response.data.price_slider_min != null) {
                     initializeCatalogPriceSlider(minPrice, maxPrice, response.data.price_slider_min, response.data.price_slider_max);
-                }else{
+                } else {
                     $("#custom-price-slider").parent().remove();
                 }
-                
+
                 if (response.data.slider_min != null) {
                     initializeCatalogSquareSlider(minSquare, maxSquare, response.data.slider_min, response.data.slider_max);
-                }else{
+                } else {
                     $("#custom-square-slider").parent().remove();
                 }
 
-                selectAvailability.forEach(function(value) {
+                selectAvailability.forEach(function (value) {
                     $('.catalog-availability-checkbox[value="' + value + '"]').prop('checked', true);
                 });
 
-                selectOritentation.forEach(function(value) {
+                selectOritentation.forEach(function (value) {
                     $('.catalog-orientation-checkbox[value="' + value + '"]').prop('checked', true);
                 });
                 if (selectGardenConnection == 1) {
@@ -2445,7 +2464,7 @@ jQuery(document).ready(function($) {
 
                 }
 
-                selectStairway.forEach(function(value) {
+                selectStairway.forEach(function (value) {
                     $('.catalog-stairway-checkbox[value="' + value + '"]').prop('checked', true);
                 });
 
@@ -2457,10 +2476,10 @@ jQuery(document).ready(function($) {
         });
     });
     //catalog-orientation-shortcode-checkbox
-    
+
     const urlParams = new URLSearchParams(window.location.search);
     //sliderben jön a badge kattintás
-    if (urlParams.has('fromSlider') ) {
+    if (urlParams.has('fromSlider')) {
 
         const fromUrl = (name) => [
             ...urlParams.getAll(`${name}[]`),
@@ -2470,15 +2489,15 @@ jQuery(document).ready(function($) {
         if (urlOtthonStart.length) {
             const isOtthonStartActive = urlOtthonStart[0] === '1';
             $('.catalog-otthonstart-checkbox').prop('checked', true).trigger('change');
-            
+
             if (isOtthonStartActive) {
                 setTimeout(handleOtthonStartFilter, 0);
             }
         }
     }
 
-    if ( urlParams.size>0 && !urlParams.has('fromSlider')) {
-        
+    if (urlParams.size > 0 && !urlParams.has('fromSlider')) {
+
 
         const fromUrl = (name) => [
             ...urlParams.getAll(`${name}[]`),
@@ -2500,7 +2519,7 @@ jQuery(document).ready(function($) {
         let minFloor = null, maxFloor = null;
         let minRoom = null, maxRoom = null;
         let minSquare = null, maxSquare = null;
-        
+
 
         // Ellenőrzés és értékek beállítása
         if (urlParams.has('price_min') && urlParams.has('price_max')) {
@@ -2514,7 +2533,7 @@ jQuery(document).ready(function($) {
                 var setMinPrice = parseInt(minPriceStr);
                 var setMaxPrice = parseInt(maxPriceStr);
 
-                
+
             }
         }
 
@@ -2529,7 +2548,7 @@ jQuery(document).ready(function($) {
                 var setMinFloor = parseInt(minFloorTextStr);
                 var setMaxFloor = parseInt(maxFlooreStr);
 
-                
+
             }
         }
 
@@ -2542,7 +2561,7 @@ jQuery(document).ready(function($) {
                 const [minRoomTextStr, maxRoomeStr] = roomText.split('-').map(str => str.trim());
 
                 var setMinRoom = parseInt(minRoomTextStr);
-                var setMaxRoom  = parseInt(maxRoomeStr);
+                var setMaxRoom = parseInt(maxRoomeStr);
 
             }
         }
@@ -2556,7 +2575,7 @@ jQuery(document).ready(function($) {
                 const [minSquareTextStr, maxSquareStr] = squareText.split('-').map(str => str.trim());
 
                 var setMinSquare = parseInt(minSquareTextStr);
-                var setMaxSquare  = parseInt(maxSquareStr);
+                var setMaxSquare = parseInt(maxSquareStr);
             }
         }
 
@@ -2566,35 +2585,35 @@ jQuery(document).ready(function($) {
         if (urlOrientations.length) {
             $('.catalog-orientation-checkbox').prop('checked', false);
             urlOrientations.forEach(v => {
-              $(`.catalog-orientation-checkbox[value="${v}"]`).prop('checked', true);
+                $(`.catalog-orientation-checkbox[value="${v}"]`).prop('checked', true);
             });
         }
 
-          // Availability
+        // Availability
         const urlAvailability = fromUrl('availability');
         if (urlAvailability.length) {
             $('.catalog-availability-checkbox').prop('checked', false);
             urlAvailability.forEach(v => {
-              $(`.catalog-availability-checkbox[value="${v}"]`).prop('checked', true);
+                $(`.catalog-availability-checkbox[value="${v}"]`).prop('checked', true);
             });
         }
 
-          // Garden connection (1/0)
+        // Garden connection (1/0)
         const urlGarden = fromUrl('garden_connection');
         if (urlGarden.length) {
             $('.catalog-gardenconnection-checkbox').prop('checked', urlGarden[0] === '1');
         }
 
-          // Stairway
+        // Stairway
         const urlStairway = fromUrl('stairway');
         if (urlStairway.length) {
             $('.catalog-stairway-checkbox').prop('checked', false);
             urlStairway.forEach(v => {
-              $(`.catalog-stairway-checkbox[value="${v}"]`).prop('checked', true);
+                $(`.catalog-stairway-checkbox[value="${v}"]`).prop('checked', true);
             });
         }
 
-          // District (select)
+        // District (select)
         const districtValue = urlParams.get('district');
         if (districtValue) {
             //$('.district-select').val(districtValue).trigger('change');
@@ -2606,18 +2625,19 @@ jQuery(document).ready(function($) {
         }
 
         // (Opcionális) egyéb paraméterek lekérése
-        
+
         const selectAvailability = $('.catalog-availability-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
-        const selectOritentation = $('.catalog-orientation-checkbox:checked').map(function() {
+        const selectOritentation = $('.catalog-orientation-checkbox:checked').map(function () {
             return this.value;
         }).get();
         const selectGardenConnection = $('.catalog-gardenconnection-checkbox').is(':checked') ? 1 : 0;
         const selectOtthonStart = $('.catalog-otthonstart-checkbox').is(':checked') ? 1 : 0;
+        const selectDiscountPrice = $('.catalog-discountprice-checkbox').is(':checked') ? 1 : 0;
 
-        const selectStairway = $('.catalog-stairway-checkbox:checked').map(function() {
+        const selectStairway = $('.catalog-stairway-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
@@ -2656,16 +2676,17 @@ jQuery(document).ready(function($) {
                 stairway: urlStairway,
                 district: districtValue,
                 otthonStart: selectOtthonStart,
+                discountPrice: selectDiscountPrice,
                 page_type: page_type,
                 sort: sort,
                 sortType: sortType,
-                shortcode:shortcode,
+                shortcode: shortcode,
                 apartman_number: apartman_number,
-                residental_park_id:selectedParkId
+                residental_park_id: selectedParkId
             },
 
-            success: function(response) {
-                
+            success: function (response) {
+
                 if (table.length > 0) {
                     table.replaceWith(response.data.html);
                 } else {
@@ -2683,29 +2704,29 @@ jQuery(document).ready(function($) {
 
                 if (response.data.room_slider_min != null) {
                     initializeRoomSlider(minRoom, maxRoom, response.data.room_slider_min, response.data.room_slider_max);
-                }else{
+                } else {
                     $("#custom-room-slider").parent().remove();
                 }
 
                 if (response.data.floor_slider_min != null) {
                     initializeFloorSlider(minFloor, maxFloor, response.data.floor_slider_min, response.data.floor_slider_max);
-                }else{
+                } else {
                     $("#custom-floor-slider").parent().remove();
                 }
 
                 if (response.data.price_slider_min != null) {
                     initializeCatalogPriceSlider(minPrice, maxPrice, response.data.price_slider_min, response.data.price_slider_max);
-                }else{
+                } else {
                     $("#custom-price-slider").parent().remove();
                 }
-                
+
                 if (response.data.slider_min != null) {
                     initializeCatalogSquareSlider(minSquare, maxSquare, response.data.slider_min, response.data.slider_max);
-                }else{
+                } else {
                     $("#custom-square-slider").parent().remove();
                 }
 
-                selectOritentation.forEach(function(value) {
+                selectOritentation.forEach(function (value) {
                     $('.catalog-orientation-checkbox[value="' + value + '"]').prop('checked', true);
                 });
                 if (selectGardenConnection == 1) {
@@ -2724,11 +2745,11 @@ jQuery(document).ready(function($) {
 
                 }
 
-                selectAvailability.forEach(function(value) {
+                selectAvailability.forEach(function (value) {
                     $('.catalog-availability-checkbox[value="' + value + '"]').prop('checked', true);
                 });
 
-                selectStairway.forEach(function(value) {
+                selectStairway.forEach(function (value) {
                     $('.catalog-stairway-checkbox[value="' + value + '"]').prop('checked', true);
                 });
 
@@ -2739,14 +2760,14 @@ jQuery(document).ready(function($) {
 
 
             },
-            error: function(xhr, status, error) {
-                
+            error: function (xhr, status, error) {
+
                 $('#mib-spinner').hide();
                 console.error('AJAX error:', error);
             }
         });
 
-    }else{
+    } else {
 
 
         $.ajax({
@@ -2757,7 +2778,7 @@ jQuery(document).ready(function($) {
             },
             type: 'POST',
             dataType: 'JSON',
-            success: function(response) {
+            success: function (response) {
                 if (response) {
 
                     const minFloor = response.min;
@@ -2768,7 +2789,7 @@ jQuery(document).ready(function($) {
                     console.error('Hiba: ' + response.data.message);
                 }
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 console.error('AJAX hiba: ' + error);
             }
         });
@@ -2781,7 +2802,7 @@ jQuery(document).ready(function($) {
             },
             type: 'POST',
             dataType: 'JSON',
-            success: function(response) {
+            success: function (response) {
                 if (response) {
 
                     const minSquare = response.min;
@@ -2792,7 +2813,7 @@ jQuery(document).ready(function($) {
                     console.error('Hiba: ' + response.data.message);
                 }
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 console.error('AJAX hiba: ' + error);
             }
         });
@@ -2804,7 +2825,7 @@ jQuery(document).ready(function($) {
             },
             type: 'POST',
             dataType: 'JSON',
-            success: function(response) {
+            success: function (response) {
                 if (response) {
 
                     const minFloor = response.min;
@@ -2815,7 +2836,7 @@ jQuery(document).ready(function($) {
                     console.error('Hiba: ' + response.data.message);
                 }
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 console.error('AJAX hiba: ' + error);
             }
         });
@@ -2827,7 +2848,7 @@ jQuery(document).ready(function($) {
             },
             type: 'POST',
             dataType: 'JSON',
-            success: function(response) {
+            success: function (response) {
                 if (response) {
                     const minFloor = response.min;
                     const maxFloor = response.max;
@@ -2837,7 +2858,7 @@ jQuery(document).ready(function($) {
                     console.error('Hiba: ' + response.data.message);
                 }
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 console.error('AJAX hiba: ' + error);
             }
         });
@@ -2862,11 +2883,11 @@ jQuery(document).ready(function($) {
             max: Number(defaultMax),
             values: [Number(minValue), Number(maxValue)],
             step: 1,
-            slide: function(event, ui) {
-                
+            slide: function (event, ui) {
+
                 output.text(ui.values[0] + ' - ' + ui.values[1]);
             },
-            change: function(event, ui) {
+            change: function (event, ui) {
                 output.text(ui.values[0] + ' - ' + ui.values[1]);
                 saveRoomSliderValues(ui.values[0], ui.values[1]);
             }
@@ -2876,7 +2897,7 @@ jQuery(document).ready(function($) {
 
         setTimeout(() => checkIfAnyFilterIsActive(), 100);
     }
-    
+
 
     function initializeCatalogPriceSlider(minValue, maxValue, defaultMin = -1, defaultMax = 10) {
         const slider = $('#custom-price-slider');
@@ -2895,11 +2916,11 @@ jQuery(document).ready(function($) {
             max: Number(defaultMax),
             values: [Number(minValue), Number(maxValue)],
             step: 1,
-            slide: function(event, ui) {
-                
+            slide: function (event, ui) {
+
                 output.text(formatCurrency(ui.values[0]) + " - " + formatCurrency(ui.values[1]));
             },
-            change: function(event, ui) {
+            change: function (event, ui) {
                 output.text(formatCurrency(ui.values[0]) + " - " + formatCurrency(ui.values[1]));
                 savePriceCatalogSliderValues(ui.values[0], ui.values[1]);
             }
@@ -2927,11 +2948,11 @@ jQuery(document).ready(function($) {
             max: Number(defaultMax),
             values: [Number(minValue), Number(maxValue)],
             step: 1,
-            slide: function(event, ui) {
-                
+            slide: function (event, ui) {
+
                 output.text(formatSquareMeter(ui.values[0]) + " - " + formatSquareMeter(ui.values[1]));
             },
-            change: function(event, ui) {
+            change: function (event, ui) {
                 output.text(formatSquareMeter(ui.values[0]) + " - " + formatSquareMeter(ui.values[1]));
                 saveSquareCatalogSliderValues(ui.values[0], ui.values[1]);
             }
@@ -2959,11 +2980,11 @@ jQuery(document).ready(function($) {
             max: Number(defaultMax),
             values: [Number(minValue), Number(maxValue)],
             step: 1,
-            slide: function(event, ui) {
+            slide: function (event, ui) {
 
                 output.text(ui.values[0] + ' - ' + ui.values[1]);
             },
-            change: function(event, ui) {
+            change: function (event, ui) {
                 output.text(ui.values[0] + ' - ' + ui.values[1]);
                 saveFloorSliderValues(ui.values[0], ui.values[1]);
             }
@@ -2992,20 +3013,21 @@ jQuery(document).ready(function($) {
         const table = $('#custom-list-table-container');
         const cardContainer = $('#custom-card-container');
 
-         var selectAvailability = $('.catalog-availability-checkbox:checked').map(function() {
+        var selectAvailability = $('.catalog-availability-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
-        var selectOritentation = $('.catalog-orientation-checkbox:checked').map(function() {
+        var selectOritentation = $('.catalog-orientation-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
-        var selectStairway = $('.catalog-stairway-checkbox:checked').map(function() {
+        var selectStairway = $('.catalog-stairway-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
         var selectGardenConnection = $('.catalog-gardenconnection-checkbox').is(':checked') ? 1 : 0;
         var selectOtthonStart = $('.catalog-otthonstart-checkbox').is(':checked') ? 1 : 0;
+        var selectDiscountPrice = $('.catalog-discountprice-checkbox').is(':checked') ? 1 : 0;
         var wasAdvancedFiltersVisible = $('#advanced-filters').is(':visible');
 
         var minRoom = $("#custom-room-slider").slider("option", "values")[0];
@@ -3035,21 +3057,22 @@ jQuery(document).ready(function($) {
                 room_slider_max_value: maxRoom,
                 price_slider_min_value: minPrice,
                 price_slider_max_value: maxPrice,
-                slider_min_value:minSquare,//terület
-                slider_max_value:maxSquare,//terület
+                slider_min_value: minSquare,//terület
+                slider_max_value: maxSquare,//terület
                 availability: selectAvailability,
                 typeOfBalcony: selectOritentation,
                 garden_connection: selectGardenConnection,
                 otthonStart: selectOtthonStart,
-                stairway:selectStairway,
+                discountPrice: selectDiscountPrice,
+                stairway: selectStairway,
                 sort: sort,
                 sortType: sortType,
                 page_type: (cardContainer.length == 1) ? 'card' : 'table',
-                shortcode:shortcode,
+                shortcode: shortcode,
                 apartman_number: apartman_number,
-                residental_park_id:selectedParkId
+                residental_park_id: selectedParkId
             },
-            success: function(response) {
+            success: function (response) {
 
                 $('#mib-spinner').hide();
 
@@ -3073,29 +3096,29 @@ jQuery(document).ready(function($) {
 
                 if (response.data.room_slider_min != null) {
                     initializeRoomSlider(minRoom, maxRoom, response.data.room_slider_min, response.data.room_slider_max);
-                }else{
+                } else {
                     $("#custom-room-slider").parent().remove();
                 }
 
                 if (response.data.floor_slider_min != null) {
                     initializeFloorSlider(minFloor, maxFloor, response.data.floor_slider_min, response.data.floor_slider_max);
-                }else{
+                } else {
                     $("#custom-floor-slider").parent().remove();
                 }
 
                 if (response.data.price_slider_min != null) {
                     initializeCatalogPriceSlider(minPrice, maxPrice, response.data.price_slider_min, response.data.price_slider_max);
-                }else{
+                } else {
                     $("#custom-price-slider").parent().remove();
                 }
-                
+
                 if (response.data.slider_min != null) {
                     initializeCatalogSquareSlider(minSquare, maxSquare, response.data.slider_min, response.data.slider_max);
-                }else{
+                } else {
                     $("#custom-square-slider").parent().remove();
                 }
 
-                selectOritentation.forEach(function(value) {
+                selectOritentation.forEach(function (value) {
                     $('.catalog-orientation-checkbox[value="' + value + '"]').prop('checked', true);
                 });
                 if (selectGardenConnection == 1) {
@@ -3114,18 +3137,18 @@ jQuery(document).ready(function($) {
 
                 }
 
-                selectAvailability.forEach(function(value) {
+                selectAvailability.forEach(function (value) {
                     $('.catalog-availability-checkbox[value="' + value + '"]').prop('checked', true);
                 });
 
-                selectStairway.forEach(function(value) {
+                selectStairway.forEach(function (value) {
                     $('.catalog-stairway-checkbox[value="' + value + '"]').prop('checked', true);
                 });
 
                 $('.select-residential-park').val(selectedParkId);
 
             },
-            error: function(error) {
+            error: function (error) {
                 console.log('Hiba történt az emelet csúszka mentésekor.');
                 $('#mib-spinner').hide();
             }
@@ -3150,20 +3173,21 @@ jQuery(document).ready(function($) {
         const table = $('#custom-list-table-container');
         const cardContainer = $('#custom-card-container');
 
-         var selectAvailability = $('.catalog-availability-checkbox:checked').map(function() {
+        var selectAvailability = $('.catalog-availability-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
-        var selectOritentation = $('.catalog-orientation-checkbox:checked').map(function() {
+        var selectOritentation = $('.catalog-orientation-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
-        var selectStairway = $('.catalog-stairway-checkbox:checked').map(function() {
+        var selectStairway = $('.catalog-stairway-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
         var selectGardenConnection = $('.catalog-gardenconnection-checkbox').is(':checked') ? 1 : 0;
         var selectOtthonStart = $('.catalog-otthonstart-checkbox').is(':checked') ? 1 : 0;
+        var selectDiscountPrice = $('.catalog-discountprice-checkbox').is(':checked') ? 1 : 0;
 
         var wasAdvancedFiltersVisible = $('#advanced-filters').is(':visible');
 
@@ -3194,21 +3218,22 @@ jQuery(document).ready(function($) {
                 room_slider_max_value: maxRoom,
                 price_slider_min_value: minPrice,
                 price_slider_max_value: maxPrice,
-                slider_min_value:minSquare,//terület
-                slider_max_value:maxSquare,//terület
+                slider_min_value: minSquare,//terület
+                slider_max_value: maxSquare,//terület
                 sort: sort,
                 sortType: sortType,
                 availability: selectAvailability,
                 typeOfBalcony: selectOritentation,
                 garden_connection: selectGardenConnection,
                 otthonStart: selectOtthonStart,
-                stairway:selectStairway,
+                discountPrice: selectDiscountPrice,
+                stairway: selectStairway,
                 page_type: (cardContainer.length == 1) ? 'card' : 'table',
-                shortcode:shortcode,
+                shortcode: shortcode,
                 apartman_number: apartman_number,
-                residental_park_id:selectedParkId
+                residental_park_id: selectedParkId
             },
-            success: function(response) {
+            success: function (response) {
 
                 $('#mib-spinner').hide();
 
@@ -3232,29 +3257,29 @@ jQuery(document).ready(function($) {
 
                 if (response.data.room_slider_min != null) {
                     initializeRoomSlider(minRoom, maxRoom, response.data.room_slider_min, response.data.room_slider_max);
-                }else{
+                } else {
                     $("#custom-room-slider").parent().remove();
                 }
 
                 if (response.data.floor_slider_min != null) {
                     initializeFloorSlider(minFloor, maxFloor, response.data.floor_slider_min, response.data.floor_slider_max);
-                }else{
+                } else {
                     $("#custom-floor-slider").parent().remove();
                 }
 
                 if (response.data.price_slider_min != null) {
                     initializeCatalogPriceSlider(minPrice, maxPrice, response.data.price_slider_min, response.data.price_slider_max);
-                }else{
+                } else {
                     $("#custom-price-slider").parent().remove();
                 }
-                
+
                 if (response.data.slider_min != null) {
                     initializeCatalogSquareSlider(minSquare, maxSquare, response.data.slider_min, response.data.slider_max);
-                }else{
+                } else {
                     $("#custom-square-slider").parent().remove();
                 }
 
-                selectOritentation.forEach(function(value) {
+                selectOritentation.forEach(function (value) {
                     $('.catalog-orientation-checkbox[value="' + value + '"]').prop('checked', true);
                 });
                 if (selectGardenConnection == 1) {
@@ -3273,18 +3298,18 @@ jQuery(document).ready(function($) {
 
                 }
 
-                selectAvailability.forEach(function(value) {
+                selectAvailability.forEach(function (value) {
                     $('.catalog-availability-checkbox[value="' + value + '"]').prop('checked', true);
                 });
 
-                selectStairway.forEach(function(value) {
+                selectStairway.forEach(function (value) {
                     $('.catalog-stairway-checkbox[value="' + value + '"]').prop('checked', true);
                 });
 
                 $('.select-residential-park').val(selectedParkId);
 
             },
-            error: function(error) {
+            error: function (error) {
                 console.log('Hiba történt az emelet csúszka mentésekor.');
                 $('#mib-spinner').hide();
             }
@@ -3309,31 +3334,32 @@ jQuery(document).ready(function($) {
         const table = $('#custom-list-table-container');
         const cardContainer = $('#custom-card-container');
 
-         var selectAvailability = $('.catalog-availability-checkbox:checked').map(function() {
+        var selectAvailability = $('.catalog-availability-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
-        var selectOritentation = $('.catalog-orientation-checkbox:checked').map(function() {
+        var selectOritentation = $('.catalog-orientation-checkbox:checked').map(function () {
             return this.value;
         }).get();
         var selectGardenConnection = $('.catalog-gardenconnection-checkbox').is(':checked') ? 1 : 0;
         var selectOtthonStart = $('.catalog-otthonstart-checkbox').is(':checked') ? 1 : 0;
+        var selectDiscountPrice = $('.catalog-discountprice-checkbox').is(':checked') ? 1 : 0;
 
-        var selectStairway = $('.catalog-stairway-checkbox:checked').map(function() {
+        var selectStairway = $('.catalog-stairway-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
         var wasAdvancedFiltersVisible = $('#advanced-filters').is(':visible');
 
-        var roomVals = $("#custom-room-slider").slider("option", "values") || [0,0];
+        var roomVals = $("#custom-room-slider").slider("option", "values") || [0, 0];
         var minRoom = roomVals[0];
         var maxRoom = roomVals[1];
 
-        var priceVals = $("#custom-price-slider").slider("option", "values") || [0,0];
+        var priceVals = $("#custom-price-slider").slider("option", "values") || [0, 0];
         var minPrice = priceVals[0];
         var maxPrice = priceVals[1];
 
-        var squareVals = $("#custom-square-slider").slider("option", "values") || [0,0];
+        var squareVals = $("#custom-square-slider").slider("option", "values") || [0, 0];
         var minSquare = squareVals[0];
         var maxSquare = squareVals[1];
 
@@ -3362,15 +3388,16 @@ jQuery(document).ready(function($) {
                 typeOfBalcony: selectOritentation,
                 garden_connection: selectGardenConnection,
                 otthonStart: selectOtthonStart,
-                stairway:selectStairway,
+                discountPrice: selectDiscountPrice,
+                stairway: selectStairway,
                 sort: sort,
                 sortType: sortType,
                 page_type: (cardContainer.length == 1) ? 'card' : 'table',
                 shortcode: shortcode,
                 apartman_number: apartman_number,
-                residental_park_id:selectedParkId
+                residental_park_id: selectedParkId
             },
-            success: function(response) {
+            success: function (response) {
 
                 $('#mib-spinner').hide();
 
@@ -3394,31 +3421,31 @@ jQuery(document).ready(function($) {
 
                 if (response.data.room_slider_min != null) {
                     initializeRoomSlider(minRoom, maxRoom, response.data.room_slider_min, response.data.room_slider_max);
-                }else{
+                } else {
                     $("#custom-room-slider").parent().remove();
                 }
 
                 if (response.data.floor_slider_min != null) {
                     initializeFloorSlider(minFloor, maxFloor, response.data.floor_slider_min, response.data.floor_slider_max);
-                }else{
+                } else {
                     $("#custom-floor-slider").parent().remove();
                 }
 
                 if (response.data.price_slider_min != null) {
                     initializeCatalogPriceSlider(minPrice, maxPrice, response.data.price_slider_min, response.data.price_slider_max);
-                }else{
+                } else {
                     $("#custom-price-slider").parent().remove();
                 }
-                
+
                 if (response.data.slider_min != null) {
                     initializeCatalogSquareSlider(minSquare, maxSquare, response.data.slider_min, response.data.slider_max);
-                }else{
+                } else {
                     $("#custom-square-slider").parent().remove();
                 }
-                
-                
 
-                selectOritentation.forEach(function(value) {
+
+
+                selectOritentation.forEach(function (value) {
                     $('.catalog-orientation-checkbox[value="' + value + '"]').prop('checked', true);
                 });
                 if (selectGardenConnection == 1) {
@@ -3437,18 +3464,18 @@ jQuery(document).ready(function($) {
 
                 }
 
-                selectAvailability.forEach(function(value) {
+                selectAvailability.forEach(function (value) {
                     $('.catalog-availability-checkbox[value="' + value + '"]').prop('checked', true);
                 });
 
-                selectStairway.forEach(function(value) {
+                selectStairway.forEach(function (value) {
                     $('.catalog-stairway-checkbox[value="' + value + '"]').prop('checked', true);
                 });
 
                 $('.select-residential-park').val(selectedParkId);
 
             },
-            error: function(error) {
+            error: function (error) {
                 console.log('Hiba történt az emelet csúszka mentésekor.');
                 $('#mib-spinner').hide();
             }
@@ -3482,20 +3509,21 @@ jQuery(document).ready(function($) {
         var minSquare = $("#custom-square-slider").slider("option", "values")[0];
         var maxSquare = $("#custom-square-slider").slider("option", "values")[1];
 
-        var selectAvailability = $('.catalog-availability-checkbox:checked').map(function() {
+        var selectAvailability = $('.catalog-availability-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
-        var selectOritentation = $('.catalog-orientation-checkbox:checked').map(function() {
+        var selectOritentation = $('.catalog-orientation-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
-        var selectStairway = $('.catalog-stairway-checkbox:checked').map(function() {
+        var selectStairway = $('.catalog-stairway-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
         var selectGardenConnection = $('.catalog-gardenconnection-checkbox').is(':checked') ? 1 : 0;
         var selectOtthonStart = $('.catalog-otthonstart-checkbox').is(':checked') ? 1 : 0;
+        var selectDiscountPrice = $('.catalog-discountprice-checkbox').is(':checked') ? 1 : 0;
 
         var wasAdvancedFiltersVisible = $('#advanced-filters').is(':visible');
 
@@ -3516,23 +3544,24 @@ jQuery(document).ready(function($) {
                 floor_slider_max_value: maxFloor,
                 room_slider_min_value: minRoom,
                 room_slider_max_value: maxRoom,
-                price_slider_min_value:minPrice,
-                price_slider_max_value:maxPrice,
+                price_slider_min_value: minPrice,
+                price_slider_max_value: maxPrice,
                 slider_min_value: minSquare, // terület
                 slider_max_value: maxSquare, // terület
                 availability: selectAvailability,
                 typeOfBalcony: selectOritentation,
                 garden_connection: selectGardenConnection,
                 otthonStart: selectOtthonStart,
-                stairway:selectStairway,
+                discountPrice: selectDiscountPrice,
+                stairway: selectStairway,
                 sort: sort,
                 sortType: sortType,
                 page_type: (cardContainer.length == 1) ? 'card' : 'table',
                 shortcode: shortcode,
                 apartman_number: apartman_number,
-                residental_park_id:selectedParkId
+                residental_park_id: selectedParkId
             },
-            success: function(response) {
+            success: function (response) {
 
                 $('#mib-spinner').hide();
 
@@ -3556,29 +3585,29 @@ jQuery(document).ready(function($) {
 
                 if (response.data.room_slider_min != null) {
                     initializeRoomSlider(minRoom, maxRoom, response.data.room_slider_min, response.data.room_slider_max);
-                }else{
+                } else {
                     $("#custom-room-slider").parent().remove();
                 }
 
                 if (response.data.floor_slider_min != null) {
                     initializeFloorSlider(minFloor, maxFloor, response.data.floor_slider_min, response.data.floor_slider_max);
-                }else{
+                } else {
                     $("#custom-floor-slider").parent().remove();
                 }
 
                 if (response.data.price_slider_min != null) {
                     initializeCatalogPriceSlider(minPrice, maxPrice, response.data.price_slider_min, response.data.price_slider_max);
-                }else{
+                } else {
                     $("#custom-price-slider").parent().remove();
                 }
-                
+
                 if (response.data.slider_min != null) {
                     initializeCatalogSquareSlider(minSquare, maxSquare, response.data.slider_min, response.data.slider_max);
-                }else{
+                } else {
                     $("#custom-square-slider").parent().remove();
                 }
 
-                selectOritentation.forEach(function(value) {
+                selectOritentation.forEach(function (value) {
                     $('.catalog-orientation-checkbox[value="' + value + '"]').prop('checked', true);
                 });
                 if (selectGardenConnection == 1) {
@@ -3597,18 +3626,18 @@ jQuery(document).ready(function($) {
 
                 }
 
-                selectAvailability.forEach(function(value) {
+                selectAvailability.forEach(function (value) {
                     $('.catalog-availability-checkbox[value="' + value + '"]').prop('checked', true);
                 });
 
-                selectStairway.forEach(function(value) {
+                selectStairway.forEach(function (value) {
                     $('.catalog-stairway-checkbox[value="' + value + '"]').prop('checked', true);
                 });
 
                 $('.select-residential-park').val(selectedParkId);
 
             },
-            error: function(error) {
+            error: function (error) {
                 console.log('Hiba történt az emelet csúszka mentésekor.');
                 $('#mib-spinner').hide();
             }
@@ -3763,41 +3792,41 @@ jQuery(document).ready(function($) {
             data: {
                 action: 'delete_catalog_filters',
                 page_type: (cardContainer.length == 1) ? 'card' : 'table',
-                shortcode:shortcode,
+                shortcode: shortcode,
                 apartman_number: apartman_number
             },
-            success: function(response) {
-                if (table.length>0) {
-                  table.replaceWith(response.data.html);
-                }else{
-                   cardContainer.replaceWith(response.data.html);
-                   restoreViewMode();
-                   hoverDropDown();
+            success: function (response) {
+                if (table.length > 0) {
+                    table.replaceWith(response.data.html);
+                } else {
+                    cardContainer.replaceWith(response.data.html);
+                    restoreViewMode();
+                    hoverDropDown();
                 }
                 $('#mib-spinner').hide();
-                
+
 
                 if (response.data.room_slider_min != null) {
                     initializeRoomSlider(response.data.room_slider_min, response.data.room_slider_max, response.data.room_slider_min, response.data.room_slider_max);
-                }else{
+                } else {
                     $("#custom-room-slider").parent().remove();
                 }
 
                 if (response.data.floor_slider_min != null) {
                     initializeFloorSlider(response.data.floor_slider_min, response.data.floor_slider_max, response.data.floor_slider_min, response.data.floor_slider_max);
-                }else{
+                } else {
                     $("#custom-floor-slider").parent().remove();
                 }
 
                 if (response.data.price_slider_min != null) {
                     initializeCatalogPriceSlider(response.data.price_slider_min, response.data.price_slider_max, response.data.price_slider_min, response.data.price_slider_max);
-                }else{
+                } else {
                     $("#custom-price-slider").parent().remove();
                 }
-                
+
                 if (response.data.slider_min != null) {
                     initializeCatalogSquareSlider(response.data.slider_min, response.data.slider_max, response.data.slider_min, response.data.slider_max);
-                }else{
+                } else {
                     $("#custom-square-slider").parent().remove();
                 }
 
@@ -3808,44 +3837,44 @@ jQuery(document).ready(function($) {
                     $("#availabilityDropdown").parent().parent().remove();
                 }
             },
-            error: function(error) {
+            error: function (error) {
 
                 $('#mib-spinner').hide();
 
                 if (response.data.room_slider_min != null) {
                     initializeRoomSlider(response.data.room_slider_min, response.data.room_slider_max, response.data.room_slider_min, response.data.room_slider_max);
-                }else{
+                } else {
                     $("#custom-room-slider").parent().remove();
                 }
 
                 if (response.data.floor_slider_min != null) {
                     initializeFloorSlider(response.data.floor_slider_min, response.data.floor_slider_max, response.data.floor_slider_min, response.data.floor_slider_max);
-                }else{
+                } else {
                     $("#custom-floor-slider").parent().remove();
                 }
 
                 if (response.data.price_slider_min != null) {
                     initializeCatalogPriceSlider(response.data.price_slider_min, response.data.price_slider_max, response.data.price_slider_min, response.data.price_slider_max);
-                }else{
+                } else {
                     $("#custom-price-slider").parent().remove();
                 }
-                
+
                 if (response.data.slider_min != null) {
                     initializeCatalogSquareSlider(response.data.slider_min, response.data.slider_max, response.data.slider_min, response.data.slider_max);
-                }else{
+                } else {
                     $("#custom-square-slider").parent().remove();
                 }
             }
         });
     });
 
-    
+
     $(document).on('change', '.catalog-stairway-checkbox', function (e) {
 
         if (isDefaultCatalog()) {
             return;
         }
-        
+
         $('#mib-spinner').show();
 
         var shortcode = '';
@@ -3871,20 +3900,21 @@ jQuery(document).ready(function($) {
         var minSquare = $("#custom-square-slider").slider("option", "values")[0];
         var maxSquare = $("#custom-square-slider").slider("option", "values")[1];
 
-        var selectAvailability = $('.catalog-availability-checkbox:checked').map(function() {
+        var selectAvailability = $('.catalog-availability-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
-        var selectOritentation = $('.catalog-orientation-checkbox:checked').map(function() {
+        var selectOritentation = $('.catalog-orientation-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
-        var selectStairway = $('.catalog-stairway-checkbox:checked').map(function() {
+        var selectStairway = $('.catalog-stairway-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
         var selectGardenConnection = $('.catalog-gardenconnection-checkbox').is(':checked') ? 1 : 0;
         var selectOtthonStart = $('.catalog-otthonstart-checkbox').is(':checked') ? 1 : 0;
+        var selectDiscountPrice = $('.catalog-discountprice-checkbox').is(':checked') ? 1 : 0;
 
         var wasAdvancedFiltersVisible = $('#advanced-filters').is(':visible');
 
@@ -3905,23 +3935,24 @@ jQuery(document).ready(function($) {
                 floor_slider_max_value: maxFloor,
                 room_slider_min_value: minRoom,
                 room_slider_max_value: maxRoom,
-                price_slider_min_value:minPrice,
-                price_slider_max_value:maxPrice,
+                price_slider_min_value: minPrice,
+                price_slider_max_value: maxPrice,
                 slider_min_value: minSquare, // terület
                 slider_max_value: maxSquare, // terület
                 availability: selectAvailability,
                 typeOfBalcony: selectOritentation,
                 garden_connection: selectGardenConnection,
                 otthonStart: selectOtthonStart,
-                stairway:selectStairway,
+                discountPrice: selectDiscountPrice,
+                stairway: selectStairway,
                 sort: sort,
                 sortType: sortType,
                 page_type: (cardContainer.length == 1) ? 'card' : 'table',
                 shortcode: shortcode,
                 apartman_number: apartman_number,
-                residental_park_id:selectedParkId
+                residental_park_id: selectedParkId
             },
-            success: function(response) {
+            success: function (response) {
 
                 $('#mib-spinner').hide();
 
@@ -3945,29 +3976,29 @@ jQuery(document).ready(function($) {
 
                 if (response.data.room_slider_min != null) {
                     initializeRoomSlider(minRoom, maxRoom, response.data.room_slider_min, response.data.room_slider_max);
-                }else{
+                } else {
                     $("#custom-room-slider").parent().remove();
                 }
 
                 if (response.data.floor_slider_min != null) {
                     initializeFloorSlider(minFloor, maxFloor, response.data.floor_slider_min, response.data.floor_slider_max);
-                }else{
+                } else {
                     $("#custom-floor-slider").parent().remove();
                 }
 
                 if (response.data.price_slider_min != null) {
                     initializeCatalogPriceSlider(minPrice, maxPrice, response.data.price_slider_min, response.data.price_slider_max);
-                }else{
+                } else {
                     $("#custom-price-slider").parent().remove();
                 }
-                
+
                 if (response.data.slider_min != null) {
                     initializeCatalogSquareSlider(minSquare, maxSquare, response.data.slider_min, response.data.slider_max);
-                }else{
+                } else {
                     $("#custom-square-slider").parent().remove();
                 }
 
-                selectOritentation.forEach(function(value) {
+                selectOritentation.forEach(function (value) {
                     $('.catalog-orientation-checkbox[value="' + value + '"]').prop('checked', true);
                 });
                 if (selectGardenConnection == 1) {
@@ -3986,11 +4017,11 @@ jQuery(document).ready(function($) {
 
                 }
 
-                selectAvailability.forEach(function(value) {
+                selectAvailability.forEach(function (value) {
                     $('.catalog-availability-checkbox[value="' + value + '"]').prop('checked', true);
                 });
 
-                selectStairway.forEach(function(value) {
+                selectStairway.forEach(function (value) {
                     $('.catalog-stairway-checkbox[value="' + value + '"]').prop('checked', true);
                 });
 
@@ -3999,7 +4030,7 @@ jQuery(document).ready(function($) {
                 checkFavorites();
 
             },
-            error: function(error) {
+            error: function (error) {
                 console.log('Hiba történt az emelet csúszka mentésekor.');
                 $('#mib-spinner').hide();
             }
@@ -4149,19 +4180,19 @@ jQuery(document).ready(function($) {
                 params.set('district', district);
             }
 
-            $('.catalog-orientation-checkbox:checked').each(function() {
+            $('.catalog-orientation-checkbox:checked').each(function () {
                 params.append('orientation[]', $(this).val());
             });
 
-            $('.catalog-availability-checkbox:checked').each(function() {
+            $('.catalog-availability-checkbox:checked').each(function () {
                 params.append('availability[]', $(this).val());
             });
 
-            $('.catalog-gardenconnection-checkbox:checked').each(function() {
+            $('.catalog-gardenconnection-checkbox:checked').each(function () {
                 params.append('garden_connection[]', $(this).val());
             });
 
-            $('.catalog-stairway-checkbox:checked').each(function() {
+            $('.catalog-stairway-checkbox:checked').each(function () {
                 params.append('stairway[]', $(this).val());
             });
 
@@ -4169,7 +4200,7 @@ jQuery(document).ready(function($) {
                 params.set('otthonStart', $('.catalog-otthonstart-checkbox').val());
             }
 
-            $('.select-residential-park:checked').each(function() {
+            $('.select-residential-park:checked').each(function () {
                 params.append('parkId[]', $(this).val());
             });
             const parkid = $('#select-residential-park option:selected').val();
@@ -4180,7 +4211,7 @@ jQuery(document).ready(function($) {
             return params.toString();
         }
 
-        $('#search-apartman-btn').on('click', function(e) {
+        $('#search-apartman-btn').on('click', function (e) {
             e.preventDefault();
             const baseUrl = $(this).data('target-url') || '/lakaslista';
             const paramStr = getAllParams();
@@ -4241,7 +4272,7 @@ jQuery(document).ready(function($) {
     });
 
     // Init sort filter AJAX
-    $(document).on('change', '#mib-sort-select', function() {
+    $(document).on('change', '#mib-sort-select', function () {
 
         $('#mib-spinner').show();
         var table = $('#custom-list-table-container');
@@ -4264,6 +4295,7 @@ jQuery(document).ready(function($) {
         var priceRange = [0, 0];
         var selectGardenConnection = 0;
         var selectOtthonStart = $('.catalog-otthonstart-checkbox').is(':checked') ? 1 : 0;
+        var selectDiscountPrice = $('.catalog-discountprice-checkbox').is(':checked') ? 1 : 0;
         var selectedParkId = $('.select-residential-park').val();
 
         if (pageType === 'card') {
@@ -4271,16 +4303,16 @@ jQuery(document).ready(function($) {
             selectedRoom = $("#custom-room-slider").slider("values") || [0, 0];
             squareRange = $("#custom-square-slider").slider("values") || [0, 0];
             priceRange = $("#custom-price-slider").slider("values") || [0, 0];
-            selectOritentation = $('.catalog-orientation-checkbox:checked').map(function() { return this.value; }).get();
-            selectAvailability = $('.catalog-availability-checkbox:checked').map(function() { return this.value; }).get();
-            selectStairway = $('.catalog-stairway-checkbox:checked').map(function() { return this.value; }).get();
+            selectOritentation = $('.catalog-orientation-checkbox:checked').map(function () { return this.value; }).get();
+            selectAvailability = $('.catalog-availability-checkbox:checked').map(function () { return this.value; }).get();
+            selectStairway = $('.catalog-stairway-checkbox:checked').map(function () { return this.value; }).get();
             selectGardenConnection = $('.catalog-gardenconnection-checkbox').is(':checked') ? 1 : 0;
         } else {
             //táblás nézet
-            selectedFloor = $('.floor-checkbox:checked').map(function() { return this.value; }).get();
-            selectedRoom = $('.room-checkbox:checked').map(function() { return this.value; }).get();
-            selectOritentation = $('.orientation-checkbox:checked').map(function() { return this.value; }).get();
-            selectAvailability = $('.availability-checkbox:checked').map(function() { return this.value; }).get();
+            selectedFloor = $('.floor-checkbox:checked').map(function () { return this.value; }).get();
+            selectedRoom = $('.room-checkbox:checked').map(function () { return this.value; }).get();
+            selectOritentation = $('.orientation-checkbox:checked').map(function () { return this.value; }).get();
+            selectAvailability = $('.availability-checkbox:checked').map(function () { return this.value; }).get();
             squareRange = getMainSliderValues();
             priceRange = getPriceSliderValues();
         }
@@ -4307,22 +4339,23 @@ jQuery(document).ready(function($) {
                 floor_slider_min_value: selectedFloor[0],
                 floor_slider_max_value: selectedFloor[1],
                 floor: selectedFloor,
-                room_slider_min_value:selectedRoom[0],
-                room_slider_max_value:selectedRoom[1],
-                room:selectedRoom,
+                room_slider_min_value: selectedRoom[0],
+                room_slider_max_value: selectedRoom[1],
+                room: selectedRoom,
                 typeOfBalcony: selectOritentation,
                 availability: selectAvailability,
                 garden_connection: selectGardenConnection,
                 otthonStart: selectOtthonStart,
-                stairway:selectStairway,
+                discountPrice: selectDiscountPrice,
+                stairway: selectStairway,
                 sort: sort,
                 sortType: sortType,
                 page_type: pageType,
                 shortcode: shortcode,
                 apartman_number: apartman_number,
-                residental_park_id:selectedParkId
+                residental_park_id: selectedParkId
             },
-            success: function(response) {
+            success: function (response) {
                 if (table.length > 0) {
                     table.replaceWith(response.data.html);
                 } else {
@@ -4369,7 +4402,7 @@ jQuery(document).ready(function($) {
                         $("#custom-square-slider").parent().remove();
                     }
 
-                    selectOritentation.forEach(function(value) {
+                    selectOritentation.forEach(function (value) {
                         $('.catalog-orientation-checkbox[value="' + value + '"]').prop('checked', true);
                     });
 
@@ -4394,11 +4427,11 @@ jQuery(document).ready(function($) {
 
                     }
 
-                    selectAvailability.forEach(function(value) {
+                    selectAvailability.forEach(function (value) {
                         $('.catalog-availability-checkbox[value="' + value + '"]').prop('checked', true);
                     });
 
-                    selectStairway.forEach(function(value) {
+                    selectStairway.forEach(function (value) {
                         $('.catalog-stairway-checkbox[value="' + value + '"]').prop('checked', true);
                     });
                 } else {
@@ -4412,18 +4445,18 @@ jQuery(document).ready(function($) {
                         $('#max-area').val(squareRange[1]);
                     }
 
-                    selectOritentation.forEach(function(value) {
+                    selectOritentation.forEach(function (value) {
                         $('.orientation-checkbox[value="' + value + '"]').prop('checked', true);
                     });
 
-                    selectAvailability.forEach(function(value) {
+                    selectAvailability.forEach(function (value) {
                         $('.availability-checkbox[value="' + value + '"]').prop('checked', true);
                     });
                 }
 
                 $('.select-residential-park').val(selectedParkId);
             },
-            error: function(error) {
+            error: function (error) {
                 console.error('Hiba a rendezés AJAX közben:', error);
                 $('#mib-spinner').hide();
                 sortTableRows($('#custom-list-table-container table'), sort, sortType);
@@ -4438,7 +4471,7 @@ jQuery(document).ready(function($) {
         if (idx === undefined) return;
 
         var rows = $table.find('tbody > tr').get();
-        rows.sort(function(a, b) {
+        rows.sort(function (a, b) {
             var valA = $(a).children().eq(idx).text();
             var valB = $(b).children().eq(idx).text();
 
@@ -4454,13 +4487,13 @@ jQuery(document).ready(function($) {
             if (valA > valB) return direction === 'ASC' ? 1 : -1;
             return 0;
         });
-        $.each(rows, function(i, row) {
+        $.each(rows, function (i, row) {
             $table.find('tbody').append(row);
         });
     }
 
 
-    $(document).on('click', '#toggle-advanced-filters', function() {
+    $(document).on('click', '#toggle-advanced-filters', function () {
         const $filters = $('#advanced-filters');
         const $button = $(this);
 
@@ -4502,7 +4535,7 @@ jQuery(document).ready(function($) {
         if (isDefaultCatalog()) {
             return;
         }
-        
+
         $('#mib-spinner').show();
 
         var shortcode = '';
@@ -4535,20 +4568,22 @@ jQuery(document).ready(function($) {
         var minSquare = hasSquareSlider ? squareVals[0] : null;
         var maxSquare = hasSquareSlider ? squareVals[1] : null;
 
-        var selectAvailability = $('.catalog-availability-checkbox:checked').map(function() {
+        var selectAvailability = $('.catalog-availability-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
-        var selectOritentation = $('.catalog-orientation-checkbox:checked').map(function() {
+        var selectOritentation = $('.catalog-orientation-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
-        var selectStairway = $('.catalog-stairway-checkbox:checked').map(function() {
+        var selectStairway = $('.catalog-stairway-checkbox:checked').map(function () {
             return this.value;
         }).get();
 
         var selectGardenConnection = $('.catalog-gardenconnection-checkbox').is(':checked') ? 1 : 0;
         var selectOtthonStart = $('.catalog-otthonstart-checkbox').is(':checked') ? 1 : 0;
+        var selectDiscountPrice = $('.catalog-discountprice-checkbox').is(':checked') ? 1 : 0;
+        var selectDiscountPrice = $('.catalog-discountprice-checkbox').is(':checked') ? 1 : 0;
 
         var wasAdvancedFiltersVisible = $('#advanced-filters').is(':visible');
 
@@ -4564,6 +4599,7 @@ jQuery(document).ready(function($) {
             typeOfBalcony: selectOritentation,
             garden_connection: selectGardenConnection,
             otthonStart: selectOtthonStart,
+            discountPrice: selectDiscountPrice,
             stairway: selectStairway,
             sort: sort,
             sortType: sortType,
@@ -4601,7 +4637,7 @@ jQuery(document).ready(function($) {
             type: 'POST',
             dataType: 'JSON',
             data: requestData,
-            success: function(response) {
+            success: function (response) {
 
                 console.log(response.data);
 
@@ -4629,7 +4665,7 @@ jQuery(document).ready(function($) {
                     var initialRoomMin = (minRoom !== null) ? minRoom : response.data.room_slider_min;
                     var initialRoomMax = (maxRoom !== null) ? maxRoom : response.data.room_slider_max;
                     initializeRoomSlider(initialRoomMin, initialRoomMax, response.data.room_slider_min, response.data.room_slider_max);
-                }else{
+                } else {
                     $("#custom-room-slider").parent().remove();
                 }
 
@@ -4637,7 +4673,7 @@ jQuery(document).ready(function($) {
                     var initialFloorMin = (minFloor !== null) ? minFloor : response.data.floor_slider_min;
                     var initialFloorMax = (maxFloor !== null) ? maxFloor : response.data.floor_slider_max;
                     initializeFloorSlider(initialFloorMin, initialFloorMax, response.data.floor_slider_min, response.data.floor_slider_max);
-                }else{
+                } else {
                     $("#custom-floor-slider").parent().remove();
                 }
 
@@ -4645,19 +4681,19 @@ jQuery(document).ready(function($) {
                     var initialPriceMin = (minPrice !== null) ? minPrice : response.data.price_slider_min;
                     var initialPriceMax = (maxPrice !== null) ? maxPrice : response.data.price_slider_max;
                     initializeCatalogPriceSlider(initialPriceMin, initialPriceMax, response.data.price_slider_min, response.data.price_slider_max);
-                }else{
+                } else {
                     $("#custom-price-slider").parent().remove();
                 }
-                
+
                 if (response.data.slider_min != null) {
                     var initialSquareMin = (minSquare !== null) ? minSquare : response.data.slider_min;
                     var initialSquareMax = (maxSquare !== null) ? maxSquare : response.data.slider_max;
                     initializeCatalogSquareSlider(initialSquareMin, initialSquareMax, response.data.slider_min, response.data.slider_max);
-                }else{
+                } else {
                     $("#custom-square-slider").parent().remove();
                 }
 
-                selectOritentation.forEach(function(value) {
+                selectOritentation.forEach(function (value) {
                     $('.catalog-orientation-checkbox[value="' + value + '"]').prop('checked', true);
                 });
                 if (selectGardenConnection == 1) {
@@ -4676,11 +4712,17 @@ jQuery(document).ready(function($) {
 
                 }
 
-                selectAvailability.forEach(function(value) {
+                if (selectDiscountPrice == 1) {
+                    $('.catalog-discountprice-checkbox').prop('checked', true);
+                } else {
+                    $('.catalog-discountprice-checkbox').prop('checked', false);
+                }
+
+                selectAvailability.forEach(function (value) {
                     $('.catalog-availability-checkbox[value="' + value + '"]').prop('checked', true);
                 });
 
-                selectStairway.forEach(function(value) {
+                selectStairway.forEach(function (value) {
                     $('.catalog-stairway-checkbox[value="' + value + '"]').prop('checked', true);
                 });
 
@@ -4690,8 +4732,214 @@ jQuery(document).ready(function($) {
                 checkIfAnyFilterIsActive();
 
             },
-            error: function(error) {
+            error: function (error) {
                 console.log('Hiba történt az Otthon Start szűrő frissítésekor.');
+                $('#mib-spinner').hide();
+            }
+        });
+    }
+
+
+
+    function handleDiscountPriceFilter() {
+        if (isDefaultCatalog()) {
+            return;
+        }
+
+        $('#mib-spinner').show();
+
+        var shortcode = '';
+        var apartman_number = '';
+        if ($('#custom-card-container').hasClass('shortcode-card')) {
+            shortcode = $('#custom-card-container').data('shortcode');
+            apartman_number = $('#custom-card-container').data('apartman_number');
+        }
+
+        const table = $('#custom-list-table-container');
+        const cardContainer = $('#custom-card-container');
+
+        const roomVals = getSliderValues('#custom-room-slider');
+        const hasRoomSlider = Array.isArray(roomVals);
+        var minRoom = hasRoomSlider ? roomVals[0] : null;
+        var maxRoom = hasRoomSlider ? roomVals[1] : null;
+
+        const floorVals = getSliderValues('#custom-floor-slider');
+        const hasFloorSlider = Array.isArray(floorVals);
+        var minFloor = hasFloorSlider ? floorVals[0] : null;
+        var maxFloor = hasFloorSlider ? floorVals[1] : null;
+
+        const priceVals = getSliderValues('#custom-price-slider');
+        const hasPriceSlider = Array.isArray(priceVals);
+        var minPrice = hasPriceSlider ? priceVals[0] : null;
+        var maxPrice = hasPriceSlider ? priceVals[1] : null;
+
+        const squareVals = getSliderValues('#custom-square-slider');
+        const hasSquareSlider = Array.isArray(squareVals);
+        var minSquare = hasSquareSlider ? squareVals[0] : null;
+        var maxSquare = hasSquareSlider ? squareVals[1] : null;
+
+        var selectAvailability = $('.catalog-availability-checkbox:checked').map(function () {
+            return this.value;
+        }).get();
+
+        var selectOritentation = $('.catalog-orientation-checkbox:checked').map(function () {
+            return this.value;
+        }).get();
+
+        var selectStairway = $('.catalog-stairway-checkbox:checked').map(function () {
+            return this.value;
+        }).get();
+
+        var selectGardenConnection = $('.catalog-gardenconnection-checkbox').is(':checked') ? 1 : 0;
+        var selectOtthonStart = $('.catalog-otthonstart-checkbox').is(':checked') ? 1 : 0;
+        var selectDiscountPrice = $('.catalog-discountprice-checkbox').is(':checked') ? 1 : 0;
+
+
+        var wasAdvancedFiltersVisible = $('#advanced-filters').is(':visible');
+
+        var sortParts = $('#mib-sort-select').val() ? $('#mib-sort-select').val().split('|') : [];
+        var sort = sortParts[0] || '';
+        var sortType = sortParts[1] || 'ASC';
+
+        var selectedParkId = $('.select-residential-park').val();
+
+        var requestData = {
+            action: 'set_discount_price_values',
+            availability: selectAvailability,
+            typeOfBalcony: selectOritentation,
+            garden_connection: selectGardenConnection,
+            otthonStart: selectOtthonStart,
+            discountPrice: selectDiscountPrice,
+            stairway: selectStairway,
+            sort: sort,
+            sortType: sortType,
+            page_type: (cardContainer.length == 1) ? 'card' : 'table',
+            shortcode: shortcode,
+            apartman_number: apartman_number
+        };
+
+        if (hasFloorSlider) {
+            requestData.floor_slider_min_value = minFloor;
+            requestData.floor_slider_max_value = maxFloor;
+        }
+
+        if (hasRoomSlider) {
+            requestData.room_slider_min_value = minRoom;
+            requestData.room_slider_max_value = maxRoom;
+        }
+
+        if (hasPriceSlider) {
+            requestData.price_slider_min_value = minPrice;
+            requestData.price_slider_max_value = maxPrice;
+        }
+
+        if (hasSquareSlider) {
+            requestData.slider_min_value = minSquare;
+            requestData.slider_max_value = maxSquare;
+        }
+
+        if (selectedParkId) {
+            requestData.residental_park_id = selectedParkId;
+        }
+
+        $.ajax({
+            url: ajaxurl,
+            type: 'POST',
+            dataType: 'JSON',
+            data: requestData,
+            success: function (response) {
+
+                console.log(response.data);
+
+                $('#mib-spinner').hide();
+
+                if ($('#custom-room-slider').hasClass('custom-filter')) {
+                    return;
+                }
+
+                if (table.length > 0) {
+                    table.replaceWith(response.data.html);
+                } else {
+                    cardContainer.replaceWith(response.data.html);
+                    restoreViewMode();
+                    hoverDropDown();
+                    checkFavorites();
+                }
+
+                if (wasAdvancedFiltersVisible) {
+                    $('#advanced-filters').css('display', 'flex');
+                    $('#toggle-advanced-filters').html('<i class="fas fa-times me-1"></i> Szűrők bezárása');
+                }
+
+                if (response.data.room_slider_min != null) {
+                    var initialRoomMin = (minRoom !== null) ? minRoom : response.data.room_slider_min;
+                    var initialRoomMax = (maxRoom !== null) ? maxRoom : response.data.room_slider_max;
+                    initializeRoomSlider(initialRoomMin, initialRoomMax, response.data.room_slider_min, response.data.room_slider_max);
+                } else {
+                    $("#custom-room-slider").parent().remove();
+                }
+
+                if (response.data.floor_slider_min != null) {
+                    var initialFloorMin = (minFloor !== null) ? minFloor : response.data.floor_slider_min;
+                    var initialFloorMax = (maxFloor !== null) ? maxFloor : response.data.floor_slider_max;
+                    initializeFloorSlider(initialFloorMin, initialFloorMax, response.data.floor_slider_min, response.data.floor_slider_max);
+                } else {
+                    $("#custom-floor-slider").parent().remove();
+                }
+
+                if (response.data.price_slider_min != null) {
+                    var initialPriceMin = (minPrice !== null) ? minPrice : response.data.price_slider_min;
+                    var initialPriceMax = (maxPrice !== null) ? maxPrice : response.data.price_slider_max;
+                    initializeCatalogPriceSlider(initialPriceMin, initialPriceMax, response.data.price_slider_min, response.data.price_slider_max);
+                } else {
+                    $("#custom-price-slider").parent().remove();
+                }
+
+                if (response.data.slider_min != null) {
+                    var initialSquareMin = (minSquare !== null) ? minSquare : response.data.slider_min;
+                    var initialSquareMax = (maxSquare !== null) ? maxSquare : response.data.slider_max;
+                    initializeCatalogSquareSlider(initialSquareMin, initialSquareMax, response.data.slider_min, response.data.slider_max);
+                } else {
+                    $("#custom-square-slider").parent().remove();
+                }
+
+                selectOritentation.forEach(function (value) {
+                    $('.catalog-orientation-checkbox[value="' + value + '"]').prop('checked', true);
+                });
+                if (selectGardenConnection == 1) {
+                    $('.catalog-gardenconnection-checkbox').prop('checked', true);
+                } else {
+                    $('.catalog-gardenconnection-checkbox').prop('checked', false);
+                }
+
+                if (selectOtthonStart == 1) {
+                    $('.catalog-otthonstart-checkbox').prop('checked', true);
+                } else {
+                    $('.catalog-otthonstart-checkbox').prop('checked', false);
+                }
+
+                if (selectDiscountPrice == 1) {
+                    $('.catalog-discountprice-checkbox').prop('checked', true);
+                } else {
+                    $('.catalog-discountprice-checkbox').prop('checked', false);
+                }
+
+                selectAvailability.forEach(function (value) {
+                    $('.catalog-availability-checkbox[value="' + value + '"]').prop('checked', true);
+                });
+
+                selectStairway.forEach(function (value) {
+                    $('.catalog-stairway-checkbox[value="' + value + '"]').prop('checked', true);
+                });
+
+                $('.select-residential-park').val(selectedParkId);
+
+                checkFavorites();
+                checkIfAnyFilterIsActive();
+
+            },
+            error: function (error) {
+                console.log('Hiba történt az Akciós Ár szűrő frissítésekor.');
                 $('#mib-spinner').hide();
             }
         });
@@ -4718,7 +4966,7 @@ jQuery(document).ready(function($) {
 
         e.preventDefault();
         triggerOtthonStartFilter();
-        
+
     });
 
     $(document).on('keydown', '.mib-otthonstart-badge', function (e) {
@@ -4740,6 +4988,11 @@ jQuery(document).ready(function($) {
 
     });
 
+    // Discount price filter
+    $(document).on('change', '.catalog-discountprice-checkbox', function () {
+        handleDiscountPriceFilter();
+    });
+
     var $mibOverlay = $('<div class="mib-gallery-overlay"><span class="mib-gallery-close">&times;</span><img><span class="mib-gallery-prev">&#10094;</span><span class="mib-gallery-next">&#10095;</span></div>').appendTo('body');
     var $mibImage = $mibOverlay.find('img');
     var mibLinks = $();
@@ -4757,7 +5010,7 @@ jQuery(document).ready(function($) {
         $mibOverlay.fadeIn(200);
     }
 
-    $('.mib-residential-gallery').on('click', 'a', function(e) {
+    $('.mib-residential-gallery').on('click', 'a', function (e) {
         $mibOverlay.css('opacity', 5);
         $mibOverlay.css('display', 'flex');
         e.preventDefault();
@@ -4765,7 +5018,7 @@ jQuery(document).ready(function($) {
         mibShow(mibLinks.index(this));
     });
 
-    $(document).on('click', '.mib-floorplan-link', function(e) {
+    $(document).on('click', '.mib-floorplan-link', function (e) {
         $mibOverlay.css('opacity', 5);
         $mibOverlay.css('display', 'flex');
         e.preventDefault();
@@ -4773,22 +5026,22 @@ jQuery(document).ready(function($) {
         mibShow(mibLinks.index(this));
     });
 
-    $mibOverlay.on('click', function(e) {
+    $mibOverlay.on('click', function (e) {
         if (e.target === this) { $mibOverlay.fadeOut(200); }
     });
-    $mibOverlay.find('.mib-gallery-close').on('click', function() {
+    $mibOverlay.find('.mib-gallery-close').on('click', function () {
         $mibOverlay.fadeOut(200);
     });
-    $mibOverlay.find('.mib-gallery-prev').on('click', function(e) {
+    $mibOverlay.find('.mib-gallery-prev').on('click', function (e) {
         e.stopPropagation();
         mibShow(mibIndex - 1);
     });
-    $mibOverlay.find('.mib-gallery-next').on('click', function(e) {
+    $mibOverlay.find('.mib-gallery-next').on('click', function (e) {
         e.stopPropagation();
         mibShow(mibIndex + 1);
     });
 
-    $(document).on('click', '.mib-res-doc-btn', function(e) {
+    $(document).on('click', '.mib-res-doc-btn', function (e) {
         e.preventDefault();
         var u = $(this).closest('.mib-residential-documents').find('.mib-res-doc-select').val();
         if (!u) {

@@ -130,7 +130,7 @@ class MibCreateShortCode extends MibBaseController
 
         foreach ($this->shortcodesOptions as $shortcode_name => $config) {
             add_shortcode($shortcode_name, function ($atts) use ($config, $shortcode_name) {
-    
+
                 $this->numberOfApartmens = $config['number_of_apartment'];
 
                 $this->residentialParkId = implode(',', $config['residential_park_ids']);
@@ -183,14 +183,14 @@ class MibCreateShortCode extends MibBaseController
                     $options = $mibAuth->getOptionDatas();
                 }
 
-            }else{
+            } else {
 
                 exit("You need to fill option datas!");
             }
 
             $apartment = $mibAuth->getOneApartmentsById($id);
 
-            if (!empty($apartment['data'][0]) && (!isset($apartment['data'][0]->error) && empty($apartment['data'][0]->error) ) ) {
+            if (!empty($apartment['data'][0]) && (!isset($apartment['data'][0]->error) && empty($apartment['data'][0]->error))) {
 
                 $ap = $apartment['data'][0];
 
@@ -204,9 +204,9 @@ class MibCreateShortCode extends MibBaseController
                 wp_redirect($new_url, 301);
                 exit;
 
-            }else{
+            } else {
 
-                exit("Apartman is not exist with this iD: ".$id);
+                exit("Apartman is not exist with this iD: " . $id);
             }
         }
     }
@@ -219,9 +219,16 @@ class MibCreateShortCode extends MibBaseController
         return $html;
     }
 
-    public function mib_list_apartman_catalog_filters($atts){
+    public function mib_list_apartman_catalog_filters($atts)
+    {
 
-        $html = $this->getFilters();
+        $atts = shortcode_atts([
+            'parkid' => null,
+        ], $atts, 'mib_list_apartman_catalog_filters');
+
+        $selectedParkId = !empty($atts['parkid']) ? sanitize_text_field($atts['parkid']) : null;
+
+        $html = $this->getFilters($selectedParkId);
         //echo 'dgdg';
         return $html;
     }
@@ -294,7 +301,7 @@ class MibCreateShortCode extends MibBaseController
                 //nem elérhetők elrejtése.
                 if (!empty($this->selectedShortcodeOption)) {
 
-                    if (in_array('hide_unavailable', $this->selectedShortcodeOption['extras']) ) {
+                    if (in_array('hide_unavailable', $this->selectedShortcodeOption['extras'])) {
                         $arg['status'] = 'Available';
                     }
                 }
@@ -429,7 +436,7 @@ class MibCreateShortCode extends MibBaseController
 
             $price = '';
             if (isset($recommendedApartment->price) && $recommendedApartment->price !== null) {
-                $price = number_format((float)$recommendedApartment->price, 0, ',', ' ') . ' Ft';
+                $price = number_format((float) $recommendedApartment->price, 0, ',', ' ') . ' Ft';
             }
 
             $all_datas[] = [
