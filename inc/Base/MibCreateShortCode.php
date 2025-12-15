@@ -145,6 +145,36 @@ class MibCreateShortCode extends MibBaseController
 
                 list($datas, $total) = $this->getDatas(false, 0, $config['number_of_apartment']);
 
+                // Map $_GET parameters to config for filter rendering
+                $map = [
+                    'district' => 'district',
+                    'orientation' => 'typeOfBalcony',
+                    'availability' => 'status',
+                    'garden_connection' => 'garden_connection',
+                    'stairway' => 'stairway',
+                    'otthonStart' => 'otthon_start',
+                    'discountPrice' => 'discount_price',
+                    'price_min' => 'price-slider-min',
+                    'price_max' => 'price-slider-max',
+                    'floor_min' => 'floor_min',
+                    'floor_max' => 'floor_max',
+                    'room_min' => 'room_min',
+                    'room_max' => 'room_max',
+                    'area_min' => 'square-meter-slider-min',
+                    'area_max' => 'square-meter-slider-max',
+                ];
+
+                foreach ($map as $queryKey => $filterKey) {
+                    if (isset($_GET[$queryKey])) {
+                        $value = $_GET[$queryKey];
+                        if (is_array($value)) {
+                            $config[$filterKey] = array_map('sanitize_text_field', $value);
+                        } else {
+                            $config[$filterKey] = sanitize_text_field($value);
+                        }
+                    }
+                }
+
                 if (!empty($config['extras']) && in_array('carousel_display', $config['extras'])) {
                     $html = $this->getCarouselHtml($datas, $shortcode_name, $config['number_of_apartment']);
                 } else {
@@ -226,7 +256,14 @@ class MibCreateShortCode extends MibBaseController
             'parkid' => null,
         ], $atts, 'mib_list_apartman_catalog_filters');
 
-        $selectedParkId = !empty($atts['parkid']) ? sanitize_text_field($atts['parkid']) : null;
+        // Elementor hajlamos “smart quote”-okra, ezért csak számot engedünk át a park ID-nek
+        $selectedParkId = null;
+        if (!empty($atts['parkid'])) {
+            $selectedParkId = preg_replace('/\D+/', '', (string) $atts['parkid']);
+            $selectedParkId = ($selectedParkId === '') ? null : (string) absint($selectedParkId);
+        }
+
+        $this->filterOptionDatas['mib-discount_price'] = true;
 
         $html = $this->getFilters($selectedParkId);
         //echo 'dgdg';

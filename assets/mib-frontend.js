@@ -2604,6 +2604,16 @@ jQuery(document).ready(function ($) {
             $('.catalog-gardenconnection-checkbox').prop('checked', urlGarden[0] === '1');
         }
 
+        // Discount price
+        const urlDiscountPrice = [
+            ...fromUrl('discountPrice'),
+            ...fromUrl('discount_price'),
+        ];
+        if (urlDiscountPrice.length) {
+            const hasDiscount = urlDiscountPrice.some(v => v === '1' || v === 1 || v === true || v === 'true');
+            $('.catalog-discountprice-checkbox').prop('checked', hasDiscount);
+        }
+
         // Stairway
         const urlStairway = fromUrl('stairway');
         if (urlStairway.length) {
@@ -4198,6 +4208,10 @@ jQuery(document).ready(function ($) {
 
             if ($('.catalog-otthonstart-checkbox').is(':checked')) {
                 params.set('otthonStart', $('.catalog-otthonstart-checkbox').val());
+            }
+
+            if ($('.catalog-discountprice-checkbox').is(':checked')) {
+                params.set('discountPrice', 1);
             }
 
             $('.select-residential-park:checked').each(function () {

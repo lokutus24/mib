@@ -1933,8 +1933,21 @@ class MibBaseController
         $defaultSelected = empty($selectedParkId) ? ' selected' : '';
         $html .= '<option value=""' . $defaultSelected . '>Lakópark kiválasztása</option>';
 
+        $allowedParks = [];
+        if (!empty($this->filterOptionDatas['residential_park_ids'])) {
+            $allowedParks = $this->filterOptionDatas['residential_park_ids'];
+            if (is_string($allowedParks)) {
+                $allowedParks = array_map('trim', explode(',', $allowedParks));
+            }
+        }
+
         // Az összes lakópark megjelenítése a parkNames tömbből
         foreach ($this->parkNames as $id => $name) {
+
+            if (!empty($allowedParks) && !in_array((string) $id, $allowedParks)) {
+                continue;
+            }
+
             $isSelected = ($selectedParkId !== null && (string) $id === (string) $selectedParkId) ? ' selected' : '';
             $html .= '<option value="' . $id . '"' . $isSelected . '>' . $name . '</option>';
         }
@@ -2051,6 +2064,8 @@ class MibBaseController
                 $html .= $this->squareFiltersByCatalog($filterType);
             }
 
+
+
             $advancedToggles = [
                 !empty($this->filterOptionDatas['mib-filter-district']),
                 !empty($this->filterOptionDatas['mib-filter-orientation']),
@@ -2105,13 +2120,7 @@ class MibBaseController
 
         $html .= '<div id="advanced-filters" class="flex-wrap" style="display:none;">';
 
-        if (!empty($this->filterOptionDatas['mib-filter-floor'])) {
-            $html .= $this->getFilterFloorByCatalog($filterType);
-        }
 
-        if (!empty($this->filterOptionDatas['mib-filter-district'])) {
-            $html .= $this->getFilterDistrictByCatalog($filterType);
-        }
         if (isset($this->filterOptionDatas['mib-filter-floor']) && $this->filterOptionDatas['mib-filter-floor'] == true) {
             $html .= $this->getFilterFloorByCatalog($filterType);
         }
@@ -2136,6 +2145,7 @@ class MibBaseController
         if (isset($this->filterOptionDatas['mib-discount_price']) && $this->filterOptionDatas['mib-discount_price'] == true) {
             $html .= $this->getFilterDiscountPriceCheckboxByCatalog($filterType);
         }
+
 
 
 
