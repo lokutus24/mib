@@ -12,7 +12,7 @@ nav[aria-label="mib pagination"] .pagination {
 #custom-price-slider .noUi-base,
 #custom-room-slider .noUi-base,
 #custom-floor-slider .noUi-base {
-    
+
     height: 100%;
     top: 0;
     border-radius: 6px;
@@ -53,22 +53,22 @@ nav[aria-label="mib pagination"] .pagination .page-link {
     text-decoration: none !important;
     box-shadow: none;
     vertical-align: middle;
-    box-shadow: 0 0 15px rgba(0,0,0,.05);
+    box-shadow: 0 0 15px rgba(0, 0, 0, .05);
     cursor: pointer;
     width: auto;
 }
 
-nav[aria-label="mib pagination"] .pagination .page-item.active .page-link{
+nav[aria-label="mib pagination"] .pagination .page-item.active .page-link {
     background: transparent !important;
     color: rgb(0, 0, 0);
     box-shadow: none;
     cursor: pointer
 }
+
 nav[aria-label="mib pagination"] .pagination .page-link:hover {
     color: rgb(0, 0, 0);
     box-shadow: none;
-    cursor: pointer
-    background: transparent !important;
+    cursor: pointer background: transparent !important;
 }
 
 /* Accessibility */
@@ -78,13 +78,13 @@ nav[aria-label="mib pagination"] .pagination .page-link:focus {
     cursor: pointer;
 }
 
-#custom-list-table-container{
+#custom-list-table-container {
 
     background-color: #e2e1df;
     max-width: 100%;
 }
 
-.custom-list-table{
+.custom-list-table {
 
     border: 1px solid #eee;
     margin: 0 0 15px;
@@ -98,7 +98,7 @@ nav[aria-label="mib pagination"] .pagination .page-link:focus {
 .custom-list-table tbody tr:nth-child(odd) {
     border-bottom-style: solid;
     border-bottom-width: 1px;
-    background-color: rgba(0,0,0,.02);
+    background-color: rgba(0, 0, 0, .02);
 }
 
 .custom-list-table tbody tr:nth-child(even) {
@@ -107,45 +107,46 @@ nav[aria-label="mib pagination"] .pagination .page-link:focus {
     border-bottom-width: 1px;
 }
 
-.custom-list-table #mibheadertr{
-  border-bottom: 2px solid rgba(0, 0, 0, .6);
-  background: rgba(0, 0, 0, 0);
+.custom-list-table #mibheadertr {
+    border-bottom: 2px solid rgba(0, 0, 0, .6);
+    background: rgba(0, 0, 0, 0);
 }
 
-.custom-list-table #mibheaderth{
-  padding: 20px;
-  /*background-color: #876865;*/
-  color: rgb(255, 255, 255);
-  text-align: center;
-  color: #e2e1df;
-  font-size: 20px;
-  height: 20px;
-  line-height: 20px;
-  max-width: 800px;
+.custom-list-table #mibheaderth {
+    padding: 20px;
+    /*background-color: #876865;*/
+    color: rgb(255, 255, 255);
+    text-align: center;
+    color: #e2e1df;
+    font-size: 20px;
+    height: 20px;
+    line-height: 20px;
+    max-width: 800px;
 }
 
 
-.custom-list-table #mibtd{
-  font-size: 16px;
-  font-weight: 500;
-  /*color: rgb(66, 66, 68, 1.0);*/
-  text-align: left;
-  text-indent: 0px;
-  width: auto;
-  height: auto;
-  line-height: 20px; 
-  word-break: normal;
-  padding: 15px 24px;
-  
+.custom-list-table #mibtd {
+    font-size: 16px;
+    font-weight: 500;
+    /*color: rgb(66, 66, 68, 1.0);*/
+    text-align: left;
+    text-indent: 0px;
+    width: auto;
+    height: auto;
+    line-height: 20px;
+    word-break: normal;
+    padding: 15px 24px;
+
 }
 
-.custom-list-table #mibtr{
+.custom-list-table #mibtr {
     border-bottom-style: solid;
     border-bottom-width: 1px;
     border-bottom-color: rgba(0, 0, 0, .06);
 
 }
-.custom-list-table #mibhre{
+
+.custom-list-table #mibhre {
     /*color: #424244;*/
     font-weight: bold;
     background-color: rgba(255, 255, 255, 0);
@@ -157,15 +158,15 @@ nav[aria-label="mib pagination"] .pagination .page-link:focus {
 
 }
 
-#custom-list-table-container .custom-filter-container{
+#custom-list-table-container .custom-filter-container {
     padding: 12px 10px 3px 10px;
 }
 
-#custom-card-container .custom-filter-container{
+#custom-card-container .custom-filter-container {
     margin-bottom: 20px;
 }
 
-.custom-list-table #mibhrefinactive{
+.custom-list-table #mibhrefinactive {
     color: #b6b9c1;
     font-weight: bold;
     font-size: 20px;
@@ -184,6 +185,7 @@ nav[aria-label="mib pagination"] .pagination .page-link:focus {
     .row {
         flex-wrap: wrap;
     }
+
     .col-md-2 {
         width: 100%;
         margin-bottom: 5px;
@@ -202,7 +204,7 @@ nav[aria-label="mib pagination"] .pagination .page-link:focus {
     margin-top: 4px;
 }*/
 
-#singletabletd{
+#singletabletd {
     padding: 20px;
     width: 150px;
     border-top: 0;
@@ -217,31 +219,33 @@ nav[aria-label="mib pagination"] .pagination .page-link:focus {
     font-weight: 700;
 }
 
-#custom-list-single-table{
+#custom-list-single-table {
     max-width: 90%;
 }
 
-#mibapartmentitle{
+#mibapartmentitle {
     font-size: 75px;
     color: #876865 !important;
     line-height: 1em;
     font-weight: 700;
 }
 
-.entry-content .apartment-container{
+.entry-content .apartment-container {
     max-width: 100%;
     display: flex;
-    align-items: flex-start; /* Aligns items to the top */
+    align-items: flex-start;
+    /* Aligns items to the top */
     font-family: "Barlow Condensed", sans-serif !important;
 }
 
-.apartment-container h1{
+.apartment-container h1 {
     font-family: "Barlow Condensed", sans-serif !important;
 }
 
 .apartment-image {
     flex: 2;
-    margin-right: 20px; /* Adjust the space between the image and the table */
+    margin-right: 20px;
+    /* Adjust the space between the image and the table */
 }
 
 .apartment-info {
@@ -253,10 +257,11 @@ nav[aria-label="mib pagination"] .pagination .page-link:focus {
     .apartment-container {
         flex-direction: column;
     }
-    
+
     .apartment-image {
         margin-right: 0;
-        margin-bottom: 20px; /* Space between image and table on small screens */
+        margin-bottom: 20px;
+        /* Space between image and table on small screens */
     }
 
     .apartment-info {
@@ -264,14 +269,15 @@ nav[aria-label="mib pagination"] .pagination .page-link:focus {
     }
 }
 
-.apartment-image #mibimage{
+.apartment-image #mibimage {
     width: 100%;
     margin-left: 20px;
     margin-top: 200px;
     max-height: 650px;
 }
 
-#price, #mibinfo{
+#price,
+#mibinfo {
     font-size: 21px;
     color: #876865 !important;
     line-height: 2em;
@@ -291,51 +297,63 @@ nav[aria-label="mib pagination"] .pagination .page-link:focus {
     border-bottom-width: 1px;
 }
 
-#mibfloorplan{
+#mibfloorplan {
     font-weight: 700;
     text-transform: uppercase;
     font-size: 22px;
     color: #876865 !important;
     text-decoration: none;
-    pointer:cursor;
+    pointer: cursor;
     margin-bottom: 5px;
 }
 
-body .mibfloorplan{
+body .mibfloorplan {
     line-height: 5em;
     margin-bottom: -55px;
     margin-left: 0px !important;
 }
+
 .catalog-dropdown .dropdown-item:hover,
 .catalog-dropdown .dropdown-item:focus {
     background-color: transparent !important;
-    outline: none; /* ha nem akarod, hogy keret jelenjen meg fókusz esetén */
+    outline: none;
+    /* ha nem akarod, hogy keret jelenjen meg fókusz esetén */
 }
-.catalog-dropdown li{
+
+.catalog-dropdown li {
     list-style-type: none;
 }
-.dropdown-menu.show, .catalog-dropdown-menu.show{
+
+.dropdown-menu.show,
+.catalog-dropdown-menu.show {
     width: 247px;
 }
 
-.dropdown-menu, .catalog-dropdown-menu {
-    left: auto; /* Alapértelmezésben jobbra igazítja, ezt felülírjuk */
-    right: 0; /* A trigger elem bal oldalához igazítja */
-}
-.dropdown-item{
-    color:black !important;
+.dropdown-menu,
+.catalog-dropdown-menu {
+    left: auto;
+    /* Alapértelmezésben jobbra igazítja, ezt felülírjuk */
+    right: 0;
+    /* A trigger elem bal oldalához igazítja */
 }
 
-.floor-checkbox{
+.dropdown-item {
+    color: black !important;
+}
+
+.floor-checkbox {
     vertical-align: baseline;
     margin: 0 .5em 0 0;
     display: inline !important;
 }
 
-.dropdown-item:hover, .dropdown-item:focus {
+.dropdown-item:hover,
+.dropdown-item:focus {
     color: white !important;
-    /*background-color: #3a322d !important;*/ /* Biztosítja, hogy ne legyen változás hoverkor */
-    cursor: pointer; /* Opcionális: Megadja az egérmutató stílusát */
+    /*background-color: #3a322d !important;*/
+    /* Biztosítja, hogy ne legyen változás hoverkor */
+    cursor: pointer;
+    /* Opcionális: Megadja az egérmutató stílusát */
 }
 
 .floor-checkbox {
@@ -345,116 +363,127 @@ body .mibfloorplan{
 }
 
 /* Az alábbiak opcionálisan hozzáadhatók, ha szeretnéd, hogy a checkboxok és a címkék is konzisztensek maradjanak a hover effekt nélkül */
-.dropdown-item label:hover, .dropdown-item label:focus {
+.dropdown-item label:hover,
+.dropdown-item label:focus {
     background-color: transparent !important;
     cursor: pointer;
 }
 
-.btn-dark, .btn-dark:hover{
+.btn-dark,
+.btn-dark:hover {
 
-    background-color: white !important
-    max-height: 60px !important;
+    background-color: white !important max-height: 60px !important;
 }
 
-#mib-spinner{
+#mib-spinner {
     display: none;
 }
 
-.range-slider-container #slider-range{
+.range-slider-container #slider-range {
     margin-top: 10px !important;
-        margin-bottom: -5px !important;
-  }
+    margin-bottom: -5px !important;
+}
 
 
-.range-slider-container{
+.range-slider-container {
     padding-left: 10px;
     padding-right: 10px;
-    text-align:center;
+    text-align: center;
     border-radius: 7px;
     /*background-color: #3a322d !important;*/
     max-height: 55px;
 }
 
-.range-slider-container div{
-  margin-bottom: 5px !important;
+.range-slider-container div {
+    margin-bottom: 5px !important;
 }
 
-.range-slider-container span{
-  color:white !important;
+.range-slider-container span {
+    color: white !important;
 }
 
-.range-slider-container p{
-  color:white !important;
+.range-slider-container p {
+    color: white !important;
 }
 
 @media only screen and (max-width: 600px) {
 
     /* LIST VIEW MOBILE CSS */
-    .simple-page-link{
-        display:none !important;
+    .simple-page-link {
+        display: none !important;
     }
 
-    #custom-list-table-container{
-        overflow:scroll !important;
+    #custom-list-table-container {
+        overflow: scroll !important;
     }
 
     body .justify-content-end {
         justify-content: normal !important;
     }
 
-    #mib-filter-deletefilters{
-       white-space: nowrap !important;
+    #mib-filter-deletefilters {
+        white-space: nowrap !important;
     }
 
 
     /* APARTMANT VIEW MOBILE CSS */
-    #mibapartmentitle{
-        font-size:45px !important;
+    #mibapartmentitle {
+        font-size: 45px !important;
     }
 
-    #mibinfo{
+    #mibinfo {
         margin-bottom: -10px !important;
     }
 
-    #custom-list-single-table{
+    #custom-list-single-table {
         max-width: 100% !important;
     }
 
-    .apartment-image #mibimage{
+    .apartment-image #mibimage {
         margin-left: 0px !important;
         margin-top: 0px !important;
     }
 
-    .apartment-container{
+    .apartment-container {
         margin-bottom: -30px !important;
     }
 }
 
-#slider-range, #price-slider-range {
-  width: 230px;
-  margin: 15px;
-  /*background: #212529;*/
+#slider-range,
+#price-slider-range {
+    width: 230px;
+    margin: 15px;
+    /*background: #212529;*/
 }
 
 
-#slider-value, #price-slider-range {
-  text-align: center; /* A szöveg középre igazítása */
-  margin-top: 10px; /* Adjon hozzá felső margót a `p` elemhez, hogy biztosítsa a visuális tér a slider felett */
-  color: #333; /* Szövegszín beállítása */
-  font-family: Arial, sans-serif; /* Betűtípus beállítása */
+#slider-value,
+#price-slider-range {
+    text-align: center;
+    /* A szöveg középre igazítása */
+    margin-top: 10px;
+    /* Adjon hozzá felső margót a `p` elemhez, hogy biztosítsa a visuális tér a slider felett */
+    color: #333;
+    /* Szövegszín beállítása */
+    font-family: Arial, sans-serif;
+    /* Betűtípus beállítása */
 }
 
 .ui-slider {
-  background-color: #8B4513; /* A teljes slider sínjének barna színe */
+    background-color: #8B4513;
+    /* A teljes slider sínjének barna színe */
 }
 
 .ui-slider-handle {
-  background-color: #A0522D; /* A fogantyú világosabb barna színe */
-  border-color: #454545; /* A fogantyú keretének sötétbarna színe */
+    background-color: #A0522D;
+    /* A fogantyú világosabb barna színe */
+    border-color: #454545;
+    /* A fogantyú keretének sötétbarna színe */
 }
 
 .ui-slider-range {
-  background: #8B4513; /* A kijelölt tartomány barna színe */
+    background: #8B4513;
+    /* A kijelölt tartomány barna színe */
 }
 
 .recommended-apartments {
@@ -465,34 +494,39 @@ body .mibfloorplan{
 }
 
 @media only screen and (max-width: 600px) {
-  .recommended-apartment {
-width: 100% !important; /* Kis százalékos szélesség, hogy négy blokk elférjen */
-    margin-bottom:20px !important;
-  }
+    .recommended-apartment {
+        width: 100% !important;
+        /* Kis százalékos szélesség, hogy négy blokk elférjen */
+        margin-bottom: 20px !important;
+    }
 
-  .recommended-apartments {
-    display: block;
-}
+    .recommended-apartments {
+        display: block;
+    }
 }
 
 .recommended-apartment {
-    width: 19%; /* Kis százalékos szélesség, hogy négy blokk elférjen */
-    margin-right:1%;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    width: 19%;
+    /* Kis százalékos szélesség, hogy négy blokk elférjen */
+    margin-right: 1%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     overflow: hidden;
     background: #fff;
     text-align: center;
-    margin-bottom: 20px; /* Szükség esetén alsó margó */
+    margin-bottom: 20px;
+    /* Szükség esetén alsó margó */
 }
 
 .recommended-apartment img {
     width: 100%;
     height: auto;
-    border-bottom: 1px solid #eee; /* Kép alatti elválasztó vonal */
+    border-bottom: 1px solid #eee;
+    /* Kép alatti elválasztó vonal */
 }
 
 .recommended-apartment a {
-    color: inherit; /* Ez az érték megtartja a szülő elem színét */
+    color: inherit;
+    /* Ez az érték megtartja a szülő elem színét */
     text-decoration: none;
 }
 
@@ -501,84 +535,99 @@ width: 100% !important; /* Kis százalékos szélesség, hogy négy blokk elfér
     font-size: 16px;
     color: #333;
     margin: 10px 0px 0px 10px;
-    text-align:left;
-    font-weight:700 !important;
+    text-align: left;
+    font-weight: 700 !important;
 }
 
 .recommended-apartment p {
     font-size: 14px;
     margin: 0px 0px 0px 10px;
     color: #666;
-    text-align:left !important;
+    text-align: left !important;
     margin-bottom: 10px;
 }
-#recommended-h4{
+
+#recommended-h4 {
     margin-top: 80px;
     color: #876865 !important;
     margin-bottom: 40px;
-    text-align:center !important;
-    font-weight:700 !important;
-}
-
-@media (max-width: 768px) {
-  /* Mobilnézethez, amikor a képernyő szélessége 768px vagy kisebb */
-  table th:nth-child(3), 
-  table td:nth-child(3),
-  table th:nth-child(4), 
-  table td:nth-child(4),
-  table th:nth-child(5), 
-  table td:nth-child(5),
-  table th:nth-child(6), 
-  table td:nth-child(6) {
-    display: none;
-  }
+    text-align: center !important;
+    font-weight: 700 !important;
 }
 
 @media (max-width: 768px) {
 
-  .d-flex {
-    flex-wrap: wrap; /* Lehetővé teszi az elemek tördelését új sorba */
-  }
+    /* Mobilnézethez, amikor a képernyő szélessége 768px vagy kisebb */
+    table th:nth-child(3),
+    table td:nth-child(3),
+    table th:nth-child(4),
+    table td:nth-child(4),
+    table th:nth-child(5),
+    table td:nth-child(5),
+    table th:nth-child(6),
+    table td:nth-child(6) {
+        display: none;
+    }
+}
 
-  .mb-2 {
-    /*flex: 0 0 48%;
+@media (max-width: 768px) {
+
+    .d-flex {
+        flex-wrap: wrap;
+        /* Lehetővé teszi az elemek tördelését új sorba */
+    }
+
+    .mb-2 {
+        /*flex: 0 0 48%;
     margin-right: 2%;*/
-  }
+    }
 
-  .mb-2:nth-child(2n) {
-    margin-right: 0; /* Minden második elem igazodik a jobb oldalhoz */
-  }
+    .mb-2:nth-child(2n) {
+        margin-right: 0;
+        /* Minden második elem igazodik a jobb oldalhoz */
+    }
 
-  .dropdown-toggle {
-    width: 100%;  /* Gombok szélessége 100% */
-  }
+    .dropdown-toggle {
+        width: 100%;
+        /* Gombok szélessége 100% */
+    }
 
-  .range-slider-container {
-    width: 100%;  /* Csúszka szélessége is 100% */
-  }
+    .range-slider-container {
+        width: 100%;
+        /* Csúszka szélessége is 100% */
+    }
 
-  button#mib-filter-deletefilters {
-    width: 100%;  /* Szűrők törlése gomb teljes szélesség */
-    margin-top: 1rem;
-  }
+    button#mib-filter-deletefilters {
+        width: 100%;
+        /* Szűrők törlése gomb teljes szélesség */
+        margin-top: 1rem;
+    }
 
-  .dropdown-menu, .catalog-dropdown-menu {
-    position: static; /* A legördülő menü statikus elhelyezése */
-    width: 100%;      /* A menü szélessége 100% legyen, így nem lóg ki */
-    left: 0;          /* Balra igazítva */
-    right: 0;         /* Jobbra igazítva */
-    margin: 0 auto;   /* Középre igazítja a menüt */
-  }
+    .dropdown-menu,
+    .catalog-dropdown-menu {
+        position: static;
+        /* A legördülő menü statikus elhelyezése */
+        width: 100%;
+        /* A menü szélessége 100% legyen, így nem lóg ki */
+        left: 0;
+        /* Balra igazítva */
+        right: 0;
+        /* Jobbra igazítva */
+        margin: 0 auto;
+        /* Középre igazítja a menüt */
+    }
 
-  .dropdown-item {
-    width: 100%;      /* A menüelemek szélessége is teljes legyen */
-  }
+    .dropdown-item {
+        width: 100%;
+        /* A menüelemek szélessége is teljes legyen */
+    }
 
-  .dropdown-menu.show, .catalog-dropdown-menu.show {
-    
-    width: 240px;
+    .dropdown-menu.show,
+    .catalog-dropdown-menu.show {
 
-   }
+        width: 240px;
+
+    }
 }
 
 
@@ -592,13 +641,15 @@ width: 100% !important; /* Kis százalékos szélesség, hogy négy blokk elfér
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 10px; /* Térköz a két input között */
+    gap: 10px;
+    /* Térköz a két input között */
     width: 100%;
 }
 
 .min-area-container,
 .max-area-container {
-    flex: 1; /* A két mező egyenlő szélességet kap */
+    flex: 1;
+    /* A két mező egyenlő szélességet kap */
 }
 
 .area-input {
@@ -610,123 +661,146 @@ width: 100% !important; /* Kis százalékos szélesség, hogy négy blokk elfér
 }
 
 .input-with-unit {
-  display: flex;
-  align-items: center;
+    display: flex;
+    align-items: center;
 }
 
 .input-with-unit .area-input {
-  flex: 1;
+    flex: 1;
 }
 
 .input-with-unit .unit {
-  margin-left: 8px;
-  font-size: 14px; /* Egység betűmérete */
+    margin-left: 8px;
+    font-size: 14px;
+    /* Egység betűmérete */
 }
 
 .input-with-unit {
-  display: flex;
-  align-items: center;
+    display: flex;
+    align-items: center;
 }
 
 .input-with-unit .area-input {
-  flex: 1;
+    flex: 1;
 }
 
 .input-with-unit .unit {
-  margin-left: 8px;
-  font-size: 14px; /* Egység betűmérete */
+    margin-left: 8px;
+    font-size: 14px;
+    /* Egység betűmérete */
 }
 
 /* Mobil nézethez (max 768px-es szélesség) */
 @media screen and (max-width: 768px) {
 
 
-  #view-toggle {
-    display: none !important;
-  }
-  /* Táblázat konténer mobilra */
-  .custom-list-table {
-    width: 100%; /* Táblázat teljes szélességet használja */
-    table-layout: fixed; /* Fix oszlopszélesség, hogy ne legyenek túl szélesek */
-    overflow-x: auto; /* Vízszintes görgetés lehetősége */
-    border-collapse: collapse;
-  }
+    #view-toggle {
+        display: none !important;
+    }
 
-  .custom-list-table #mibtd {
-    padding: 8px 12px; /* Csökkentett padding mobil nézetben */
-  }
-
-  /* Tábla cellák méretezése */
-  th, td {
-    padding: 10px 5px; /* Kisebb padding a cellákban mobilon */
-    font-size: 12px; /* Kisebb betűméret mobilra */
-    word-wrap: break-word; /* Szövegtörés a hosszabb tartalmaknál */
-    white-space: nowrap; /* Szövegek egy sorban tartása */
-    overflow: hidden; /* Szöveg levágása, ha túl hosszú */
-    text-overflow: ellipsis; /* Három pont megjelenítése hosszú szövegeknél */
-  }
-
-  /* Fejléc stílus mobilon */
-  th {
-    font-size: 10px; /* Kisebb betűméret a fejlécekhez */
-    text-align: left; /* Balra igazítás a fejléceknél */
-    white-space: nowrap; /* Ne törjön meg a hosszú szöveg a fejlécben */
-    overflow: hidden; 
-    text-overflow: ellipsis;
-  }
-
-  /* Sorok igazítása mobilon */
-  tr {
-    display: table-row;
-    width: 100%; /* Sorok szélessége teljes legyen */
-  }
-
-  /* Státusz cella megjelenése */
-  td:last-child {
-    text-align: center; /* Státusz középre igazítása */
-  }
-
-  /* Táblázat konténer görgethetősége */
-  #custom-list-table-container {
-    overflow-x: auto; /* Vízszintes görgetés, ha a tartalom nem fér el */
-    width: 100%; /* Konténer teljes szélessége */
-  }
-
-  /* Spinner és egyéb stílusok a mobil nézethez */
-  .mib-spinner {
-    margin: 10px auto; /* Spinner középre igazítása */
-  }
-
-  /* Filterek igazítása mobilon */
-  .custom-filter-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-    justify-content: center; /* Középre igazítja a filtereket mobilon */
-    margin-bottom: 10px;
-  }
-
-   .catalog-dropdown {
+    /* Táblázat konténer mobilra */
+    .custom-list-table {
         width: 100%;
-   }
+        /* Táblázat teljes szélességet használja */
+        table-layout: fixed;
+        /* Fix oszlopszélesség, hogy ne legyenek túl szélesek */
+        overflow-x: auto;
+        /* Vízszintes görgetés lehetősége */
+        border-collapse: collapse;
+    }
 
-   .catalog-dropdown .dropdown-menu{
+    .custom-list-table #mibtd {
+        padding: 8px 12px;
+        /* Csökkentett padding mobil nézetben */
+    }
+
+    /* Tábla cellák méretezése */
+    th,
+    td {
+        padding: 10px 5px;
+        /* Kisebb padding a cellákban mobilon */
+        font-size: 12px;
+        /* Kisebb betűméret mobilra */
+        word-wrap: break-word;
+        /* Szövegtörés a hosszabb tartalmaknál */
+        white-space: nowrap;
+        /* Szövegek egy sorban tartása */
+        overflow: hidden;
+        /* Szöveg levágása, ha túl hosszú */
+        text-overflow: ellipsis;
+        /* Három pont megjelenítése hosszú szövegeknél */
+    }
+
+    /* Fejléc stílus mobilon */
+    th {
+        font-size: 10px;
+        /* Kisebb betűméret a fejlécekhez */
+        text-align: left;
+        /* Balra igazítás a fejléceknél */
+        white-space: nowrap;
+        /* Ne törjön meg a hosszú szöveg a fejlécben */
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* Sorok igazítása mobilon */
+    tr {
+        display: table-row;
+        width: 100%;
+        /* Sorok szélessége teljes legyen */
+    }
+
+    /* Státusz cella megjelenése */
+    td:last-child {
+        text-align: center;
+        /* Státusz középre igazítása */
+    }
+
+    /* Táblázat konténer görgethetősége */
+    #custom-list-table-container {
+        overflow-x: auto;
+        /* Vízszintes görgetés, ha a tartalom nem fér el */
+        width: 100%;
+        /* Konténer teljes szélessége */
+    }
+
+    /* Spinner és egyéb stílusok a mobil nézethez */
+    .mib-spinner {
+        margin: 10px auto;
+        /* Spinner középre igazítása */
+    }
+
+    /* Filterek igazítása mobilon */
+    .custom-filter-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        justify-content: center;
+        /* Középre igazítja a filtereket mobilon */
+        margin-bottom: 10px;
+    }
+
+    .catalog-dropdown {
+        width: 100%;
+    }
+
+    .catalog-dropdown .dropdown-menu {
         width: 100% !important;
     }
 
-    #custom-price-slider{
+    #custom-price-slider {
         width: 300px !important;
     }
 
-    #custom-floor-slider{
+    #custom-floor-slider {
         width: 300px !important;
     }
 
-    #custom-room-slider{
+    #custom-room-slider {
         width: 300px !important;
     }
 
-    #custom-square-slider{
+    #custom-square-slider {
         width: 300px !important;
     }
 
@@ -735,6 +809,7 @@ width: 100% !important; /* Kis százalékos szélesség, hogy négy blokk elfér
     }
 
 }
+
 /* ===================================================================
    noUiSlider CSS overrides a fő és egyedi slider-ekhez, hogy megtartsa a barna dizájnt
    =================================================================== */
@@ -760,19 +835,29 @@ width: 100% !important; /* Kis százalékos szélesség, hogy négy blokk elfér
 
 .apartment-name-label {
     position: absolute;
-    top: 10px; /* A kép tetejétől 10px távolságra */
-    left: 10px; /* A kép bal oldalától 10px távolságra */
-    background-color: rgba(0, 0, 0, 0.5); /* Átlátszó fekete háttér */
-    color: #fff; /* Fehér szöveg */
-    padding: 5px 10px; /* Térköz a szöveg körül */
-    font-size: 14px; /* Szöveg mérete */
-    border-radius: 3px; /* Lekerekített sarkok */
+    top: 10px;
+    /* A kép tetejétől 10px távolságra */
+    left: 10px;
+    /* A kép bal oldalától 10px távolságra */
+    background-color: rgba(0, 0, 0, 0.5);
+    /* Átlátszó fekete háttér */
+    color: #fff;
+    /* Fehér szöveg */
+    padding: 5px 10px;
+    /* Térköz a szöveg körül */
+    font-size: 14px;
+    /* Szöveg mérete */
+    border-radius: 3px;
+    /* Lekerekített sarkok */
 }
 
-#apartment-datas, #apartment-card-body, #custom-card-container{
+#apartment-datas,
+#apartment-card-body,
+#custom-card-container {
     gap: 0px;
     justify-content: center;
 }
+
 #apartment-card-body {
     border-bottom-left-radius: 20px;
     border-bottom-right-radius: 20px;
@@ -808,7 +893,8 @@ width: 100% !important; /* Kis százalékos szélesség, hogy négy blokk elfér
 }
 
 .card .btn {
-    width: 100%; /* Gombok egymás mellett */
+    width: 100%;
+    /* Gombok egymás mellett */
     border-radius: 30px;
     background-color: #f6f6f6;
 }
@@ -823,16 +909,20 @@ width: 100% !important; /* Kis százalékos szélesség, hogy négy blokk elfér
     border-color: #004f61;
 }
 
-#cardhref{
+#cardhref {
     text-decoration: none;
 }
 
 /* Kép méretének beállítása a kártyákban */
 #custom-card-container .card-img-top {
-    width: 100%;           /* A kép szélessége teljesen kitölti a kártyát */
-    height: 200px;         /* Állítsd be a kívánt magasságot, pl. 200px */
-    object-fit: cover;     /* Megakadályozza a kép torzulását, levágja a széleket, hogy kitöltse a teret */
-    object-position: center; /* A kép középre igazítása, ha levágásra kerül */
+    width: 100%;
+    /* A kép szélessége teljesen kitölti a kártyát */
+    height: 200px;
+    /* Állítsd be a kívánt magasságot, pl. 200px */
+    object-fit: cover;
+    /* Megakadályozza a kép torzulását, levágja a széleket, hogy kitöltse a teret */
+    object-position: center;
+    /* A kép középre igazítása, ha levágásra kerül */
 }
 
 
@@ -848,12 +938,18 @@ width: 100% !important; /* Kis százalékos szélesség, hogy négy blokk elfér
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
+
 @media only screen and (min-width: 700px) {
-    .custom-filter-container .area-range-container{
-        width:350px !important;
+    .custom-filter-container .area-range-container {
+        width: 350px !important;
     }
 }
 
@@ -872,9 +968,10 @@ width: 100% !important; /* Kis százalékos szélesség, hogy négy blokk elfér
     border-radius: 15px 15px 15px 15px;
 }
 
-.location-name{
-    color:black;
+.location-name {
+    color: black;
 }
+
 .apartment-plan {
     flex: 1;
     min-width: 300px;
@@ -882,7 +979,7 @@ width: 100% !important; /* Kis százalékos szélesség, hogy négy blokk elfér
 }
 
 .apartment-plan img {
-    width: 100%;
+    /*width: 100%;*/
     height: auto;
     border-radius: 8px;
 }
@@ -910,11 +1007,11 @@ width: 100% !important; /* Kis százalékos szélesség, hogy négy blokk elfér
     opacity: 1 !important;
 }
 
-.apartment-avaible-status{
+.apartment-avaible-status {
     color: #3ba63b;
 }
 
-.quick-info-value{
+.quick-info-value {
     font-size: 20px;
     font-weight: 600;
 }
@@ -949,10 +1046,11 @@ width: 100% !important; /* Kis százalékos szélesség, hogy négy blokk elfér
     font-weight: 800;
 }
 
-.apartment-plan-documents{
+.apartment-plan-documents {
     margin-bottom: 10px;
 }
-.apartment-plan-documents a{
+
+.apartment-plan-documents a {
     text-decoration: none !important;
     color: #3ba63b;
 }
@@ -1023,14 +1121,16 @@ width: 100% !important; /* Kis százalékos szélesség, hogy négy blokk elfér
     font-weight: 700;
     color: #3ecf8e;
 }
+
 .mibfloorplan {
     margin-top: 30px;
 }
 
 /** catalog new **/
-.custom-price-range-value{
+.custom-price-range-value {
     text-align: center;
 }
+
 .load-more-container {
     display: flex;
     justify-content: center;
@@ -1067,7 +1167,8 @@ width: 100% !important; /* Kis százalékos szélesség, hogy négy blokk elfér
 }
 
 #apartment-card-body hr {
-    border-top: 2px solid white;/* finom fehéres elválasztó */
+    border-top: 2px solid white;
+    /* finom fehéres elválasztó */
     margin-top: 10px;
     margin-bottom: 0px;
 }
@@ -1094,22 +1195,23 @@ width: 100% !important; /* Kis százalékos szélesség, hogy négy blokk elfér
     height: 100%;
 }
 
-.card.list-view .text-end{
+.card.list-view .text-end {
     text-align: left !important;
 }
 
-.card.list-view .card-image-wrapper img{
-    width: 78%;;
+.card.list-view .card-image-wrapper img {
+    width: 78%;
+    ;
     height: 100%;
     padding: 16px;
 }
 
-.list-view-button-wrapper{
+.list-view-button-wrapper {
     margin-top: 10px;
     gap: 20px !important;
 }
 
-.list-view-price-container{
+.list-view-price-container {
     margin-bottom: 11px;
     text-align: center;
 }
@@ -1171,7 +1273,7 @@ width: 100% !important; /* Kis százalékos szélesség, hogy négy blokk elfér
     color: #3ecf8e;
 }
 
-.park-logo img{
+.park-logo img {
     max-width: 150px !important;
 }
 
@@ -1181,7 +1283,8 @@ width: 100% !important; /* Kis százalékos szélesség, hogy négy blokk elfér
 }
 
 .apartment-info-box {
-    background-color: #1e1e1e; /* vagy .secondary-color */
+    background-color: #1e1e1e;
+    /* vagy .secondary-color */
     color: #fff;
     padding: 20px;
     border-radius: 0 0 5px 5px;
@@ -1207,7 +1310,8 @@ width: 100% !important; /* Kis százalékos szélesség, hogy négy blokk elfér
 
 .card.list-view .card-divider {
     display: block;
-    width: 1px; /* keskeny oszlop */
+    width: 1px;
+    /* keskeny oszlop */
     background-color: #ccc;
 }
 
@@ -1222,7 +1326,8 @@ width: 100% !important; /* Kis százalékos szélesség, hogy négy blokk elfér
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto; /* <- Ez kell ahhoz, hogy középre kerüljön */
+    margin: 0 auto;
+    /* <- Ez kell ahhoz, hogy középre kerüljön */
     overflow: hidden;
     /*background-color: #f8f9fa;*/
     margin-top: 25px;
@@ -1235,12 +1340,13 @@ width: 100% !important; /* Kis százalékos szélesség, hogy négy blokk elfér
     object-fit: contain;
 }
 
-#custom-card-container .card{
+#custom-card-container .card {
     background-color: #ececec !important;
     border-radius: 30px !important;
 }
-.d-flex{
-    gap:50px;
+
+.d-flex {
+    gap: 50px;
 }
 
 .reset-filters-wrapper {
@@ -1249,9 +1355,10 @@ width: 100% !important; /* Kis százalékos szélesség, hogy négy blokk elfér
     margin-left: auto;
 }
 
-.reset-filters-wrapper{
+.reset-filters-wrapper {
     display: none;
 }
+
 #reset-filters-button {
     padding: 8px 16px;
     font-size: 0.95rem;
@@ -1270,18 +1377,18 @@ width: 100% !important; /* Kis százalékos szélesség, hogy négy blokk elfér
     border-color: #0d2d3e;
 }
 
-#search-apartman-btn{
+#search-apartman-btn {
     text-align: center;
     border: 1px solid #d3d3d3;
     height: 58px;
     cursor: pointer;
     text-transform: uppercase;
-    justify-content: center; 
+    justify-content: center;
     align-items: center;
     display: flex;
 }
 
-#search-apartman-btn:hover{
+#search-apartman-btn:hover {
     background-color: #f5f5f5;
 }
 
@@ -1354,7 +1461,7 @@ width: 100% !important; /* Kis százalékos szélesség, hogy négy blokk elfér
     color: #0d2d3e;
 }
 
-#advanced-filters{
+#advanced-filters {
     gap: 10px;
     flex-wrap: wrap !important;
     background: #f9f9f9 !important;
@@ -1362,59 +1469,68 @@ width: 100% !important; /* Kis százalékos szélesség, hogy négy blokk elfér
     border-radius: 10px !important;
 }
 
-.room-list{
+.room-list {
     list-style: none;
     padding-left: 0;
 }
 
-.room-list li{
+.room-list li {
     margin-bottom: 5px;
 }
 
-#select-residential-park{
+#select-residential-park {
     width: 210px !important;
     margin-top: 16px;
     height: 58px;
 }
+
 #toggle-advanced-filters,
-#parksfilter{
+#parksfilter {
     display: grid !important;
 }
+
 .dropdown button {
     height: 58px;
     background: white;
     border: 1px solid #dee2e6;
     color: black;
-    cursor: pointer; /* érdemes hozzáadni */
+    cursor: pointer;
+    /* érdemes hozzáadni */
 }
 
 .dropdown button:hover {
-    background: #f5f5f5; /* világosszürke hover */
-    border-color: #bbb; /* opcionális */
+    background: #f5f5f5;
+    /* világosszürke hover */
+    border-color: #bbb;
+    /* opcionális */
     color: black;
 }
-#district-select{
+
+#district-select {
     height: 58px;
 }
 
-#parksfilter button{
+#parksfilter button {
     height: 58px;
     background: white !important;
     border: 1px solid #d3d3d3;
     color: black;
     cursor: pointer;
 }
+
 #parksfilter button:hover {
     background: #f5f5f5 !important;
     border-color: #bbb;
     color: black;
 }
+
 .mib-residential-documents {
     display: flex;
     flex-direction: column;
     gap: 15px;
     align-items: center;
-    background-color: #a5a497; /* háttér (szürke a képen) */
+    background-color: #a5a497;
+    /* háttér (szürke a képen) */
     padding: 40px 20px;
 }
 
@@ -1447,7 +1563,8 @@ width: 100% !important; /* Kis százalékos szélesség, hogy négy blokk elfér
 }
 
 .mib-res-doc-btn:hover {
-    background-color: #f3d89c; /* kicsit sötétebb hover */
+    background-color: #f3d89c;
+    /* kicsit sötétebb hover */
 }
 
 .mib-residential-gallery {
@@ -1486,6 +1603,7 @@ width: 100% !important; /* Kis százalékos szélesség, hogy négy blokk elfér
 .mib-residential-gallery a:nth-child(n+5) {
     display: none;
 }
+
 .mib-residential-gallery img {
     width: 100%;
     height: auto;
@@ -1497,7 +1615,8 @@ width: 100% !important; /* Kis százalékos szélesség, hogy négy blokk elfér
 }
 
 .mib-gallery-overlay {
-    display: none; /* alapból rejtve */
+    display: none;
+    /* alapból rejtve */
     opacity: 0;
     position: fixed;
     top: 0;
@@ -1506,15 +1625,18 @@ width: 100% !important; /* Kis százalékos szélesség, hogy négy blokk elfér
     height: 100%;
     background: rgba(0, 0, 0, 0.9);
     /*display: flex;*/
-    justify-content: center;      /* vízszintesen középre */
-    align-items: center;          /* függőlegesen középre */
+    justify-content: center;
+    /* vízszintesen középre */
+    align-items: center;
+    /* függőlegesen középre */
     z-index: 9999;
 }
 
 .mib-gallery-overlay img {
     max-width: 90%;
     max-height: 90%;
-    object-fit: contain; /* ne torzuljon */
+    object-fit: contain;
+    /* ne torzuljon */
 }
 
 .mib-gallery-close {
@@ -1545,27 +1667,33 @@ width: 100% !important; /* Kis százalékos szélesség, hogy négy blokk elfér
 .mib-gallery-next {
     right: 20px;
 }
+
 .mib-otthonstart-badge {
-    position:absolute;
-    top:10px;
-    right:10px;
-    width:60px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 60px;
     cursor: pointer;
 }
 
-#saleimagebadge{
-    position:absolute;
+#saleimagebadge {
+    position: absolute;
     top: 105px;
     right: 69px;
-    width:60px;
+    width: 60px;
 }
+
 .catalog-dropdown legend,
 .mb-2 legend {
     font-size: 15px;
-    /*font-weight: 600;*/   /* opcionális: kicsit kiemeli */
-    margin-bottom: 4px; /* legyen kis térköz a gomb előtt */
-    color: #333;        /* opcionális: sötétebb szín */
+    /*font-weight: 600;*/
+    /* opcionális: kicsit kiemeli */
+    margin-bottom: 4px;
+    /* legyen kis térköz a gomb előtt */
+    color: #333;
+    /* opcionális: sötétebb szín */
 }
+
 .catalog-dropdown fieldset {
     padding: 0;
 }
@@ -1577,19 +1705,27 @@ width: 100% !important; /* Kis százalékos szélesség, hogy négy blokk elfér
 
 
 /* Bal/jobb kilógás asztalin */
-.mib-carousel-outer .swiper-button-prev { left: -50px; }
-.mib-carousel-outer .swiper-button-next { right: -50px; }
+.mib-carousel-outer .swiper-button-prev {
+    left: -50px;
+}
+
+.mib-carousel-outer .swiper-button-next {
+    right: -50px;
+}
 
 /* Pagination pöttyök középre, alul */
 .mib-carousel-outer .swiper-pagination {
-  position: absolute;
-  bottom: -30px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 10;
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
 }
 
-.swiper-horizontal>.swiper-pagination-bullets, .swiper-pagination-bullets.swiper-pagination-horizontal, .swiper-pagination-custom, .swiper-pagination-fraction {
+.swiper-horizontal>.swiper-pagination-bullets,
+.swiper-pagination-bullets.swiper-pagination-horizontal,
+.swiper-pagination-custom,
+.swiper-pagination-fraction {
     bottom: var(--swiper-pagination-bottom, 8px);
     top: 100% !important;
     left: 50% !important;
@@ -1598,7 +1734,15 @@ width: 100% !important; /* Kis százalékos szélesség, hogy négy blokk elfér
 
 /* Mobilon ne lógjon ki a nyíl */
 @media (max-width: 767px) {
-  .mib-carousel-outer .swiper-button-prev { left: 8px; }
-  .mib-carousel-outer .swiper-button-next { right: 8px; }
-  .mib-carousel-outer .swiper-pagination { bottom: 8px; }
+    .mib-carousel-outer .swiper-button-prev {
+        left: 8px;
+    }
+
+    .mib-carousel-outer .swiper-button-next {
+        right: 8px;
+    }
+
+    .mib-carousel-outer .swiper-pagination {
+        bottom: 8px;
+    }
 }

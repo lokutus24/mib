@@ -38,9 +38,11 @@ class MibCreateShortCode extends MibBaseController
         $options = $mibAuth->getOptionDatas();
 
         if (!empty($options)) {
-            $expired = $mibAuth->checkExpireToken($options['expiry']);
-            if ($expired) {
-                $mibAuth->loginToMib();
+            if (!empty($options['mib-login-email']) && !empty($options['mib-login-password'])) {
+                $expired = $mibAuth->checkExpireToken($options['expiry'] ?? '');
+                if ($expired) {
+                    $mibAuth->loginToMib();
+                }
             }
         } else {
             return '<p>Hiányzó konfiguráció.</p>';
@@ -85,9 +87,11 @@ class MibCreateShortCode extends MibBaseController
         $options = $mibAuth->getOptionDatas();
 
         if (!empty($options)) {
-            $expired = $mibAuth->checkExpireToken($options['expiry']);
-            if ($expired) {
-                $mibAuth->loginToMib();
+            if (!empty($options['mib-login-email']) && !empty($options['mib-login-password'])) {
+                $expired = $mibAuth->checkExpireToken($options['expiry'] ?? '');
+                if ($expired) {
+                    $mibAuth->loginToMib();
+                }
             }
         } else {
             return '<p>Hiányzó konfiguráció.</p>';
@@ -100,6 +104,8 @@ class MibCreateShortCode extends MibBaseController
             return '<p>Nincsenek képek.</p>';
         }
 
+        $mibBase = new MibBaseController();
+
         $html = '<div class="mib-residential-gallery">';
         foreach ($images as $img) {
             $preview = esc_url($img['previewUrl'] ?? '');
@@ -107,7 +113,8 @@ class MibCreateShortCode extends MibBaseController
             $full = filter_var($urlRaw, FILTER_VALIDATE_URL) ? esc_url($urlRaw) : $preview;
             if ($preview) {
                 $name = esc_attr($img['name'] ?? '');
-                $html .= '<a href="' . $full . '"><img src="' . $preview . '" alt="' . $name . '" decoding="async" crossorigin="anonymous"></a>';
+                $cors = $mibBase->getCorsAttribute($preview);
+                $html .= '<a href="' . $full . '"><img src="' . $preview . '" alt="' . $name . '" decoding="async"' . $cors . '></a>';
             }
         }
         $html .= '</div>';
@@ -148,7 +155,7 @@ class MibCreateShortCode extends MibBaseController
                 // Map $_GET parameters to config for filter rendering
                 $map = [
                     'district' => 'district',
-                    'orientation' => 'typeOfBalcony',
+                    'typeOfBalcony' => 'typeOfBalcony',
                     'availability' => 'status',
                     'garden_connection' => 'garden_connection',
                     'stairway' => 'stairway',
@@ -162,6 +169,7 @@ class MibCreateShortCode extends MibBaseController
                     'room_max' => 'room_max',
                     'area_min' => 'square-meter-slider-min',
                     'area_max' => 'square-meter-slider-max',
+                    'parkId' => 'residential_park_id',
                 ];
 
                 foreach ($map as $queryKey => $filterKey) {
@@ -205,14 +213,14 @@ class MibCreateShortCode extends MibBaseController
             $options = $mibAuth->getOptionDatas();
 
             if (!empty($options)) {
+                if (!empty($options['mib-login-email']) && !empty($options['mib-login-password'])) {
+                    $expired = $mibAuth->checkExpireToken($options['expiry'] ?? '');
 
-                $expired = $mibAuth->checkExpireToken($options['expiry']);
-
-                if ($expired) {
-                    $mibAuth->loginToMib();
-                    $options = $mibAuth->getOptionDatas();
+                    if ($expired) {
+                        $mibAuth->loginToMib();
+                        $options = $mibAuth->getOptionDatas();
+                    }
                 }
-
             } else {
 
                 exit("You need to fill option datas!");
@@ -302,13 +310,22 @@ class MibCreateShortCode extends MibBaseController
         $mibAuth = new MibAuthController();
         $options = $mibAuth->getOptionDatas();
 
+        error_log("MIB Shortcode Options: " . print_r($options, true));
 
-        if (!empty($options)) {
-            $expired = $mibAuth->checkExpireToken($options['expiry']);
+        // Check for either standard login options OR fallback options
+        $hasLogin = !empty($options['mib-login-email']) && !empty($options['mib-login-password']);
+        $hasFallback = !empty($options['mib-api-url']) && !empty($options['mib-api-key']);
 
-            if ($expired) {
-                $mibAuth->loginToMib();
-                $options = $mibAuth->getOptionDatas();
+
+        if (!empty($options) && ($hasLogin || $hasFallback)) {
+
+            if (!empty($options['mib-login-email']) && !empty($options['mib-login-password'])) {
+                $expired = $mibAuth->checkExpireToken($options['expiry'] ?? '');
+
+                if ($expired) {
+                    $mibAuth->loginToMib();
+                    $options = $mibAuth->getOptionDatas();
+                }
             }
 
             if ($single) {
@@ -357,6 +374,7 @@ class MibCreateShortCode extends MibBaseController
                 }
 
                 $arg['residentialParkId'] = $this->residentialParkId;
+
                 $all_data = $mibAuth->getApartmentsForFrontEnd($perpage, 1, $arg);
 
             }
@@ -364,6 +382,8 @@ class MibCreateShortCode extends MibBaseController
             $table_data = $this->setDataToTable($all_data);
             return [$table_data, $all_data['total'], $recommendDatas];
         }
+
+        return [[], 0, []];
     }
 
     private function getRecommendedDatas($datas)
@@ -376,11 +396,13 @@ class MibCreateShortCode extends MibBaseController
             return $all_datas;
         }
 
-        $expired = $mibAuth->checkExpireToken($options['expiry']);
+        if (!empty($options['mib-login-email']) && !empty($options['mib-login-password'])) {
+            $expired = $mibAuth->checkExpireToken($options['expiry'] ?? '');
 
-        if ($expired) {
-            $mibAuth->loginToMib();
-            $options = $mibAuth->getOptionDatas();
+            if ($expired) {
+                $mibAuth->loginToMib();
+                $options = $mibAuth->getOptionDatas();
+            }
         }
 
         $currentApartment = $datas['data'][0];

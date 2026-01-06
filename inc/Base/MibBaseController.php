@@ -143,6 +143,14 @@ class MibBaseController
 
     public $filterOptionCrossSellDatas = [];
 
+    public function getCorsAttribute($url)
+    {
+        if (strpos($url, 'ugyfel.mibportal.hu') !== false) {
+            return ' crossorigin="anonymous"';
+        }
+        return '';
+    }
+
     public $residentialParkId = 12;
 
     public $shortcodesOptions = [];
@@ -305,15 +313,36 @@ class MibBaseController
 
             $otthonStart = false;
             $badgeUrl = '';
+
             $sale_white_badgeUrl = plugin_dir_url(dirname(__DIR__)) . 'assets/akcio_badge_feher.png';
             $sale_black_badgeUrl = plugin_dir_url(dirname(__DIR__)) . 'assets/akcio_badge_fekete.png';
 
-            if (!is_null($item->price) && !is_null($item->salesFloorArea) && $item->salesFloorArea > 0) {
-                $pricePerMeter = $item->price / $item->salesFloorArea;
+            // Segédfüggvény: null / string → float
+            $toFloat = function ($value) {
+                return is_numeric($value) ? (float) $value : 0.0;
+            };
 
+            $netto = $toFloat($item->nettoFloorArea ?? null);
+
+            $external =
+                $toFloat($item->balconyFloorArea ?? null) +
+                $toFloat($item->terraceFloorArea ?? null) +
+                $toFloat($item->loggiaFloorArea ?? null);
+
+            // Számított alapterület
+            $calculatedArea = $netto + ($external * 0.5);
+
+            if (!is_null($item->price) && $calculatedArea > 0) {
+
+                $pricePerMeter = $item->price / $calculatedArea;
+
+                // 3%-os Otthon Start feltételek
                 if ($pricePerMeter <= 1500000 && $item->price < 100000000) {
                     $otthonStart = true;
-                    $badgeUrl = ($item->type == 'lakás') ? plugin_dir_url(dirname(__DIR__)) . 'assets/os.png' : '';
+
+                    if ($item->type === 'lakás') {
+                        $badgeUrl = plugin_dir_url(dirname(__DIR__)) . 'assets/os.png';
+                    }
                 }
             }
 
@@ -499,8 +528,10 @@ class MibBaseController
             ];
 
             $logo = '';
+            $logo = '';
             if (isset($this->filterOptionDatas['mib-display_logo']) && !empty($data['darkLogo'])) {
-                $logo = '<img src="' . $data['darkLogo'] . '" alt="Logó" class="apartman-logo" crossorigin="anonymous">';
+                $cors = $this->getCorsAttribute($data['darkLogo']);
+                $logo = '<img src="' . $data['darkLogo'] . '" alt="Logó" class="apartman-logo"' . $cors . '>';
             }
 
             $address = '';
@@ -515,7 +546,8 @@ class MibBaseController
 
             // Bal oldal: alaprajz
             $html .= '<div class="apartment-plan position-relative">';
-            $html .= '<img crossorigin="anonymous" src="' . esc_url($data['gallery_first']) . '" alt="Lakás Kép">';
+            $cors = $this->getCorsAttribute($data['gallery_first']);
+            $html .= '<img' . $cors . ' src="' . esc_url($data['gallery_first']) . '" alt="Lakás Kép">';
             if (!empty($data['otthonStartBadge'])) {
                 $html .= '<img class="mib-otthonstart-badge" src="' . esc_url($data['otthonStartBadge']) . '" alt="Otthon Start" role="button" tabindex="0" />';
             }
@@ -587,7 +619,8 @@ class MibBaseController
                 $html .= '<h4>Alaprajz</h4>';
                 $floorplanUrl = esc_url($data['szintrajz_img']);
                 $html .= '<a href="' . $floorplanUrl . '" class="mib-floorplan-link">';
-                $html .= '<img src="' . $floorplanUrl . '" alt="Logó" crossorigin="anonymous" id="floorplanimg">';
+                $cors = $this->getCorsAttribute($floorplanUrl);
+                $html .= '<img src="' . $floorplanUrl . '" alt="Logó"' . $cors . ' id="floorplanimg">';
                 $html .= '</a>';
             }
 
@@ -595,7 +628,8 @@ class MibBaseController
                 $html .= '<h4>Helyszín rajz</h4>';
                 $floorplanUrl = esc_url($data['siteplan_image']);
                 $html .= '<a href="' . $floorplanUrl . '" class="mib-floorplan-link">';
-                $html .= '<img src="' . $floorplanUrl . '" alt="Logó" crossorigin="anonymous" id="floorplanimg">';
+                $cors = $this->getCorsAttribute($floorplanUrl);
+                $html .= '<img src="' . $floorplanUrl . '" alt="Logó"' . $cors . ' id="floorplanimg">';
                 $html .= '</a>';
             }
 
@@ -660,7 +694,8 @@ class MibBaseController
 
                 $html .= '<div class="recommended-apartment">';
                 $html .= '<a href="/lakas/?id=' . $apartment['id'] . '">';
-                $html .= '<img crossorigin="anonymous" src="' . $apartment['image'] . '" alt="' . esc_attr($apartment['name']) . '" class="recommended-image">';
+                $cors = $this->getCorsAttribute($apartment['image']);
+                $html .= '<img' . $cors . ' src="' . $apartment['image'] . '" alt="' . esc_attr($apartment['name']) . '" class="recommended-image">';
                 $html .= '<h3 class="recommended-title">' . esc_html($apartment['name']) . '</h3>';
                 $priceHtml = 'Ár: ';
                 if (!empty($apartment['originalPrice'])) {
@@ -993,7 +1028,8 @@ class MibBaseController
 
                 $logo = '';
                 if (in_array('display_logo', $filterType['extras']) && !empty($data['logo'])) {
-                    $logo = '<img src="' . $data['logo'] . '" crossorigin="anonymous">';
+                    $cors = $this->getCorsAttribute($data['logo']);
+                    $logo = '<img src="' . $data['logo'] . '"' . $cors . '>';
                 }
 
                 $address = '';
@@ -1006,7 +1042,9 @@ class MibBaseController
 
                 // Kép wrapper, flexbox középre igazítással
                 $html .= '<div class="primary-color card-image-wrapper">';
-                $html .= '<img src="' . ((!empty($data['szintrajz_img'])) ? $data['szintrajz_img'] : $data['image']) . '" class="card-img-top" alt="Lakás képe" crossorigin="anonymous">';
+                $imgSrc = ((!empty($data['szintrajz_img'])) ? $data['szintrajz_img'] : $data['image']);
+                $cors = $this->getCorsAttribute($imgSrc);
+                $html .= '<img src="' . $imgSrc . '" class="card-img-top" alt="Lakás képe"' . $cors . '>';
                 if (!empty($data['otthonStartBadge'])) {
                     $html .= '<img class="mib-otthonstart-badge" src="' . esc_url($data['otthonStartBadge']) . '" alt="Otthon Start" role="button" tabindex="0" />';
                 }
@@ -1183,7 +1221,8 @@ class MibBaseController
 
                 $logo = '';
                 if (isset($this->filterOptionDatas['mib-display_logo']) && $this->filterOptionDatas['mib-display_logo'] == 1 && !empty($data['logo'])) {
-                    $logo = '<img src="' . $data['logo'] . '" crossorigin="anonymous">';
+                    $cors = $this->getCorsAttribute($data['logo']);
+                    $logo = '<img src="' . $data['logo'] . '"' . $cors . '>';
                 }
 
                 $address = '';
@@ -1196,7 +1235,8 @@ class MibBaseController
 
                 // Kép wrapper, flexbox középre igazítással
                 $html .= '<div class="primary-color card-image-wrapper">';
-                $html .= '<img src="' . $data['image'] . '" class="card-img-top" alt="Lakás képe" crossorigin="anonymous">';
+                $cors = $this->getCorsAttribute($data['image']);
+                $html .= '<img src="' . $data['image'] . '" class="card-img-top" alt="Lakás képe"' . $cors . '>';
                 if (!empty($data['otthonStartBadge'])) {
                     $html .= '<img class="mib-otthonstart-badge" src="' . esc_url($data['otthonStartBadge']) . '" alt="Otthon Start" role="button" tabindex="0" />';
                 }
@@ -1325,9 +1365,11 @@ class MibBaseController
 
                 $logo = '';
                 if (isset($this->filterOptionDatas['mib-display_logo']) && $this->filterOptionDatas['mib-display_logo'] == 1 && !empty($data['logo']) && $this->filterType === null) {
-                    $logo = '<img src="' . $data['logo'] . '" crossorigin="anonymous">';
+                    $cors = $this->getCorsAttribute($data['logo']);
+                    $logo = '<img src="' . $data['logo'] . '"' . $cors . '>';
                 } elseif (isset($this->filterType['extras']) && in_array('display_logo', $this->filterType['extras']) && !empty($data['logo'])) {
-                    $logo = '<img src="' . $data['logo'] . '" crossorigin="anonymous">';
+                    $cors = $this->getCorsAttribute($data['logo']);
+                    $logo = '<img src="' . $data['logo'] . '"' . $cors . '>';
                 }
 
                 $address = '';
@@ -1342,7 +1384,9 @@ class MibBaseController
 
                 // Kép wrapper, flexbox középre igazítással
                 $html .= '<div class="primary-color card-image-wrapper">';
-                $html .= '<img src="' . ((!empty($data['szintrajz_img'])) ? $data['szintrajz_img'] : $data['image']) . '" class="card-img-top" alt="Lakás képe" crossorigin="anonymous">';
+                $imgSrc = (!empty($data['szintrajz_img'])) ? $data['szintrajz_img'] : $data['image'];
+                $cors = $this->getCorsAttribute($imgSrc);
+                $html .= '<img src="' . $imgSrc . '" class="card-img-top" alt="Lakás képe"' . $cors . '>';
                 if (!empty($data['otthonStartBadge'])) {
                     $html .= '<img class="mib-otthonstart-badge" src="' . esc_url($data['otthonStartBadge']) . '" alt="Otthon Start" role="button" tabindex="0" />';
                 }
@@ -1464,9 +1508,11 @@ class MibBaseController
 
                 $logo = '';
                 if (isset($this->filterOptionDatas['mib-display_logo']) && $this->filterOptionDatas['mib-display_logo'] == 1 && !empty($data['logo'])) {
-                    $logo = '<img src="' . esc_url($data['logo']) . '" crossorigin="anonymous" alt="Park logó">';
+                    $cors = $this->getCorsAttribute($data['logo']);
+                    $logo = '<img src="' . esc_url($data['logo']) . '"' . $cors . ' alt="Park logó">';
                 } elseif (isset($this->selectedShortcodeOption['extras']) && in_array('display_logo', $this->selectedShortcodeOption['extras']) && !empty($data['logo'])) {
-                    $logo = '<img src="' . esc_url($data['logo']) . '" crossorigin="anonymous" alt="Park logó">';
+                    $cors = $this->getCorsAttribute($data['logo']);
+                    $logo = '<img src="' . esc_url($data['logo']) . '"' . $cors . ' alt="Park logó">';
                 }
 
                 $address = '';
@@ -1482,7 +1528,8 @@ class MibBaseController
 
                 // Kép blokk
                 $html .= '            <div class="primary-color card-image-wrapper">';
-                $html .= '              <img src="' . esc_url($data['image']) . '" class="card-img-top" alt="Lakás képe" crossorigin="anonymous">';
+                $cors = $this->getCorsAttribute($data['image']);
+                $html .= '              <img src="' . esc_url($data['image']) . '" class="card-img-top" alt="Lakás képe"' . $cors . '>';
                 if (!empty($data['otthonStartBadge'])) {
                     $html .= '              <a href="' . $otthonStartFilterUrl . '" class="mib-otthonstart-badge-link" aria-label="Otthon Start szűrő megnyitása">';
                     $html .= '                <img class="mib-otthonstart-badge" src="' . esc_url($data['otthonStartBadge']) . '" alt="Otthon Start">';
@@ -1589,9 +1636,11 @@ class MibBaseController
             foreach ($datas as $data) {
                 $logo = '';
                 if (isset($this->filterOptionDatas['mib-display_logo']) && $this->filterOptionDatas['mib-display_logo'] == 1 && !empty($data['logo'])) {
-                    $logo = '<img src="' . $data['logo'] . '" crossorigin="anonymous">';
+                    $cors = $this->getCorsAttribute($data['logo']);
+                    $logo = '<img src="' . $data['logo'] . '"' . $cors . '>';
                 } elseif (isset($this->selectedShortcodeOption['extras']) && in_array('display_logo', $this->selectedShortcodeOption['extras']) && !empty($data['logo'])) {
-                    $logo = '<img src="' . $data['logo'] . '" crossorigin="anonymous">';
+                    $cors = $this->getCorsAttribute($data['logo']);
+                    $logo = '<img src="' . $data['logo'] . '"' . $cors . '>';
                 }
 
                 $address = '';
@@ -1606,7 +1655,8 @@ class MibBaseController
                 $html .= '<div class="card h-100 position-relative">';
 
                 $html .= '<div class="primary-color card-image-wrapper">';
-                $html .= '<img src="' . $data['image'] . '" class="card-img-top" alt="Lakás képe" crossorigin="anonymous">';
+                $cors = $this->getCorsAttribute($data['image']);
+                $html .= '<img src="' . $data['image'] . '" class="card-img-top" alt="Lakás képe"' . $cors . '>';
                 if (!empty($data['otthonStartBadge'])) {
                     $html .= '<img class="mib-otthonstart-badge" src="' . esc_url($data['otthonStartBadge']) . '" alt="Otthon Start" role="button" tabindex="0" />';
                 }

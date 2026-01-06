@@ -42,6 +42,57 @@ class MibManagerCallbacks extends MibBaseController
 		echo 'Az email / jelszó segítségével szerzi be a tokent az API-hoz szükséges működéshez!';
 	}
 
+	public function securitySectionManager()
+	{
+		// A cím az inputok fölöt: "Biztonsági kapcsolat" legyen.
+		// Ez automatikusan megjelenik a szekció címeként.
+	}
+
+	public function securityInputs($args)
+	{
+		if (isset($_POST['mib-api-url'])) {
+			$url = sanitize_text_field(wp_unslash($_POST['mib-api-url']));
+			$key = isset($_POST['mib-api-key']) ? sanitize_text_field(wp_unslash($_POST['mib-api-key'])) : '';
+
+			$options = maybe_unserialize(get_option('mib_options'));
+			if (!is_array($options)) {
+				$options = [];
+			}
+
+			$options['mib-api-url'] = $url;
+			$options['mib-api-key'] = $key;
+
+			update_option('mib_options', $options);
+		}
+
+		$mib_options = maybe_unserialize(get_option('mib_options'));
+		?>
+		<table class="options-table-responsive dt-options-table">
+			<tbody>
+				<tr id="dt_desc_box">
+
+					<td class="label">
+						<label for='mib-api-url'>URL:</label><br>
+					</td>
+					<td class="field">
+						<input type="text" name="mib-api-url" size="45"
+							value="<?= isset($mib_options['mib-api-url']) ? esc_html($mib_options['mib-api-url']) : ''; ?>">
+					</td>
+				</tr>
+				<tr id="dt_desc_box">
+					<td class="label">
+						<label for="mib-api-key">Api kulcs</label>
+					</td>
+					<td class="field">
+						<input type="text" name="mib-api-key" size="45"
+							value="<?= isset($mib_options['mib-api-key']) ? esc_html($mib_options['mib-api-key']) : ''; ?>">
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<?php
+	}
+
 	public function linkUplaoder()
 	{
 

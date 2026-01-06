@@ -178,6 +178,101 @@ jQuery(document).ready(function ($) {
         return $('#search-apartman-btn').length;
     }
 
+    function updateUrlParams() {
+        const params = new URLSearchParams();
+
+        // 1. Sliders
+        const sliders = [
+            { id: 'custom-price-slider', key: 'price' },
+            { id: 'custom-floor-slider', key: 'floor' },
+            { id: 'custom-room-slider', key: 'room' },
+            { id: 'custom-square-slider', key: 'area' },
+            { id: 'slider-range', key: 'area' }, // Main slider compatibility
+            { id: 'price-slider-range', key: 'price' } // Main price slider compatibility
+        ];
+
+        sliders.forEach(slider => {
+            const $slider = $('#' + slider.id);
+            if ($slider.length) {
+                let values;
+                if ($slider[0] && $slider[0].noUiSlider) {
+                    values = $slider[0].noUiSlider.get().map(v => parseInt(v));
+                } else if ($slider.data('ui-slider') || $slider.hasClass('ui-slider')) {
+                    values = $slider.slider('values');
+                }
+
+                if (Array.isArray(values) && values.length === 2) {
+                    params.set(slider.key + '_min', values[0]);
+                    params.set(slider.key + '_max', values[1]);
+                }
+            }
+        });
+
+        // 2. Arrays (Checkboxes)
+        // Orientation
+        $('.catalog-orientation-checkbox:checked').each(function () {
+            params.append('typeOfBalcony[]', $(this).val());
+        });
+        $('.orientation-checkbox:checked').each(function () { // Fallback/Other view
+            if (!params.getAll('typeOfBalcony[]').includes($(this).val())) {
+                params.append('typeOfBalcony[]', $(this).val());
+            }
+        });
+
+        // Availability (Status)
+        $('.catalog-availability-checkbox:checked').each(function () {
+            params.append('availability[]', $(this).val());
+        });
+        $('.availability-checkbox:checked').each(function () {
+            if (!params.getAll('availability[]').includes($(this).val())) {
+                params.append('availability[]', $(this).val());
+            }
+        });
+
+        // Stairway
+        $('.catalog-stairway-checkbox:checked').each(function () {
+            params.append('stairway[]', $(this).val());
+        });
+
+        // 3. Booleans (Single Checkboxes)
+        // Garden Connection
+        if ($('.catalog-gardenconnection-checkbox').is(':checked')) {
+            params.set('garden_connection', 1);
+        }
+
+        // Otthon Start
+        if ($('.catalog-otthonstart-checkbox').is(':checked')) {
+            params.set('otthonStart', 1);
+        }
+
+        // Discount Price
+        if ($('.catalog-discountprice-checkbox').is(':checked')) {
+            params.set('discountPrice', 1);
+        }
+
+        // 4. Selects
+        const district = $('.district-select').val();
+        if (district) {
+            params.set('district', district);
+        }
+
+        const parkId = $('.select-residential-park').val();
+        if (parkId) {
+            params.set('parkId', parkId);
+        }
+
+        // 5. Sort
+        const sortVal = $('#mib-sort-select').val();
+        if (sortVal) {
+            params.set('sort', sortVal);
+        }
+
+        // Update URL
+        const newUrl = window.location.pathname + '?' + params.toString();
+        // console.log('New URL Params:', params.toString());
+        window.history.replaceState({}, document.title, newUrl);
+    }
+
     function initializeSlider(minValue, maxValue, defaultMin = 0, defaultMax = 200) {
 
         $("#slider-range").slider({
@@ -404,7 +499,7 @@ jQuery(document).ready(function ($) {
 
                 initializeSlider(minValue, maxValue, response.data.slider_min, response.data.slider_max);
                 initializePriceSlider(priceRange[0], priceRange[1], response.data.price_slider_min, response.data.price_slider_max);
-
+                updateUrlParams();
             },
             error: function (error) {
                 console.log('Hiba történt az adatok betöltése közben.');
@@ -485,7 +580,7 @@ jQuery(document).ready(function ($) {
 
                 initializeSlider(squareRange[0], squareRange[1], response.data.slider_min, response.data.slider_max);
                 initializePriceSlider(minValue, maxValue, response.data.price_slider_min, response.data.price_slider_max);
-
+                updateUrlParams();
             },
             error: function (error) {
                 console.log('Hiba történt az adatok betöltése közben.');
@@ -639,6 +734,7 @@ jQuery(document).ready(function ($) {
                 if ($('#custom-price-slider').length && typeof initializeCatalogPriceSlider === 'function') {
                     initializeCatalogPriceSlider(response.data.price_slider_min, response.data.price_slider_max, response.data.price_slider_min, response.data.price_slider_max);
                 }
+                updateUrlParams();
             },
             error: function (error) {
                 console.log(error);
@@ -731,6 +827,7 @@ jQuery(document).ready(function ($) {
                     $('#min-area').val(slider_min);
                     $('#max-area').val(slider_max);
                 }
+                updateUrlParams();
             },
             error: function (error) {
 
@@ -826,6 +923,7 @@ jQuery(document).ready(function ($) {
                     $('#min-area').val(slider_min);
                     $('#max-area').val(slider_max);
                 }
+                updateUrlParams();
             },
             error: function (error) {
                 console.log(error);
@@ -920,6 +1018,7 @@ jQuery(document).ready(function ($) {
                     $('#min-area').val(slider_min);
                     $('#max-area').val(slider_max);
                 }
+                updateUrlParams();
             },
             error: function (error) {
                 console.log(error);
@@ -1102,6 +1201,7 @@ jQuery(document).ready(function ($) {
                 $('.select-residential-park').val(selectedParkId);
 
                 checkFavorites();
+                updateUrlParams();
             },
             error: function (error) {
                 console.log(error);
@@ -1267,6 +1367,7 @@ jQuery(document).ready(function ($) {
                     $('#min-area').val(slider_min);
                     $('#max-area').val(slider_max);
                 }
+                updateUrlParams();
             },
             error: function (error) {
 
@@ -1324,6 +1425,7 @@ jQuery(document).ready(function ($) {
                     $('#min-area').val(response.data.slider_min);
                     $('#max-area').val(response.data.slider_max);
                 }
+                updateUrlParams();
             },
             error: function (error) {
                 console.log('Hiba történt az adatok betöltése közben.');
@@ -2006,6 +2108,8 @@ jQuery(document).ready(function ($) {
                 $('.select-residential-park').val(selectedParkId);
 
                 checkFavorites();
+
+                updateUrlParams();
             }
         });
 
@@ -2156,6 +2260,8 @@ jQuery(document).ready(function ($) {
                 $('.select-residential-park').val(selectedParkId);
 
                 checkFavorites();
+
+                updateUrlParams();
 
             }
         });
@@ -2314,6 +2420,7 @@ jQuery(document).ready(function ($) {
                 $('.select-residential-park').val(selectedParkId);
 
                 checkFavorites();
+                updateUrlParams();
             }
         });
 
@@ -2469,6 +2576,8 @@ jQuery(document).ready(function ($) {
                 });
 
                 $('.select-residential-park').val(parkId);
+
+                updateUrlParams();
             },
             error: function (error) {
                 console.log(error);
@@ -2765,8 +2874,7 @@ jQuery(document).ready(function ($) {
 
                 $('.select-residential-park').val(selectedParkId);
 
-                const cleanUrl = window.location.origin + window.location.pathname;
-                window.history.replaceState({}, document.title, cleanUrl);
+                updateUrlParams();
 
 
             },
@@ -3086,6 +3194,8 @@ jQuery(document).ready(function ($) {
 
                 $('#mib-spinner').hide();
 
+                updateUrlParams();
+
                 if ($('#custom-square-slider').hasClass('custom-filter')) {
                     return;
                 }
@@ -3246,6 +3356,8 @@ jQuery(document).ready(function ($) {
             success: function (response) {
 
                 $('#mib-spinner').hide();
+
+                updateUrlParams();
 
                 if ($('#custom-price-slider').hasClass('custom-filter')) {
                     return;
@@ -3411,6 +3523,8 @@ jQuery(document).ready(function ($) {
 
                 $('#mib-spinner').hide();
 
+                updateUrlParams();
+
                 if ($('#custom-floor-slider').hasClass('custom-filter')) {
                     return;
                 }
@@ -3574,6 +3688,8 @@ jQuery(document).ready(function ($) {
             success: function (response) {
 
                 $('#mib-spinner').hide();
+
+                updateUrlParams();
 
                 if ($('#custom-room-slider').hasClass('custom-filter')) {
                     return;
@@ -4038,6 +4154,8 @@ jQuery(document).ready(function ($) {
                 $('.select-residential-park').val(selectedParkId);
 
                 checkFavorites();
+
+                updateUrlParams();
 
             },
             error: function (error) {
@@ -4745,6 +4863,8 @@ jQuery(document).ready(function ($) {
                 checkFavorites();
                 checkIfAnyFilterIsActive();
 
+                updateUrlParams();
+
             },
             error: function (error) {
                 console.log('Hiba történt az Otthon Start szűrő frissítésekor.');
@@ -4951,6 +5071,8 @@ jQuery(document).ready(function ($) {
                 checkFavorites();
                 checkIfAnyFilterIsActive();
 
+                updateUrlParams();
+
             },
             error: function (error) {
                 console.log('Hiba történt az Akciós Ár szűrő frissítésekor.');
@@ -5020,7 +5142,11 @@ jQuery(document).ready(function ($) {
         var href = mibLinks.eq(mibIndex).attr('href');
         $mibImage.attr('src', href);
         $mibImage.attr('decoding', 'async');
-        $mibImage.attr('crossorigin', 'anonymous');
+        if (href.indexOf('ugyfel.mibportal.hu') !== -1) {
+            $mibImage.attr('crossorigin', 'anonymous');
+        } else {
+            $mibImage.removeAttr('crossorigin');
+        }
         $mibOverlay.fadeIn(200);
     }
 
