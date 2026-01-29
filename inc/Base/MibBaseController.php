@@ -2163,9 +2163,9 @@ class MibBaseController
                 $html .= '</div>';
                 $html .= '</div>';
             }
+            $html .= '</div>';
         }
 
-        $html .= '</div>';
         $html .= '</div>';
 
         $html .= '<div id="advanced-filters" class="flex-wrap" style="display:none;">';
@@ -2204,6 +2204,8 @@ class MibBaseController
         if ($includeSearchButton) {
             $html .= '<div class="search-mib-filter-container" id="search-apartman-btn" class="btn third-color">Lakások keresése <i class="fa fa-arrow-right" aria-hidden="true"></i></div>';
         }
+
+        $html .= '</div>';
 
         return $html;
     }

@@ -179,7 +179,11 @@ jQuery(document).ready(function ($) {
     }
 
     function updateUrlParams() {
-        const params = new URLSearchParams();
+        const params = new URLSearchParams(window.location.search);
+
+        // 0. Clear managed array keys to prevent duplication when re-adding
+        const managedArrayKeys = ['floor[]', 'room[]', 'typeOfBalcony[]', 'availability[]', 'stairway[]', 'orientation[]'];
+        managedArrayKeys.forEach(key => params.delete(key));
 
         // 1. Sliders
         const sliders = [
@@ -202,14 +206,22 @@ jQuery(document).ready(function ($) {
                 }
 
                 if (Array.isArray(values) && values.length === 2) {
-                    params.set(slider.key + '_min', values[0]);
-                    params.set(slider.key + '_max', values[1]);
+                    // Safety check: if both min and max are 0, it's likely an error or uninitialized state.
+                    // Don't persist this to avoid "no results" issues.
+                    // Also check for 1-1 room values (default)
+                    if ((values[0] === 0 && values[1] === 0) || (slider.key === 'room' && values[0] === 1 && values[1] === 1)) {
+                        params.delete(slider.key + '_min');
+                        params.delete(slider.key + '_max');
+                    } else {
+                        params.set(slider.key + '_min', values[0]);
+                        params.set(slider.key + '_max', values[1]);
+                    }
                 }
             }
         });
 
         // 2. Arrays (Checkboxes)
-        // Orientation
+        // Orientation (Balcony)
         $('.catalog-orientation-checkbox:checked').each(function () {
             params.append('typeOfBalcony[]', $(this).val());
         });
@@ -234,37 +246,49 @@ jQuery(document).ready(function ($) {
             params.append('stairway[]', $(this).val());
         });
 
-        // 3. Booleans (Single Checkboxes)
+        // 3. Booleans/Scalars (Single Valued)
         // Garden Connection
         if ($('.catalog-gardenconnection-checkbox').is(':checked')) {
             params.set('garden_connection', 1);
+        } else {
+            params.delete('garden_connection');
         }
 
         // Otthon Start
         if ($('.catalog-otthonstart-checkbox').is(':checked')) {
             params.set('otthonStart', 1);
+        } else {
+            params.delete('otthonStart');
         }
 
         // Discount Price
         if ($('.catalog-discountprice-checkbox').is(':checked')) {
             params.set('discountPrice', 1);
+        } else {
+            params.delete('discountPrice');
         }
 
         // 4. Selects
         const district = $('.district-select').val();
         if (district) {
             params.set('district', district);
+        } else {
+            params.delete('district');
         }
 
         const parkId = $('.select-residential-park').val();
         if (parkId) {
             params.set('parkId', parkId);
+        } else {
+            params.delete('parkId');
         }
 
         // 5. Sort
         const sortVal = $('#mib-sort-select').val();
         if (sortVal) {
             params.set('sort', sortVal);
+        } else {
+            params.delete('sort');
         }
 
         // Update URL
@@ -2587,6 +2611,29 @@ jQuery(document).ready(function ($) {
     //catalog-orientation-shortcode-checkbox
 
     const urlParams = new URLSearchParams(window.location.search);
+
+    // Helper to check if any filter params are present
+    function hasFilterParams(params) {
+        const filterKeys = [
+            'price_min', 'price_max',
+            'floor_min', 'floor_max',
+            'room_min', 'room_max',
+            'area_min', 'area_max',
+            'district',
+            'typeOfBalcony', 'typeOfBalcony[]', 'orientation', 'orientation[]',
+            'availability', 'availability[]',
+            'stairway', 'stairway[]',
+            'garden_connection',
+            'otthonStart',
+            'discountPrice', 'discount_price',
+            'parkId', 'parkId[]',
+            'sort'
+        ];
+        // Check if any of the filter keys exist in the URL parameters
+        // We check both exact match and 'key[]' for array types just in case
+        return filterKeys.some(key => params.has(key) || params.has(key + '[]'));
+    }
+
     //sliderben jön a badge kattintás
     if (urlParams.has('fromSlider')) {
 
@@ -2605,7 +2652,7 @@ jQuery(document).ready(function ($) {
         }
     }
 
-    if (urlParams.size > 0 && !urlParams.has('fromSlider')) {
+    if (urlParams.size > 0 && !urlParams.has('fromSlider') && hasFilterParams(urlParams)) {
 
 
         const fromUrl = (name) => [
@@ -2690,7 +2737,10 @@ jQuery(document).ready(function ($) {
 
         // --- Egyéb paraméterek beállítása a UI-n (checkboxok bejelölése az URL alapján)
         // Orientation
-        const urlOrientations = fromUrl('orientation');
+        const urlOrientations = [
+            ...fromUrl('typeOfBalcony'),
+            ...fromUrl('orientation')
+        ];
         if (urlOrientations.length) {
             $('.catalog-orientation-checkbox').prop('checked', false);
             urlOrientations.forEach(v => {
