@@ -5190,13 +5190,36 @@ jQuery(document).ready(function ($) {
         if (index >= mibLinks.length) { index = 0; }
         mibIndex = index;
         var href = mibLinks.eq(mibIndex).attr('href');
-        $mibImage.attr('src', href);
+
+        $mibImage.off('load error'); // Remove previous handlers
+
+        var onImageLoaded = function () {
+            // console.log('MIB Lightbox: Image loaded', href);
+            $mibOverlay.removeClass('mib-loading loading-spinner');
+        };
+
+        $mibImage.on('load', onImageLoaded);
+        $mibImage.on('error', function () {
+            console.error('MIB Lightbox: Image failed to load', href);
+            $mibOverlay.removeClass('mib-loading loading-spinner');
+        });
+
+        // Set attributes BEFORE src
         $mibImage.attr('decoding', 'async');
         if (href.indexOf('ugyfel.mibportal.hu') !== -1) {
             $mibImage.attr('crossorigin', 'anonymous');
         } else {
             $mibImage.removeAttr('crossorigin');
         }
+
+        // Set src LAST
+        $mibImage.attr('src', href);
+
+        // Check if already complete (cached)
+        if ($mibImage[0].complete) {
+            $mibImage.trigger('load');
+        }
+
         $mibOverlay.fadeIn(200);
     }
 

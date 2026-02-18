@@ -114,7 +114,7 @@ class MibCreateShortCode extends MibBaseController
             if ($preview) {
                 $name = esc_attr($img['name'] ?? '');
                 $cors = $mibBase->getCorsAttribute($preview);
-                $html .= '<a href="' . $full . '"><img src="' . $preview . '" alt="' . $name . '" decoding="async"' . $cors . '></a>';
+                $html .= '<a href="' . $full . '" data-elementor-open-lightbox="no"><img src="' . $preview . '" alt="' . $name . '" decoding="async"' . $cors . '></a>';
             }
         }
         $html .= '</div>';

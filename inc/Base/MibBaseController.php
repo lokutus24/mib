@@ -211,13 +211,13 @@ class MibBaseController
         foreach ($datas['data'] as $item) {
 
             // Lekérjük az adatokat a get_attachments_by_meta_values függvényből
-            //$attachments = $this->get_attachments_by_meta_values($item->name, $this->residentialParkId);
-            $attachments = '';
+            $attachments = $this->get_attachments_by_meta_values($item->name, $this->residentialParkId);
 
             $image = '';
             $szintrajz = '';
             $szintrajz_img = '';
             $alaprajz = '';
+            $other_documents = [];
             $main_image = '';
             $alaprajz_image = '';
             $gallery_first = '';
@@ -295,14 +295,34 @@ class MibBaseController
             // Végigmegyünk az adatbázisból lekért csatolmányokon és frissítjük a megfelelő értékeket
             if (!empty($attachments)) {
                 foreach ($attachments as $attachment) {
+                    $url = $attachment['attachment_url'];
+                    $is_image = preg_match('/\.(jpg|jpeg|png|gif|webp)$/i', $url);
+
                     if ($attachment['type'] === 'alaprajz') {
-                        $alaprajz = $attachment['attachment_url'];
-                    }
-                    if ($attachment['type'] === 'szintrajz') {
-                        $szintrajz = '<a href="' . $attachment['attachment_url'] . '" target="_blank" rel="noopener">Szintrajz megtekintése</a>';
-                    }
-                    if ($attachment['type'] === 'lakas_kep') {
-                        $image = $attachment['attachment_url'];
+                        if ($is_image) {
+                            $alaprajz = $url;
+                            $alaprajz_image = $url;
+                        } else {
+                            $other_documents[] = ['type' => 'alaprajz', 'url' => $url];
+                        }
+                    } elseif ($attachment['type'] === 'szintrajz') {
+                        if ($is_image) {
+                            $szintrajz_img = $url;
+                            // Only overwrite link if it's not set or if we want the image to be the default link
+                            $szintrajz = '<a href="' . $url . '" target="_blank" rel="noopener">Szintrajz megtekintése</a>';
+                        } else {
+                            $other_documents[] = ['type' => 'szintrajz', 'url' => $url];
+                        }
+                    } elseif ($attachment['type'] === 'lakas_kep') {
+                        $image = $url;
+                        if (empty($gallery_first)) {
+                            $gallery_first = $url;
+                        }
+                    } elseif (in_array($attachment['type'], ['document', 'datasheet', 'other'])) {
+                        $other_documents[] = [
+                            'type' => $attachment['type'],
+                            'url' => $url
+                        ];
                     }
                 }
             }
@@ -409,6 +429,7 @@ class MibBaseController
                 'szintrajz' => $szintrajz, // Frissített szintrajz
                 'szintrajz_img' => $szintrajz_img,
                 'docsynopsisimg' => $docsynopsisimg,
+                'other_documents' => $other_documents,
                 'siteplan_image' => $siteplan_image,
                 'main_image' => $main_image,
                 'gallery_first' => $gallery_first,
@@ -449,7 +470,7 @@ class MibBaseController
             WHERE pm1.meta_key = 'identifier'
             AND pm1.meta_value = %s
             AND pm2.meta_key = 'type'
-            AND pm2.meta_value IN ('szintrajz', 'alaprajz', 'lakas_kep')
+            AND pm2.meta_value IN ('szintrajz', 'alaprajz', 'lakas_kep', 'document', 'datasheet', 'other', 'synopsis', 'floorplan')
             AND pm3.meta_key = 'park_id'
             AND pm3.meta_value = %s
         ", $identifier, $park_id);
@@ -618,7 +639,7 @@ class MibBaseController
             if (!empty($data['szintrajz_img'])) {
                 $html .= '<h4>Alaprajz</h4>';
                 $floorplanUrl = esc_url($data['szintrajz_img']);
-                $html .= '<a href="' . $floorplanUrl . '" class="mib-floorplan-link">';
+                $html .= '<a href="' . $floorplanUrl . '" class="mib-floorplan-link" data-elementor-open-lightbox="no">';
                 $cors = $this->getCorsAttribute($floorplanUrl);
                 $html .= '<img src="' . $floorplanUrl . '" alt="Logó"' . $cors . ' id="floorplanimg">';
                 $html .= '</a>';
@@ -627,7 +648,7 @@ class MibBaseController
             if (!empty($data['siteplan_image'])) {
                 $html .= '<h4>Helyszín rajz</h4>';
                 $floorplanUrl = esc_url($data['siteplan_image']);
-                $html .= '<a href="' . $floorplanUrl . '" class="mib-floorplan-link">';
+                $html .= '<a href="' . $floorplanUrl . '" class="mib-floorplan-link" data-elementor-open-lightbox="no">';
                 $cors = $this->getCorsAttribute($floorplanUrl);
                 $html .= '<img src="' . $floorplanUrl . '" alt="Logó"' . $cors . ' id="floorplanimg">';
                 $html .= '</a>';
@@ -648,20 +669,88 @@ class MibBaseController
                 $html .= '</ul>';
             }
 
+
+
             $html .= '<h4>Letölthető dokumentumok</h4>';
 
-            if (!empty($data['alaprajz_image'])) {
+            // A fenti képek (alaprajz, szintrajz, helyszínrajz) már megjelennek grafikusan,
+            // így a szöveges listából kivesszük őket, hogy ne legyenek duplikációk.
 
-                $html .= '<a href="' . $data['alaprajz_image'] . '" target="_blank" rel="noopener">Szintrajz megtekintése</a><br/>';
+            // Ellenőrizzük, hogy van-e már ilyen típusú dokumentum a listában
+            $has_alaprajz_doc = false;
+            $has_szintrajz_doc = false;
+
+            if (!empty($data['other_documents'])) {
+                foreach ($data['other_documents'] as $doc) {
+                    if ($doc['type'] === 'alaprajz')
+                        $has_alaprajz_doc = true;
+                    if ($doc['type'] === 'szintrajz')
+                        $has_szintrajz_doc = true;
+                }
             }
-            if (!empty($data['szintrajz_img'])) {
 
-                $sz_img = (!empty($data['docsynopsisimg'])) ? $data['docsynopsisimg'] : $data['szintrajz_img'];
-                $html .= '<a href="' . $sz_img . '" target="_blank" rel="noopener">Alaprajz megtekintése</a><br/>';
+            // ---------------------------------------------------------
+            // 1. "Alaprajz megtekintése" Logic
+            // ---------------------------------------------------------
+            $alaprajz_candidate = '';
+
+            // A) ÚJ (WP Media) elem esetén: A változók HELYESEN vannak kitöltve (nincs csere).
+            //    Tehát: alaprajz_image = Alaprajz.
+            if (!empty($data['alaprajz_image']) && strpos($data['alaprajz_image'], '/wp-content/uploads/') !== false) {
+                $alaprajz_candidate = $data['alaprajz_image'];
+            }
+            // B) RÉGI (Legacy) elem esetén: A változók KERESZTBE vannak kötve.
+            //    Tehát: szintrajz_img = Alaprajz.
+            elseif (!empty($data['szintrajz_img']) && strpos($data['szintrajz_img'], '/wp-content/uploads/') === false) {
+                // A régi kód szerint itt volt egy docsynopsisimg felülírás, amit megtartunk a legacy működés miatt,
+                // bár gyanús, hogy ez okozta a korábbi hibákat is, de legacy-nál nem nyúlunk hozzá.
+                $alaprajz_candidate = (!empty($data['docsynopsisimg'])) ? $data['docsynopsisimg'] : $data['szintrajz_img'];
+            }
+
+            // Ha találtunk Alaprajz URL-t és nincs PDF dokumentum, akkor megjelenítjük
+            if (!empty($alaprajz_candidate) && !$has_alaprajz_doc) {
+                $html .= '<a href="' . $alaprajz_candidate . '" target="_blank" rel="noopener" class="mib-floorplan-link" data-elementor-open-lightbox="no">Alaprajz megtekintése</a><br/>';
+            }
+
+            // ---------------------------------------------------------
+            // 2. "Szintrajz megtekintése" Logic
+            // ---------------------------------------------------------
+            $szintrajz_candidate = '';
+
+            // A) ÚJ (WP Media) elem esetén: A változók HELYESEN vannak kitöltve (nincs csere).
+            //    Tehát: szintrajz_img = Szintrajz.
+            if (!empty($data['szintrajz_img']) && strpos($data['szintrajz_img'], '/wp-content/uploads/') !== false) {
+                $szintrajz_candidate = $data['szintrajz_img'];
+            }
+            // B) RÉGI (Legacy) elem esetén: A változók KERESZTBE vannak kötve.
+            //    Tehát: alaprajz_image = Szintrajz.
+            elseif (!empty($data['alaprajz_image']) && strpos($data['alaprajz_image'], '/wp-content/uploads/') === false) {
+                $szintrajz_candidate = $data['alaprajz_image'];
+            }
+
+            // Ha találtunk Szintrajz URL-t és nincs PDF dokumentum, akkor megjelenítjük
+            if (!empty($szintrajz_candidate) && !$has_szintrajz_doc) {
+                $html .= '<a href="' . $szintrajz_candidate . '" target="_blank" rel="noopener" class="mib-floorplan-link" data-elementor-open-lightbox="no">Szintrajz megtekintése</a><br/>';
             }
 
             if (!empty($data['siteplan_image'])) {
-                $html .= '<a href="' . $data['siteplan_image'] . '" target="_blank" rel="noopener">Helyszínrajz megtekintése</a><br/>';
+                $html .= '<a href="' . $data['siteplan_image'] . '" target="_blank" rel="noopener" data-elementor-open-lightbox="no">Helyszínrajz megtekintése</a><br/>';
+            }
+
+            if (!empty($data['other_documents'])) {
+                foreach ($data['other_documents'] as $doc) {
+                    $label = 'Dokumentum megtekintése';
+                    if ($doc['type'] === 'datasheet')
+                        $label = 'Adatlap megtekintése';
+                    if ($doc['type'] === 'other')
+                        $label = 'Egyéb dokumentum';
+                    if ($doc['type'] === 'alaprajz')
+                        $label = 'Alaprajz megtekintése';
+                    if ($doc['type'] === 'szintrajz')
+                        $label = 'Szintrajz megtekintése';
+
+                    $html .= '<a href="' . $doc['url'] . '" target="_blank" rel="noopener">' . $label . '</a><br/>';
+                }
             }
 
 
