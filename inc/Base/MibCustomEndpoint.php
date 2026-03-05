@@ -106,9 +106,76 @@ class MibCustomEndpoint extends MibBaseController
         $identifier = $request->get_param('identifier');
         $property_id = $request->get_param('property_id');
         $park_id = $request->get_param('park_id');
-        $file = $request->get_file_params();
+        $rezideo_update = $request->get_param('rezideo_update'); // Check for Rezideo update flag
 
-        // Ellenőrizzük, hogy a fájl létezik-e
+        // HA Rezideo update kérés érkezik, akkor NEM várunk fájlt, hanem csak metát frissítünk a LAKÁSON (Post).
+        if ($rezideo_update) {
+            $url = $request->get_param('url');
+            if (empty($url)) {
+                return new \WP_Error('missing_url', 'Az URL hiányzik a Rezideo frissítéshez.', ['status' => 400]);
+            }
+
+            $post_id = $this->get_post_id_by_property_id($property_id);
+
+            // Determine media_type (from request or guess from URL)
+            $media_type = $request->get_param('media_type');
+            if (empty($media_type)) {
+                $extension = strtolower(pathinfo(parse_url($url, PHP_URL_PATH), PATHINFO_EXTENSION));
+                $media_type = in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'webp']) ? 'image' : 'document';
+            }
+
+            // Shadow Table Strategy: Save to custom table directly
+            global $wpdb;
+            $table_name = $wpdb->prefix . 'mib_rezideo_links';
+
+            // Check if record exists (by URL)
+            $existing_id = $wpdb->get_var($wpdb->prepare(
+                "SELECT id FROM $table_name WHERE identifier = %s AND url = %s",
+                $identifier,
+                $url
+            ));
+
+            if ($existing_id) {
+                // Update
+                $wpdb->update(
+                    $table_name,
+                    ['type' => $type, 'media_type' => $media_type, 'updated_at' => current_time('mysql')],
+                    ['id' => $existing_id],
+                    ['%s', '%s', '%s'],
+                    ['%d']
+                );
+                $action = 'updated';
+            } else {
+                // Insert
+                $wpdb->insert(
+                    $table_name,
+                    [
+                        'identifier' => $identifier,
+                        'type' => $type,
+                        'media_type' => $media_type,
+                        'url' => $url,
+                        'updated_at' => current_time('mysql')
+                    ],
+                    ['%s', '%s', '%s', '%s', '%s']
+                );
+                $action = 'inserted';
+            }
+
+            return rest_ensure_response([
+                'success' => true,
+                'message' => 'Rezideo link mentve a shadow táblába (' . $action . ').',
+                'identifier' => $identifier,
+                'media_type' => $media_type,
+                'type' => $type,
+                'url' => $url
+            ]);
+        }
+
+
+
+        // Ellenőrizzük, hogy a fájl létezik-e (NORMÁL MŰKÖDÉS)
+        $file = $request->get_file_params(); // Fix: Retrieve files from request
+
         if (!isset($file['file'])) {
             return new \WP_Error('missing_file', 'A fájl hiányzik.', ['status' => 400]);
         }

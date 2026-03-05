@@ -211,12 +211,43 @@ class MibBaseController
         foreach ($datas['data'] as $item) {
 
             // Lekérjük az adatokat a get_attachments_by_meta_values függvényből
-            $attachments = $this->get_attachments_by_meta_values($item->name, $this->residentialParkId);
+            $attachments = $this->get_attachments_by_meta_values(
+                $item->name,
+                !empty($this->residentialParkId)
+                ? $this->residentialParkId
+                : $item->residentialPark->id
+            );
+
+            // [Rezideo Sync] Shadow Table Lookup & Merger
+            // Fetch ALL Rezideo links (list of ['type'=>, 'url'=>])
+            $rezideo_links = $this->get_rezideo_links($item->name);
+
+            // Merge them into the attachments array so the loop below processes them naturally
+            // We PREPEND them so that WP Media Library items (already in $attachments) come later 
+            // and overwrite them in the processing loop if duplicates exist. (WP > Shadow)
+            if (!empty($rezideo_links)) {
+                $rezideo_attachments = [];
+                foreach ($rezideo_links as $r_link) {
+                    $rezideo_attachments[] = [
+                        'type' => $r_link['type'],
+                        'media_type' => $r_link['media_type'],
+                        'attachment_url' => $r_link['url']
+                    ];
+                }
+
+                if (empty($attachments)) {
+                    $attachments = $rezideo_attachments;
+                } else {
+                    $attachments = array_merge($rezideo_attachments, $attachments);
+                }
+            }
 
             $image = '';
             $szintrajz = '';
             $szintrajz_img = '';
+            $szintrajz_url = ''; // Raw URL for link generation
             $alaprajz = '';
+            $alaprajz_url = ''; // Raw URL for link generation
             $other_documents = [];
             $main_image = '';
             $alaprajz_image = '';
@@ -296,22 +327,31 @@ class MibBaseController
             if (!empty($attachments)) {
                 foreach ($attachments as $attachment) {
                     $url = $attachment['attachment_url'];
-                    $is_image = preg_match('/\.(jpg|jpeg|png|gif|webp)$/i', $url);
+
+                    if (isset($attachment['media_type'])) {
+                        $is_image = ($attachment['media_type'] === 'image');
+                    } else {
+                        $is_image = preg_match('/\.(jpg|jpeg|png|gif|webp)$/i', $url);
+                    }
 
                     if ($attachment['type'] === 'alaprajz') {
+                        $alaprajz_url = $url;
                         if ($is_image) {
                             $alaprajz = $url;
                             $alaprajz_image = $url;
                         } else {
-                            $other_documents[] = ['type' => 'alaprajz', 'url' => $url];
+                            // If it's a PDF/Document, still set it as the main download link
+                            $alaprajz = '<a href="' . $url . '" target="_blank" rel="noopener">Alaprajz megtekintése</a>';
                         }
                     } elseif ($attachment['type'] === 'szintrajz') {
+                        $szintrajz_url = $url;
                         if ($is_image) {
                             $szintrajz_img = $url;
                             // Only overwrite link if it's not set or if we want the image to be the default link
                             $szintrajz = '<a href="' . $url . '" target="_blank" rel="noopener">Szintrajz megtekintése</a>';
                         } else {
-                            $other_documents[] = ['type' => 'szintrajz', 'url' => $url];
+                            // If it's a PDF/Document, still set it as the main download link
+                            $szintrajz = '<a href="' . $url . '" target="_blank" rel="noopener">Szintrajz megtekintése</a>';
                         }
                     } elseif ($attachment['type'] === 'lakas_kep') {
                         $image = $url;
@@ -324,6 +364,48 @@ class MibBaseController
                             'url' => $url
                         ];
                     }
+                }
+            }
+
+            // [Rezideo Sync] Shadow Table Lookup & Merger
+            // Fetch ALL Rezideo links (list of ['type'=>, 'url'=>])
+            $rezideo_links = $this->get_rezideo_links($item->name);
+
+            // Merge them into the attachments array so the loop below processes them naturally
+            // This handles multiple gallery images, documents, etc.
+            if (!empty($rezideo_links)) {
+                if (empty($attachments)) {
+                    $attachments = [];
+                }
+                foreach ($rezideo_links as $r_link) {
+                    $attachments[] = [
+                        'type' => $r_link['type'],
+                        'attachment_url' => $r_link['url']
+                    ];
+                }
+            }
+
+            // [Rezideo Sync] Check for Direct URL overrides in Post Meta
+            // $rezideo_alaprajz = get_po... (Legacy check removed/superseded by shadow table)
+
+            if (!empty($rezideo_alaprajz)) {
+                $alaprajz = $rezideo_alaprajz;
+                $alaprajz_image = $rezideo_alaprajz;
+            }
+
+            $rezideo_szintrajz = get_post_meta($item->id, 'mib_rezideo_url_szintrajz', true);
+            if (!empty($rezideo_szintrajz)) {
+                $szintrajz_img = $rezideo_szintrajz;
+                $szintrajz = '<a href="' . $rezideo_szintrajz . '" target="_blank" rel="noopener">Szintrajz megtekintése</a>';
+            }
+
+            $rezideo_lakas_kep = get_post_meta($item->id, 'mib_rezideo_url_lakas_kep', true);
+            if (!empty($rezideo_lakas_kep)) {
+                if (empty($image) || strpos($image, 'placeholder') !== false) {
+                    $image = $rezideo_lakas_kep;
+                }
+                if (empty($gallery_first)) {
+                    $gallery_first = $rezideo_lakas_kep;
                 }
             }
 
@@ -426,8 +508,10 @@ class MibBaseController
                 'image' => $image, // Frissített kép
                 'alaprajz' => $alaprajz, // Frissített alaprajz
                 'alaprajz_image' => $alaprajz_image,
+                'alaprajz_url' => $alaprajz_url, // New raw URL
                 'szintrajz' => $szintrajz, // Frissített szintrajz
                 'szintrajz_img' => $szintrajz_img,
+                'szintrajz_url' => $szintrajz_url, // New raw URL
                 'docsynopsisimg' => $docsynopsisimg,
                 'other_documents' => $other_documents,
                 'siteplan_image' => $siteplan_image,
@@ -509,6 +593,139 @@ class MibBaseController
         ));
 
         return $post_id ? intval($post_id) : null;
+    }
+
+    public function get_post_id_by_identifier($identifier)
+    {
+        global $wpdb;
+
+        // 1. Try meta key 'identifier'
+        $post_id = $wpdb->get_var($wpdb->prepare(
+            "SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = 'identifier' AND meta_value = %s ORDER BY meta_id DESC LIMIT 1",
+            $identifier
+        ));
+
+        if ($post_id) {
+            return intval($post_id);
+        }
+
+        // 2. Try post_title (Exact match)
+        $post_id = $wpdb->get_var($wpdb->prepare(
+            "SELECT ID FROM {$wpdb->posts} WHERE post_title = %s AND post_status = 'publish' LIMIT 1",
+            $identifier
+        ));
+
+        if ($post_id) {
+            return intval($post_id);
+        }
+
+        // 3. Try post_name (slug)
+        $slug = sanitize_title($identifier);
+        $post_id = $wpdb->get_var($wpdb->prepare(
+            "SELECT ID FROM {$wpdb->posts} WHERE post_name = %s AND post_status = 'publish' LIMIT 1",
+            $slug
+        ));
+
+        return $post_id ? intval($post_id) : null;
+    }
+
+    public function get_rezideo_links($identifier)
+    {
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'mib_rezideo_links';
+
+        // Ensure table exists before querying to avoid errors on first run if not activated
+        if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
+            return [];
+        }
+
+        $results = $wpdb->get_results($wpdb->prepare(
+            "SELECT type, media_type, url FROM $table_name WHERE identifier = %s",
+            $identifier
+        ));
+
+        $links = [];
+        foreach ($results as $row) {
+            $links[] = [
+                'type' => $row->type,
+                'media_type' => $row->media_type ?? 'image', // Fallback to image if null
+                'url' => $row->url
+            ];
+        }
+
+        return $links;
+    }
+
+    public function get_candidate_posts($identifier)
+    {
+        global $wpdb;
+        $like = '%' . $wpdb->esc_like($identifier) . '%';
+
+        $results = $wpdb->get_results($wpdb->prepare(
+            "SELECT ID, post_title, post_name, post_status, post_type FROM {$wpdb->posts} 
+             WHERE (post_title LIKE %s OR post_name LIKE %s) 
+             LIMIT 10",
+            $like,
+            $like
+        ));
+
+        return $results;
+    }
+
+    public function create_rezideo_attachment($post_id, $type, $url, $identifier, $park_id)
+    {
+        // Check if attachment with this URL already exists to avoid duplicates
+        // Note: get_existing_attachment_by_type might not be available here directly if it's private in MibCustomEndpoint,
+        // so we reimplement a basic check or just proceed. 
+        // Actually, MibCustomEndpoint extends MibBaseController, but get_existing_attachment_by_type is in MibCustomEndpoint.
+        // We should move it to Base or just use a simple check here.
+
+        // Simple check by guid
+        global $wpdb;
+        $existing_id = $wpdb->get_var($wpdb->prepare(
+            "SELECT ID FROM {$wpdb->posts} WHERE guid = %s AND post_type = 'attachment' LIMIT 1",
+            $url
+        ));
+
+        if ($existing_id) {
+            update_post_meta($existing_id, 'mib_rezideo_url_' . $type, $url);
+            update_post_meta($post_id, 'mib_rezideo_url_' . $type, $url);
+            return $existing_id;
+        }
+
+        // Create new attachment post
+        if (!function_exists('wp_check_filetype')) {
+            require_once ABSPATH . 'wp-includes/functions.php';
+        }
+
+        $filetype = wp_check_filetype(basename($url), null);
+        $mime_type = $filetype['type'] ? $filetype['type'] : 'image/jpeg';
+
+        $attachment = [
+            'guid' => $url,
+            'post_mime_type' => $mime_type,
+            'post_title' => basename($url),
+            'post_content' => '',
+            'post_status' => 'inherit',
+            'post_parent' => $post_id,
+            'post_type' => 'attachment',
+        ];
+
+        // Insert attachment
+        $attachment_id = wp_insert_attachment($attachment, $url, $post_id);
+
+        if (!is_wp_error($attachment_id)) {
+            // Update meta
+            update_post_meta($attachment_id, 'type', $type);
+            update_post_meta($attachment_id, 'identifier', $identifier);
+            update_post_meta($attachment_id, 'park_id', $park_id);
+            update_post_meta($attachment_id, 'mib_rezideo_url_' . $type, $url);
+
+            // Also update parent apartment meta for direct access
+            update_post_meta($post_id, 'mib_rezideo_url_' . $type, $url);
+        }
+
+        return $attachment_id;
     }
 
     public function getSingleApartmanHtml($data, $recommend = [])
@@ -690,26 +907,35 @@ class MibBaseController
             }
 
             // ---------------------------------------------------------
+            // ---------------------------------------------------------
             // 1. "Alaprajz megtekintése" Logic
             // ---------------------------------------------------------
             $alaprajz_candidate = '';
 
-            // A) ÚJ (WP Media) elem esetén: A változók HELYESEN vannak kitöltve (nincs csere).
-            //    Tehát: alaprajz_image = Alaprajz.
-            if (!empty($data['alaprajz_image']) && strpos($data['alaprajz_image'], '/wp-content/uploads/') !== false) {
-                $alaprajz_candidate = $data['alaprajz_image'];
+            // SWAPPED LOGIC: We want the PDF (which is usually Synopsis/Szintrajz type in sync) to appear here.
+            // So we look for SZINTRAJZ data for the ALAPRAJZ link.
+
+            // 0. Priorities: szintrajz_url > szintrajz_img (WP) > Legacy Cross-link
+            if (!empty($data['szintrajz_url'])) {
+                $alaprajz_candidate = $data['szintrajz_url'];
             }
-            // B) RÉGI (Legacy) elem esetén: A változók KERESZTBE vannak kötve.
-            //    Tehát: szintrajz_img = Alaprajz.
-            elseif (!empty($data['szintrajz_img']) && strpos($data['szintrajz_img'], '/wp-content/uploads/') === false) {
-                // A régi kód szerint itt volt egy docsynopsisimg felülírás, amit megtartunk a legacy működés miatt,
-                // bár gyanús, hogy ez okozta a korábbi hibákat is, de legacy-nál nem nyúlunk hozzá.
+            // A) ÚJ (WP Media) elem esetén:
+            elseif (!empty($data['szintrajz_img']) && strpos($data['szintrajz_img'], '/wp-content/uploads/') !== false) {
+                $alaprajz_candidate = $data['szintrajz_img'];
+            }
+            // B) RÉGI (Legacy) elem esetén:
+            elseif (!empty($data['alaprajz_image']) && strpos($data['alaprajz_image'], '/wp-content/uploads/') === false) {
+                // Here we keep the cross-wired logic because it was "doc or szintrajz_img".
+                // Since we are swapping, we want the "other" one.
+                // Original for Alaprajz was: docsynopsisimg OR szintrajz_img.
+                // Now we want the PDF here.
                 $alaprajz_candidate = (!empty($data['docsynopsisimg'])) ? $data['docsynopsisimg'] : $data['szintrajz_img'];
             }
 
-            // Ha találtunk Alaprajz URL-t és nincs PDF dokumentum, akkor megjelenítjük
+            // Ha találtunk Alaprajz URL-t (ami most a PDF/Szintrajz adat), akkor megjelenítjük
             if (!empty($alaprajz_candidate) && !$has_alaprajz_doc) {
-                $html .= '<a href="' . $alaprajz_candidate . '" target="_blank" rel="noopener" class="mib-floorplan-link" data-elementor-open-lightbox="no">Alaprajz megtekintése</a><br/>';
+                // User explicit request: NO lightbox, just blank new tab.
+                $html .= '<a href="' . $alaprajz_candidate . '" target="_blank" rel="noopener" class="" data-elementor-open-lightbox="no">Alaprajz megtekintése</a><br/>';
             }
 
             // ---------------------------------------------------------
@@ -717,20 +943,28 @@ class MibBaseController
             // ---------------------------------------------------------
             $szintrajz_candidate = '';
 
-            // A) ÚJ (WP Media) elem esetén: A változók HELYESEN vannak kitöltve (nincs csere).
-            //    Tehát: szintrajz_img = Szintrajz.
-            if (!empty($data['szintrajz_img']) && strpos($data['szintrajz_img'], '/wp-content/uploads/') !== false) {
-                $szintrajz_candidate = $data['szintrajz_img'];
+            // SWAPPED LOGIC: We want the IMAGE (which is usually Floorplan/Alaprajz type in sync) to appear here.
+            // So we look for ALAPRAJZ data for the SZINTRAJZ link.
+
+            // 0. Priorities: alaprajz_url > alaprajz_image (WP) > Legacy Cross-link
+            if (!empty($data['alaprajz_url'])) {
+                $szintrajz_candidate = $data['alaprajz_url'];
             }
-            // B) RÉGI (Legacy) elem esetén: A változók KERESZTBE vannak kötve.
-            //    Tehát: alaprajz_image = Szintrajz.
-            elseif (!empty($data['alaprajz_image']) && strpos($data['alaprajz_image'], '/wp-content/uploads/') === false) {
+            // A) ÚJ (WP Media) elem esetén:
+            elseif (!empty($data['alaprajz_image']) && strpos($data['alaprajz_image'], '/wp-content/uploads/') !== false) {
+                $szintrajz_candidate = $data['alaprajz_image'];
+            }
+            // B) RÉGI (Legacy) elem esetén:
+            elseif (!empty($data['szintrajz_img']) && strpos($data['szintrajz_img'], '/wp-content/uploads/') === false) {
+                // Original for Szintrajz was: alaprajz_image.
+                // Now we want the Image here.
                 $szintrajz_candidate = $data['alaprajz_image'];
             }
 
-            // Ha találtunk Szintrajz URL-t és nincs PDF dokumentum, akkor megjelenítjük
+            // Ha találtunk Szintrajz URL-t (ami most az Alaprajz/Kép adat), akkor megjelenítjük
             if (!empty($szintrajz_candidate) && !$has_szintrajz_doc) {
-                $html .= '<a href="' . $szintrajz_candidate . '" target="_blank" rel="noopener" class="mib-floorplan-link" data-elementor-open-lightbox="no">Szintrajz megtekintése</a><br/>';
+                // User explicit request: NO lightbox, just blank new tab.
+                $html .= '<a href="' . $szintrajz_candidate . '" target="_blank" rel="noopener" class="" data-elementor-open-lightbox="no">Szintrajz megtekintése</a><br/>';
             }
 
             if (!empty($data['siteplan_image'])) {
