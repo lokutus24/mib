@@ -154,10 +154,10 @@ class MibBaseController
     private function getApartmentListingImageUrl(array $data): string
     {
         $candidates = [
+            $data['szintrajz_img'] ?? '',
             $data['gallery_first'] ?? '',
             $data['main_image'] ?? '',
             $data['image'] ?? '',
-            $data['szintrajz_img'] ?? '',
         ];
 
         foreach ($candidates as $candidate) {
