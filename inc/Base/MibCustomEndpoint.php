@@ -22,7 +22,7 @@ class MibCustomEndpoint extends MibBaseController
                 'type' => [
                     'required' => true,
                     'validate_callback' => function ($param) {
-                        return in_array($param, ['alaprajz', 'szintrajz', 'lakas_kep', 'document', 'datasheet', 'other']);
+                        return in_array($param, ['alaprajz', 'szintrajz', 'lakas_kep', 'document', 'datasheet', 'other', 'logo', 'light_logo', 'dark_logo', 'badge']);
                     }
                 ],
                 'identifier' => [
@@ -30,11 +30,19 @@ class MibCustomEndpoint extends MibBaseController
                     'type' => 'string',
                 ],
                 'property_id' => [
-                    'required' => true,
+                    'required' => false,
                     'type' => 'integer',
                 ],
                 'park_id' => [
                     'required' => true,
+                    'type' => 'integer',
+                ],
+                'entity_type' => [
+                    'required' => false,
+                    'type' => 'string',
+                ],
+                'entity_id' => [
+                    'required' => false,
                     'type' => 'integer',
                 ],
             ],
@@ -104,8 +112,10 @@ class MibCustomEndpoint extends MibBaseController
 
         $type = $request->get_param('type');
         $identifier = $request->get_param('identifier');
-        $property_id = $request->get_param('property_id');
+        $property_id = (int) $request->get_param('property_id');
         $park_id = $request->get_param('park_id');
+        $entity_type = $request->get_param('entity_type') ?: 'apartment';
+        $entity_id = (int) $request->get_param('entity_id');
         $rezideo_update = $request->get_param('rezideo_update'); // Check for Rezideo update flag
 
         // HA Rezideo update kérés érkezik, akkor NEM várunk fájlt, hanem csak metát frissítünk a LAKÁSON (Post).
@@ -114,8 +124,6 @@ class MibCustomEndpoint extends MibBaseController
             if (empty($url)) {
                 return new \WP_Error('missing_url', 'Az URL hiányzik a Rezideo frissítéshez.', ['status' => 400]);
             }
-
-            $post_id = $this->get_post_id_by_property_id($property_id);
 
             // Determine media_type (from request or guess from URL)
             $media_type = $request->get_param('media_type');
@@ -129,34 +137,81 @@ class MibCustomEndpoint extends MibBaseController
             $table_name = $wpdb->prefix . 'mib_rezideo_links';
 
             // Check if record exists (by URL)
-            $existing_id = $wpdb->get_var($wpdb->prepare(
-                "SELECT id FROM $table_name WHERE identifier = %s AND url = %s",
-                $identifier,
+            $existing_id = null;
+            $has_entity_columns = $wpdb->get_var("SHOW COLUMNS FROM $table_name LIKE 'entity_type'") === 'entity_type';
+
+            // URL-first deduplication: the same remote asset should map to a single shadow row.
+            $existing_row = $wpdb->get_row($wpdb->prepare(
+                "SELECT * FROM $table_name WHERE url = %s ORDER BY id ASC LIMIT 1",
                 $url
             ));
 
+            if ($existing_row) {
+                $existing_id = (int) $existing_row->id;
+            }
+
             if ($existing_id) {
-                // Update
+                $update_data = [
+                    'type' => $type,
+                    'media_type' => $media_type,
+                    'updated_at' => current_time('mysql'),
+                ];
+                $update_format = ['%s', '%s', '%s'];
+
+                if (!empty($identifier) && (!isset($existing_row->identifier) || empty($existing_row->identifier))) {
+                    $update_data['identifier'] = $identifier;
+                    $update_format[] = '%s';
+                }
+
+                if ($has_entity_columns) {
+                    if (!empty($entity_type) && (!isset($existing_row->entity_type) || empty($existing_row->entity_type))) {
+                        $update_data['entity_type'] = $entity_type;
+                        $update_format[] = '%s';
+                    }
+
+                    if (!empty($entity_id) && (!isset($existing_row->entity_id) || empty($existing_row->entity_id))) {
+                        $update_data['entity_id'] = $entity_id;
+                        $update_format[] = '%d';
+                    }
+
+                    if (!empty($park_id) && (!isset($existing_row->park_id) || empty($existing_row->park_id))) {
+                        $update_data['park_id'] = $park_id;
+                        $update_format[] = '%d';
+                    }
+                }
+
                 $wpdb->update(
                     $table_name,
-                    ['type' => $type, 'media_type' => $media_type, 'updated_at' => current_time('mysql')],
+                    $update_data,
                     ['id' => $existing_id],
-                    ['%s', '%s', '%s'],
+                    $update_format,
                     ['%d']
                 );
                 $action = 'updated';
             } else {
                 // Insert
+                $insert_data = [
+                    'identifier' => $identifier,
+                    'type' => $type,
+                    'media_type' => $media_type,
+                    'url' => $url,
+                    'updated_at' => current_time('mysql')
+                ];
+                $insert_format = ['%s', '%s', '%s', '%s', '%s'];
+
+                if ($has_entity_columns) {
+                    $insert_data = array_merge([
+                        'entity_type' => $entity_type,
+                        'entity_id' => $entity_id ?: null,
+                        'park_id' => $park_id ?: null,
+                    ], $insert_data);
+                    $insert_format = ['%s', '%d', '%d', '%s', '%s', '%s', '%s', '%s'];
+                }
+
                 $wpdb->insert(
                     $table_name,
-                    [
-                        'identifier' => $identifier,
-                        'type' => $type,
-                        'media_type' => $media_type,
-                        'url' => $url,
-                        'updated_at' => current_time('mysql')
-                    ],
-                    ['%s', '%s', '%s', '%s', '%s']
+                    $insert_data,
+                    $insert_format
                 );
                 $action = 'inserted';
             }
@@ -165,6 +220,8 @@ class MibCustomEndpoint extends MibBaseController
                 'success' => true,
                 'message' => 'Rezideo link mentve a shadow táblába (' . $action . ').',
                 'identifier' => $identifier,
+                'entity_type' => $entity_type,
+                'entity_id' => $entity_id,
                 'media_type' => $media_type,
                 'type' => $type,
                 'url' => $url
@@ -225,6 +282,8 @@ class MibCustomEndpoint extends MibBaseController
         update_post_meta($attachment_id, 'identifier', $identifier);
         update_post_meta($attachment_id, 'property_id', $property_id);
         update_post_meta($attachment_id, 'park_id', $park_id);
+        update_post_meta($attachment_id, 'entity_type', $entity_type);
+        update_post_meta($attachment_id, 'entity_id', $entity_id);
 
         return rest_ensure_response([
             'message' => 'A fájl sikeresen feltöltve.',

@@ -151,6 +151,73 @@ class MibBaseController
         return '';
     }
 
+    private function getApartmentListingImageUrl(array $data): string
+    {
+        $candidates = [
+            $data['gallery_first'] ?? '',
+            $data['main_image'] ?? '',
+            $data['image'] ?? '',
+            $data['szintrajz_img'] ?? '',
+        ];
+
+        foreach ($candidates as $candidate) {
+            if (is_string($candidate) && $candidate !== '') {
+                return $candidate;
+            }
+        }
+
+        return '';
+    }
+
+    private function renderApartmentListingImage(array $data, string $class = 'card-img-top', string $alt = 'Lakás képe'): string
+    {
+        $imgSrc = $this->getApartmentListingImageUrl($data);
+
+        if ($imgSrc === '') {
+            return '';
+        }
+
+        $cors = $this->getCorsAttribute($imgSrc);
+
+        return '<img src="' . esc_url($imgSrc) . '" class="' . esc_attr($class) . '" alt="' . esc_attr($alt) . '"' . $cors . '>';
+    }
+
+    private function getResidentialParkLogoUrls($park, int $parkId): array
+    {
+        $defaultLightLogo = $park->lightlogo ?? $park->light_logo ?? $park->logo ?? '';
+        $defaultDarkLogo = $park->darklogo ?? $park->dark_logo ?? $park->logo ?? '';
+        $defaultBadge = $park->badge ?? '';
+
+        $shadowLinks = $this->get_rezideo_links($park->name ?? '', 'residential_park', $parkId, $parkId);
+
+        $map = [
+            'light_logo' => $defaultLightLogo,
+            'dark_logo' => $defaultDarkLogo,
+            'logo' => $defaultLightLogo ?: $defaultDarkLogo,
+            'badge' => $defaultBadge,
+        ];
+
+        foreach ($shadowLinks as $link) {
+            if (!empty($link['url']) && isset($map[$link['type']])) {
+                $map[$link['type']] = $link['url'];
+            }
+        }
+
+        if (empty($map['light_logo']) && !empty($map['logo'])) {
+            $map['light_logo'] = $map['logo'];
+        }
+
+        if (empty($map['dark_logo']) && !empty($map['logo'])) {
+            $map['dark_logo'] = $map['logo'];
+        }
+
+        if (empty($map['logo'])) {
+            $map['logo'] = $map['light_logo'] ?: $map['dark_logo'];
+        }
+
+        return $map;
+    }
+
     public $residentialParkId = 12;
 
     public $shortcodesOptions = [];
@@ -167,6 +234,7 @@ class MibBaseController
 
     public function __construct()
     {
+        MibActivate::sync_rezideo_links_table_schema();
 
         $this->pluginPath = plugin_dir_path(dirname(__FILE__, 2));
         $this->pluginUrl = plugin_dir_url(dirname(__FILE__, 2));
@@ -209,18 +277,21 @@ class MibBaseController
 
         $table_data = [];
         foreach ($datas['data'] as $item) {
+            $currentParkId = (int) (
+                !empty($this->residentialParkId)
+                ? $this->residentialParkId
+                : ($item->residentialPark->id ?? 0)
+            );
 
             // Lekérjük az adatokat a get_attachments_by_meta_values függvényből
             $attachments = $this->get_attachments_by_meta_values(
                 $item->name,
-                !empty($this->residentialParkId)
-                ? $this->residentialParkId
-                : $item->residentialPark->id
+                $currentParkId
             );
 
             // [Rezideo Sync] Shadow Table Lookup & Merger
             // Fetch ALL Rezideo links (list of ['type'=>, 'url'=>])
-            $rezideo_links = $this->get_rezideo_links($item->name);
+            $rezideo_links = $this->get_rezideo_links($item->name, 'apartment', (int) $item->id, $currentParkId);
 
             // Merge them into the attachments array so the loop below processes them naturally
             // We PREPEND them so that WP Media Library items (already in $attachments) come later 
@@ -369,7 +440,7 @@ class MibBaseController
 
             // [Rezideo Sync] Shadow Table Lookup & Merger
             // Fetch ALL Rezideo links (list of ['type'=>, 'url'=>])
-            $rezideo_links = $this->get_rezideo_links($item->name);
+            $rezideo_links = $this->get_rezideo_links($item->name, 'apartment', (int) $item->id, $currentParkId);
 
             // Merge them into the attachments array so the loop below processes them naturally
             // This handles multiple gallery images, documents, etc.
@@ -478,6 +549,8 @@ class MibBaseController
                 }
             }
 
+            $parkLogoUrls = $this->getResidentialParkLogoUrls($item->residentialPark, $currentParkId);
+
             $table_data[] = array(
                 'id' => $item->id,
                 'rawname' => $item->name,
@@ -518,13 +591,13 @@ class MibBaseController
                 'main_image' => $main_image,
                 'gallery_first' => $gallery_first,
                 'notes' => ($item->residentialPark->notes) ? $item->residentialPark->notes : '',
-                'darkLogo' => (($item->residentialPark->darklogo) ? $item->residentialPark->darklogo : ''),
+                'darkLogo' => ($parkLogoUrls['dark_logo'] ?? '') ?: ($parkLogoUrls['logo'] ?? ''),
                 'logo' => (
                     (isset($this->filterOptionDatas['mib-dark_logo']) && $this->filterOptionDatas['mib-dark_logo'] == 1) ||
                     (!empty($this->selectedShortcodeOption['extras']) && in_array('dark_logo', $this->selectedShortcodeOption['extras']))
                 )
-                    ? (($item->residentialPark->darklogo) ? $item->residentialPark->darklogo : '')
-                    : (($item->residentialPark->lightlogo) ? $item->residentialPark->lightlogo : ''),
+                    ? (($parkLogoUrls['dark_logo'] ?? '') ?: ($parkLogoUrls['logo'] ?? ''))
+                    : (($parkLogoUrls['light_logo'] ?? '') ?: ($parkLogoUrls['logo'] ?? '')),
                 'address' => ($item->residentialPark->address) ? $item->residentialPark->address : '',
                 'otthonStart' => $otthonStart,
                 'otthonStartBadge' => $badgeUrl,
@@ -629,7 +702,7 @@ class MibBaseController
         return $post_id ? intval($post_id) : null;
     }
 
-    public function get_rezideo_links($identifier)
+    public function get_rezideo_links($identifier, $entity_type = 'apartment', $entity_id = null, $park_id = null)
     {
         global $wpdb;
         $table_name = $wpdb->prefix . 'mib_rezideo_links';
@@ -639,10 +712,38 @@ class MibBaseController
             return [];
         }
 
-        $results = $wpdb->get_results($wpdb->prepare(
-            "SELECT type, media_type, url FROM $table_name WHERE identifier = %s",
-            $identifier
-        ));
+        $has_entity_columns = $wpdb->get_var("SHOW COLUMNS FROM $table_name LIKE 'entity_type'") === 'entity_type';
+
+        if ($has_entity_columns && $entity_id !== null) {
+            $results = $wpdb->get_results($wpdb->prepare(
+                "SELECT type, media_type, url FROM $table_name WHERE entity_type = %s AND entity_id = %d",
+                $entity_type,
+                $entity_id
+            ));
+            if (empty($results) && !empty($identifier)) {
+                $results = $wpdb->get_results($wpdb->prepare(
+                    "SELECT type, media_type, url FROM $table_name WHERE identifier = %s",
+                    $identifier
+                ));
+            }
+        } elseif ($park_id !== null && $has_entity_columns && $entity_type === 'residential_park') {
+            $results = $wpdb->get_results($wpdb->prepare(
+                "SELECT type, media_type, url FROM $table_name WHERE entity_type = %s AND park_id = %d",
+                $entity_type,
+                $park_id
+            ));
+            if (empty($results) && !empty($identifier)) {
+                $results = $wpdb->get_results($wpdb->prepare(
+                    "SELECT type, media_type, url FROM $table_name WHERE identifier = %s",
+                    $identifier
+                ));
+            }
+        } else {
+            $results = $wpdb->get_results($wpdb->prepare(
+                "SELECT type, media_type, url FROM $table_name WHERE identifier = %s",
+                $identifier
+            ));
+        }
 
         $links = [];
         foreach ($results as $row) {
@@ -1365,9 +1466,7 @@ class MibBaseController
 
                 // Kép wrapper, flexbox középre igazítással
                 $html .= '<div class="primary-color card-image-wrapper">';
-                $imgSrc = ((!empty($data['szintrajz_img'])) ? $data['szintrajz_img'] : $data['image']);
-                $cors = $this->getCorsAttribute($imgSrc);
-                $html .= '<img src="' . $imgSrc . '" class="card-img-top" alt="Lakás képe"' . $cors . '>';
+                $html .= $this->renderApartmentListingImage($data);
                 if (!empty($data['otthonStartBadge'])) {
                     $html .= '<img class="mib-otthonstart-badge" src="' . esc_url($data['otthonStartBadge']) . '" alt="Otthon Start" role="button" tabindex="0" />';
                 }
@@ -1558,8 +1657,7 @@ class MibBaseController
 
                 // Kép wrapper, flexbox középre igazítással
                 $html .= '<div class="primary-color card-image-wrapper">';
-                $cors = $this->getCorsAttribute($data['image']);
-                $html .= '<img src="' . $data['image'] . '" class="card-img-top" alt="Lakás képe"' . $cors . '>';
+                $html .= $this->renderApartmentListingImage($data);
                 if (!empty($data['otthonStartBadge'])) {
                     $html .= '<img class="mib-otthonstart-badge" src="' . esc_url($data['otthonStartBadge']) . '" alt="Otthon Start" role="button" tabindex="0" />';
                 }
@@ -1707,9 +1805,7 @@ class MibBaseController
 
                 // Kép wrapper, flexbox középre igazítással
                 $html .= '<div class="primary-color card-image-wrapper">';
-                $imgSrc = (!empty($data['szintrajz_img'])) ? $data['szintrajz_img'] : $data['image'];
-                $cors = $this->getCorsAttribute($imgSrc);
-                $html .= '<img src="' . $imgSrc . '" class="card-img-top" alt="Lakás képe"' . $cors . '>';
+                $html .= $this->renderApartmentListingImage($data);
                 if (!empty($data['otthonStartBadge'])) {
                     $html .= '<img class="mib-otthonstart-badge" src="' . esc_url($data['otthonStartBadge']) . '" alt="Otthon Start" role="button" tabindex="0" />';
                 }
@@ -1851,8 +1947,7 @@ class MibBaseController
 
                 // Kép blokk
                 $html .= '            <div class="primary-color card-image-wrapper">';
-                $cors = $this->getCorsAttribute($data['image']);
-                $html .= '              <img src="' . esc_url($data['image']) . '" class="card-img-top" alt="Lakás képe"' . $cors . '>';
+                $html .= $this->renderApartmentListingImage($data);
                 if (!empty($data['otthonStartBadge'])) {
                     $html .= '              <a href="' . $otthonStartFilterUrl . '" class="mib-otthonstart-badge-link" aria-label="Otthon Start szűrő megnyitása">';
                     $html .= '                <img class="mib-otthonstart-badge" src="' . esc_url($data['otthonStartBadge']) . '" alt="Otthon Start">';
@@ -1978,8 +2073,7 @@ class MibBaseController
                 $html .= '<div class="card h-100 position-relative">';
 
                 $html .= '<div class="primary-color card-image-wrapper">';
-                $cors = $this->getCorsAttribute($data['image']);
-                $html .= '<img src="' . $data['image'] . '" class="card-img-top" alt="Lakás képe"' . $cors . '>';
+                $html .= $this->renderApartmentListingImage($data);
                 if (!empty($data['otthonStartBadge'])) {
                     $html .= '<img class="mib-otthonstart-badge" src="' . esc_url($data['otthonStartBadge']) . '" alt="Otthon Start" role="button" tabindex="0" />';
                 }
