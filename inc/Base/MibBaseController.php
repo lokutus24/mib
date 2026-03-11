@@ -187,14 +187,15 @@ class MibBaseController
         $defaultLightLogo = $park->lightlogo ?? $park->light_logo ?? $park->logo ?? '';
         $defaultDarkLogo = $park->darklogo ?? $park->dark_logo ?? $park->logo ?? '';
         $defaultBadge = $park->badge ?? '';
+        $attachmentLogos = $this->get_residential_park_attachments($park->name ?? '', $parkId);
 
         $shadowLinks = $this->get_rezideo_links($park->name ?? '', 'residential_park', $parkId, $parkId);
 
         $map = [
-            'light_logo' => $defaultLightLogo,
-            'dark_logo' => $defaultDarkLogo,
-            'logo' => $defaultLightLogo ?: $defaultDarkLogo,
-            'badge' => $defaultBadge,
+            'light_logo' => $attachmentLogos['light_logo'] ?? $defaultLightLogo,
+            'dark_logo' => $attachmentLogos['dark_logo'] ?? $defaultDarkLogo,
+            'logo' => $attachmentLogos['logo'] ?? ($defaultLightLogo ?: $defaultDarkLogo),
+            'badge' => $attachmentLogos['badge'] ?? $defaultBadge,
         ];
 
         foreach ($shadowLinks as $link) {
@@ -650,6 +651,57 @@ class MibBaseController
                 'property_id' => get_post_meta($post_id, 'property_id', true),
                 'park_id' => get_post_meta($post_id, 'park_id', true),
             ];
+        }
+
+        return $attachments;
+    }
+
+    public function get_residential_park_attachments($identifier, $park_id): array
+    {
+        global $wpdb;
+
+        $query = $wpdb->prepare("
+            SELECT pm1.post_id
+            FROM {$wpdb->postmeta} pm1
+            INNER JOIN {$wpdb->postmeta} pm2 ON pm1.post_id = pm2.post_id
+            WHERE pm1.meta_key = 'type'
+            AND pm1.meta_value IN ('light_logo', 'dark_logo', 'logo', 'badge')
+            AND pm2.meta_key = 'park_id'
+            AND pm2.meta_value = %s
+        ", $park_id);
+
+        $post_ids = $wpdb->get_col($query);
+
+        if (empty($post_ids) && !empty($identifier)) {
+            $query = $wpdb->prepare("
+                SELECT pm1.post_id
+                FROM {$wpdb->postmeta} pm1
+                INNER JOIN {$wpdb->postmeta} pm2 ON pm1.post_id = pm2.post_id
+                INNER JOIN {$wpdb->postmeta} pm3 ON pm1.post_id = pm3.post_id
+                WHERE pm1.meta_key = 'identifier'
+                AND pm1.meta_value = %s
+                AND pm2.meta_key = 'type'
+                AND pm2.meta_value IN ('light_logo', 'dark_logo', 'logo', 'badge')
+                AND pm3.meta_key = 'park_id'
+                AND pm3.meta_value = %s
+            ", $identifier, $park_id);
+
+            $post_ids = $wpdb->get_col($query);
+        }
+
+        if (empty($post_ids)) {
+            return [];
+        }
+
+        $attachments = [];
+
+        foreach ($post_ids as $post_id) {
+            $type = get_post_meta($post_id, 'type', true);
+            $url = wp_get_attachment_url($post_id);
+
+            if (!empty($type) && !empty($url)) {
+                $attachments[$type] = $url;
+            }
         }
 
         return $attachments;
